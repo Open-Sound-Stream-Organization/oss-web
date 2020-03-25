@@ -1,0 +1,13 @@
+@import "./vars.scss";
+
+#root {
+    font-family: sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    transition: background 0.1s linear, opacity 0.1s linear, filter 0.1s linear;
+}
+
+@import "./nav.scss";

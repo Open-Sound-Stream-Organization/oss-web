@@ -1,0 +1,36 @@
+nav {
+  background-color: $primary;
+  width: 100%;
+
+  ul {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    height: fit-content;
+
+    li {
+      &,
+      a {
+        padding: 10px;
+      }
+
+      filter: brightness(1);
+      &:hover {
+        filter: brightness(1.2);
+      }
+
+      &.active {
+        filter: brightness(1.1);
+        &:hover {
+          filter: brightness(1.3);
+        }
+      }
+
+      a {
+        text-decoration: none;
+        color: white;
+        background-color: $primary;
+      }
+    }
+  }
+}
