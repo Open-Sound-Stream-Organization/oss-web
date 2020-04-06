@@ -2,6 +2,8 @@ import React from 'react';
 import '../style/general.scss';
 import Nav from './NavBar'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Playlist from './PlaylistsBar';
+import Artists from './Artists';
 
 function App() {
 	return (
@@ -23,7 +25,10 @@ function App() {
 				</Route>
 
 			</Switch>
+			<Playlist /> 
+			<Artists />
 		</Router>
+
 	);
 }
 
