@@ -89,7 +89,17 @@ interface IObserver<O> {
     callback: (result?: O, error?: Error) => unknown;
 }
 
-class Api {
+export interface IApi {
+
+    subscribe<O>(url: string, params?: ParsedUrlQueryInput): ({
+        then: (callback: (result?: O | undefined, error?: Error | undefined) => unknown) => () => void;
+    });
+
+    post<O = string>(url: string, args: any): Promise<any>;
+
+}
+
+class Api implements IApi {
 
     observers: Set<IObserver<any>> = new Set();
 
