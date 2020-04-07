@@ -42,7 +42,7 @@ function TrackInfo(track: IActiveTrack) {
         <Cell area='info'>
             <h4>{name}</h4>
             <p>{artist.name}</p>
-            <div className='progress'>
+            <div className='track-progress'>
                 <span>{timestamp(position)}</span>
                 <span>-{timestamp(length - position)}</span>
                 <div style={{ width: `${position / length * 100}%` }} />

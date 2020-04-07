@@ -13,11 +13,10 @@
     .info {
         width: 100%;
         text-align: center;
-        padding-bottom: 10px;
     }
 
     .volume .bar,
-    .progress {
+    .track-progress {
         width: 100%;
         cursor: pointer;
 
@@ -56,7 +55,7 @@
         }
     }
 
-    .progress {
+    .track-progress {
         height: 10px;
         position: absolute;
         left: 0;
