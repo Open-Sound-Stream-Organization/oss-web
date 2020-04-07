@@ -6,7 +6,7 @@ import Player from './Player';
 import ActiveSong from './ActiveSong';
 import Cell from './Cell';
 import { IActiveTrack } from '../Models';
-import Playlist from './PlaylistsBar';
+import PlaylistsBar from './PlaylistsBar';
 import Artists from './Artists';
 
 function App() {
@@ -28,6 +28,7 @@ function App() {
 			<Nav />
 			<Player {...activeTrack} />
 			<ActiveSong {...activeTrack} />
+			<PlaylistsBar />
 
 			<Switch>
 
@@ -40,18 +41,17 @@ function App() {
 						<h1>Albums</h1>
 					</Route>
 
-					<Route path='/artits'>
-						<h1>Artits</h1>
+					<Route path='/artists'>
+						<Artists />
 					</Route>
 
-				<Route exact path='/'>
-					<Redirect to='/playlists' />
-				</Route>
+					<Route exact path='/'>
+						<Redirect to='/playlists' />
+					</Route>
+
 				</Cell>
 
 			</Switch>
-			<Playlist /> 
-			<Artists />
 		</Router>
 
 	);

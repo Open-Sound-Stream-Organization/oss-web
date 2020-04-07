@@ -1,7 +1,6 @@
 @import "./vars.scss";
 
 html {
-    background-color: $bg;
     overflow: hidden;
 }
 
@@ -26,6 +25,7 @@ html {
 }
 
 #root {
+    background-color: $bg;
     font-family: sans-serif;
     color: $text;
 
