@@ -1,7 +1,49 @@
 @import "./vars.scss";
 
+html {
+    background-color: $bg;
+    overflow: hidden;
+}
+
+@mixin grid-borders() {
+    border-bottom: 1px solid #444;
+    border-right: 1px solid #444;
+
+    & > * {
+        border-top: 1px solid #444;
+        border-left: 1px solid #444;
+    }
+}
+
+@mixin pseudo {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 100%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+}
+
 #root {
     font-family: sans-serif;
+    color: $text;
+
+    height: 100vh;
+
+    display: grid;
+    grid-template:
+        "nav player" 80px
+        "nav page"
+        "playlists page"
+        "cover page"
+        / 300px;
+
+    .cover {
+        align-self: end;
+    }
+
+    @include grid-borders();
 }
 
 * {
@@ -10,7 +52,24 @@
     transition: background 0.1s linear, opacity 0.1s linear, filter 0.1s linear;
 }
 
+img {
+    width: 100%;
+    object-fit: contain;
+}
+
+.icon-button {
+    border-radius: 100%;
+    transition: background 0.1s linear;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #fff3;
+    }
+}
+
 @import "./nav.scss";
+@import "./player.scss";
 @import "./playlist.scss";
 @import "./artists.scss";
 @import "./albums.scss";
