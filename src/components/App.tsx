@@ -6,6 +6,8 @@ import Player from './Player';
 import ActiveSong from './ActiveSong';
 import Cell from './Cell';
 import { IActiveTrack } from '../Models';
+import Playlist from './PlaylistsBar';
+import Artists from './Artists';
 
 function App() {
 
@@ -48,7 +50,10 @@ function App() {
 				</Cell>
 
 			</Switch>
-		</Router >
+			<Playlist /> 
+			<Artists />
+		</Router>
+
 	);
 }
 
