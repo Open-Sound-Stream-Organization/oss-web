@@ -1,33 +1,24 @@
 import React from 'react';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import '../style/general.scss';
-import Nav from './NavBar'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import Player from './Player';
 import ActiveSong from './ActiveSong';
-import Cell from './Cell';
-import { IActiveTrack } from '../Models';
-import PlaylistsBar from './PlaylistsBar';
 import Artists from './Artists';
+import Cell from './Cell';
+import Nav from './NavBar';
+import Player from './Player';
+import PlaylistsBar from './PlaylistsBar';
+import { useApi } from '../api/Hooks';
+import { IActiveTrack } from '../api/Models';
 
 function App() {
 
-	const activeTrack: IActiveTrack = {
-		name: 'Song Name',
-		artist: {
-			name: 'Dieter Bohlen'
-		},
-		album: {
-			name: 'Top 10 Nationalhymnen'
-		},
-		length: 168,
-		position: 20,
-	}
+	const [activeTrack] = useApi<IActiveTrack>('active-track');
 
 	return (
 		<Router>
 			<Nav />
-			<Player {...activeTrack} />
-			<ActiveSong {...activeTrack} />
+			<Player track={activeTrack} />
+			{activeTrack && <ActiveSong track={activeTrack} />}
 			<PlaylistsBar />
 
 			<Switch>

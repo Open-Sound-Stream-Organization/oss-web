@@ -1,18 +1,15 @@
 import React from 'react';
 import Cell from './Cell';
-import { IActiveTrack } from '../Models';
+import { IActiveTrack } from '../api/Models';
 
-function ActiveSong(track: IActiveTrack) {
+function ActiveSong({ track }: { track: IActiveTrack }) {
     return (
         <Cell area='cover'>
-            <Cover />
+            <img
+                src={track.album.cover_url}
+                alt='Active Song Cover'
+            />
         </Cell>
-    )
-}
-
-function Cover() {
-    return (
-        <img alt='Active Song Cover' src={require('../img/example-cover.jpg')} />
     )
 }
 
