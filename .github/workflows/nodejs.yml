@@ -1,0 +1,30 @@
+name: Rebuild Project for Deployment with OSS-Server
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm install
+    - run: npm run build
+    - name: Commit and Push Changes
+      uses: stefanzweifel/git-auto-commit-action@v4.1.2
+      with:
+        commit_message: Rebuilt Project
+        branch: master
+        repository: .
+        commit_user_name: anjomro
+        commit_user_email: github@anjomro.de
+        commit_author: anjomro <github@anjomro.de>
