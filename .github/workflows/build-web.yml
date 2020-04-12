@@ -3,9 +3,6 @@ name: Rebuild Project for Deployment with OSS-Server
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
 jobs:
   build:
 
@@ -13,12 +10,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Setup node.js and npm
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
     - run: npm install
     - run: npm run build
+      env:
+        CI: false
     - name: Commit and Push Changes
       uses: stefanzweifel/git-auto-commit-action@v4.1.2
       with:
