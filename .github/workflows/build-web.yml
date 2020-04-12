@@ -24,6 +24,7 @@ jobs:
         commit_message: Rebuilt Project
         branch: master
         repository: .
+        file_pattern: build/
         commit_user_name: anjomro
         commit_user_email: github@anjomro.de
         commit_author: anjomro <github@anjomro.de>
