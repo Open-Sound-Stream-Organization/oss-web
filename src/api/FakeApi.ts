@@ -22,13 +22,15 @@ class FakeApi implements IApi {
 
                 const endpoint = url.match(/\??([a-zA-Z_-]+)\/?/);
 
-                if (endpoint) {
-                    const fake = this.fakes.get(endpoint[1]);
+                setTimeout(() => {
+                    if (endpoint) {
+                        const fake = this.fakes.get(endpoint[1]);
 
-                    if (fake) cb(fake());
-                    else cb(undefined, new Error('Not Found'));
+                        if (fake) cb(fake());
+                        else cb(undefined, new Error('Not Found'));
 
-                } else cb(undefined, new Error('Invalid Endpoint'));
+                    } else cb(undefined, new Error('Invalid Endpoint'));
+                }, 1000 * (Math.random() + 1));
 
                 return () => { };
             }
@@ -154,7 +156,7 @@ const tracks: ITrack[] = [
     length: Math.floor(Math.random() * 100 + 100),
 }));
 
-const playlists: IPlaylist[] = new Array(6).fill(null).map(id => ({
+const playlists: IPlaylist[] = new Array(6).fill(null).map((_, id) => ({
     id, name: 'A Playlist', tags: [], tracks: range(tracks, Math.random() * 5 + 6)
 }))
 
