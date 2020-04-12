@@ -1,0 +1,88 @@
+.player {
+    user-select: none;
+    display: grid;
+    grid-template:
+        "previous play next info shuffle volume"
+        / 1fr 1fr 1fr 6fr 1fr 2fr;
+
+    & > * {
+        justify-self: center;
+        align-self: center;
+    }
+
+    .info {
+        width: 100%;
+        text-align: center;
+    }
+
+    .volume .bar,
+    .track-progress {
+        width: 100%;
+        cursor: pointer;
+
+        div {
+            pointer-events: none;
+            height: 100%;
+            background-color: $text;
+        }
+    }
+
+    .volume {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        gap: 10px;
+
+        .bar {
+            position: relative;
+            height: 50px;
+            width: 100px;
+
+            &::before, div {
+                @include pseudo();
+                height: 20%;
+                pointer-events: none;
+            }
+
+            &::before {
+                background-color: #333;
+            }
+
+            div {
+                left: 0;
+                transform: translate(0, -50%);
+            }
+        }
+    }
+
+    .track-progress {
+        height: 10px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        border-left: 1px solid $text;
+        border-right: 1px solid $text;
+
+        span {
+            position: absolute;
+            top: 0;
+            $marg: 5px;
+            font-size: 0.7rem;
+            transform: translate(0, -70%);
+
+            &:first-of-type {
+                left: $marg;
+            }
+            
+            &:last-of-type {
+                right: $marg;
+            }
+        }
+
+        div {
+            position: absolute;
+            height: 40%;
+            bottom: 0;
+        }
+    }
+}

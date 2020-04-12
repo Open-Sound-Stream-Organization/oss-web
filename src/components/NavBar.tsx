@@ -7,16 +7,16 @@ function Nav() {
     const path = useLocation().pathname;
 
     const links = [
-        { href: '/', text: 'Home' },
-        { href: '/saved', text: 'Saved' },
-        { href: '/settings', text: 'Settings' },
+        { href: '/playlists', text: 'Playlists' },
+        { href: '/albums', text: 'Albums' },
+        { href: '/artists', text: 'Artists' },
     ]
 
     return (
         <nav>
             <ul>
                 {links.map(({ text, href }) =>
-                    <li className={classes({ active: path === href })}>
+                    <li key={href} className={classes({ active: path === href })}>
                         <Link to={href}>{text}</Link>
                     </li>
                 )}
