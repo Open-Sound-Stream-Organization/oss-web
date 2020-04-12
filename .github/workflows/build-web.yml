@@ -18,13 +18,14 @@ jobs:
     - run: npm run build
       env:
         CI: false
+    - name: Add build folder to git repo
+      run: git add build/\*\* -f
     - name: Commit and Push Changes
       uses: stefanzweifel/git-auto-commit-action@v4.1.2
       with:
         commit_message: Rebuilt Project
         branch: master
         repository: .
-        file_pattern: build/\*\*
         commit_user_name: anjomro
         commit_user_email: github@anjomro.de
         commit_author: anjomro <github@anjomro.de>
