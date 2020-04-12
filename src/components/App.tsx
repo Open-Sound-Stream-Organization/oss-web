@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import '../style/general.scss';
 import ActiveSong from './ActiveSong';
 import Artists from './Artists';
@@ -9,10 +9,22 @@ import Player from './Player';
 import PlaylistsBar from './PlaylistsBar';
 import { useApi } from '../api/Hooks';
 import { IActiveTrack } from '../api/Models';
+import Playlists from './Playlists';
+import classes from 'classnames';
+import Albums from './Albums';
+import Tracks from './Tracks';
 
 function App() {
 
 	const [activeTrack] = useApi<IActiveTrack>('active-track');
+
+	const pages: IPage[] = [
+		{ path: '/tracks', component: Tracks },
+		{ path: '/playlists/:id?', component: Playlists },
+		{ path: '/artists', component: Artists },
+		{ path: '/albums', component: Albums },
+		{ path: '/tracks', component: Tracks },
+	];
 
 	return (
 		<Router>
@@ -23,29 +35,44 @@ function App() {
 
 			<Switch>
 
-				<Cell area='page'>
-					<Route path='/playlists'>
-						<h1>Playlists</h1>
-					</Route>
+				{pages.map(page =>
+					<Route key={page.path} path={page.path}>
+						<Page {...page} />
+					</Route >
+				)}
 
-					<Route path='/albums'>
-						<h1>Albums</h1>
-					</Route>
-
-					<Route path='/artists'>
-						<Artists />
-					</Route>
-
-					<Route exact path='/'>
-						<Redirect to='/playlists' />
-					</Route>
-
-				</Cell>
+				<Route exact path='/'>
+					<Redirect to='/playlists' />
+				</Route>
 
 			</Switch>
 		</Router>
 
 	);
+}
+
+export interface IPage {
+	path: string;
+	component: () => JSX.Element | null;
+	key?: string;
+	text?: string;
+}
+
+function Page(page: IPage) {
+
+	const path = useLocation().pathname.slice(1) + '/';
+	const key = page.key ?? path.slice(0, path.indexOf('/'));
+
+	useEffect(() => {
+		document.title = 'OSS - ' + key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
+	}, [key]);
+
+	return (
+		<Cell area='page' id={key}>
+			<page.component />
+		</Cell>
+	);
+
 }
 
 export default App;

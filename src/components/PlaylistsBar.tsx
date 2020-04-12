@@ -3,17 +3,16 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { useLocation } from 'react-router-dom';
+import { Loading, useApi } from '../api/Hooks';
+import { IPlaylist } from '../api/Models';
 import '../style/general.scss';
 import Cell from './Cell';
-import { useApi } from '../api/Hooks';
-import { IPlaylist } from '../api/Models';
 
 
 function Playlist() {
 
     const [playlists] = useApi<IPlaylist[]>('playlist');
-    if (!playlists) return <p>Loading</p>
+    if (!playlists) return <Loading />
 
     return (
         <Cell area='playlists'>

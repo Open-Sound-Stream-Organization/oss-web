@@ -1,0 +1,17 @@
+#playlists {
+
+    display: grid;
+    grid-template:
+        "list songs"
+        / 1fr 6fr;
+
+    ul {
+        padding: 10px;
+        list-style: none;
+    }
+
+    & > h1 {
+        text-align: center;
+    }
+
+}

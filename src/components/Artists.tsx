@@ -11,7 +11,7 @@ import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import { linkSync } from 'fs';
 import img from 'react-bootstrap/Image';
 import Row from 'react-bootstrap/Row';
-import { useApi } from '../api/Hooks';
+import { useApi, Loading } from '../api/Hooks';
 import { IArtist, IAlbum } from '../api/Models';
 
 function Artists() {
@@ -19,7 +19,7 @@ function Artists() {
     const [artists] = useApi<IArtist[]>('artist');
     const [albums] = useApi<IAlbum[]>('album');
 
-    if (!artists || !albums) return <p>Loading</p>;
+    if (!artists || !albums) return <Loading />
 
     function handleClick() {
         console.log('funktioniert');

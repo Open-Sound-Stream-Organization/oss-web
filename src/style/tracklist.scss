@@ -1,0 +1,18 @@
+.tracklist {
+    width: 100%;
+
+    $border: #555;
+
+    td, th {
+        padding: 0 10px;
+        border-left: $border-width solid $border;
+        border-right: $border-width solid $border;
+    }
+
+    tbody, thead {
+        border: $border-width solid $border;
+    }
+
+    overflow: scroll;
+
+}
