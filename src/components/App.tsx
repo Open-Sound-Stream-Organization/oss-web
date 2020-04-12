@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import '../style/general.scss';
 import ActiveSong from './ActiveSong';
@@ -13,10 +13,12 @@ import Playlists from './Playlists';
 import classes from 'classnames';
 import Albums from './Albums';
 import Tracks from './Tracks';
+import Dialog, { Provider as DialogProvider, DialogProps } from './Dialog';
 
 function App() {
 
 	const [activeTrack] = useApi<IActiveTrack>('active-track');
+	const dialog = useState<DialogProps | null>(null);
 
 	const pages: IPage[] = [
 		{ path: '/tracks', component: Tracks },
@@ -27,27 +29,31 @@ function App() {
 	];
 
 	return (
-		<Router>
-			<Nav />
-			<Player track={activeTrack} />
-			{activeTrack && <ActiveSong track={activeTrack} />}
-			<PlaylistsBar />
+		<DialogProvider value={dialog}>
 
-			<Switch>
+			<Router>
+				<Nav />
+				<Player track={activeTrack} />
+				{activeTrack && <ActiveSong track={activeTrack} />}
+				<PlaylistsBar />
+        
+				<Dialog dialog={dialog[0]} />
+        
+        <Switch>
 
-				{pages.map(page =>
-					<Route key={page.path} path={page.path}>
-						<Page {...page} />
-					</Route >
-				)}
+          {pages.map(page =>
+            <Route key={page.path} path={page.path}>
+              <Page {...page} />
+            </Route >
+          )}
 
-				<Route exact path='/'>
-					<Redirect to='/playlists' />
-				</Route>
+          <Route exact path='/'>
+            <Redirect to='/playlists' />
+          </Route>
 
-			</Switch>
-		</Router>
-
+			  </Switch>
+		  </Router>
+    </DialogProvider>
 	);
 }
 
@@ -71,8 +77,7 @@ function Page(page: IPage) {
 		<Cell area='page' id={key}>
 			<page.component />
 		</Cell>
-	);
-
+  );
 }
 
 export default App;
