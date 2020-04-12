@@ -2,7 +2,7 @@ import React, { useState, MouseEvent } from 'react';
 import Cell from './Cell';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
-import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute, faRedoAlt } from '@fortawesome/free-solid-svg-icons'
 import { IActiveTrack } from '../api/Models';
 
 function IconButton(props: { icon: IconDefinition, area?: string, onClick?: () => unknown }) {
@@ -23,6 +23,7 @@ function Player({ track }: { track?: IActiveTrack }) {
             <IconButton icon={faStepForward} area='next' />
             <IconButton icon={faPlay} area='play' />
             <IconButton icon={faRandom} area='shuffle' />
+            <IconButton icon={faRedoAlt} area='repeat' />
 
             <Volume />
         </Cell>

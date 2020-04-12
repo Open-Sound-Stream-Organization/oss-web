@@ -1,3 +1,7 @@
+export const useDialog = () => {
+    return { open: (d: any) => {} };
+}
+=======
 import React, { useContext } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 

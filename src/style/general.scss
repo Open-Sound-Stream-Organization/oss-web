@@ -4,13 +4,18 @@ html {
     overflow: hidden;
 }
 
+a {
+    text-decoration: none;
+    color: $text !important;
+}
+
 @mixin grid-borders() {
-    border-bottom: 1px solid #444;
-    border-right: 1px solid #444;
+    border-bottom: $border-width solid #444;
+    border-right: $border-width solid #444;
 
     & > * {
-        border-top: 1px solid #444;
-        border-left: 1px solid #444;
+        border-top: $border-width solid #444;
+        border-left: $border-width solid #444;
     }
 }
 
@@ -68,9 +73,42 @@ img {
     }
 }
 
+.seperate-comma {
+    &:not(:last-child)::after {
+        content: ", ";
+    }
+}
+
+span + svg {
+    margin-left: 10px;
+}
+
+@keyframes load {
+  from {
+    padding: 10px;
+    opacity: 0.6;
+  }
+  to {
+    padding: 30px;
+    opacity: 1;
+  }
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: $text;
+  border-radius: 100%;
+  animation: load 0.5s ease-out infinite alternate;
+}
+
 @import "./nav.scss";
 @import "./player.scss";
 @import "./playlist.scss";
 @import "./artists.scss";
 @import "./albums.scss";
+@import "./playlists.scss";
+@import "./tracklist.scss";
 @import "./dialog.scss";

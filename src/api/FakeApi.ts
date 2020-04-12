@@ -20,7 +20,7 @@ class FakeApi implements IApi {
         return {
             then: (cb: (result: O | undefined, error?: Error) => unknown) => {
 
-                const endpoint = url.match(/\??([a-zA-Z_-]+)\/?/);
+                const endpoint = url.match(/^\/?([a-zA-Z0-9_/-]+?)\??\/?\??$/);
 
                 setTimeout(() => {
                     if (endpoint) {
