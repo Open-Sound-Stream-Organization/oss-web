@@ -3,7 +3,6 @@ import '../style/general.scss';
 import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import classes from 'classnames';
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Media from 'react-bootstrap/Media';
 import ListGroup from 'react-bootstrap/ListGroup';

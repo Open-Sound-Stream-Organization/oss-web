@@ -42,7 +42,7 @@ const DialogContext = React.createContext<[
 ]>([null, () => { }]);
 
 export function useDialog() {
-    const [dialog, open] = useContext(DialogContext);
+    const [, open] = useContext(DialogContext);
     const close = () => open(null);
     return { open, close };
 }

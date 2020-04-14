@@ -14,6 +14,9 @@ export function useApi<R>(endpoint: string, params?: ParsedUrlQueryInput) {
     const query = querystring.encode(params);
     const url = `${endpoint}?${query}`;
     useEffect(() => {
+        setLoading(true);
+        setResult(undefined);
+
         return API.subscribe<R>(url).then(r => {
             setResult(r);
             setLoading(false);

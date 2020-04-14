@@ -7,14 +7,13 @@ nav {
     li {
       padding: 10px;
       a {
-        color: #aaa;
         text-decoration: none;
       }
 
       &.active,
       &:hover {
         a {
-          color: white;
+          color: $primary;
         }
       }
     }

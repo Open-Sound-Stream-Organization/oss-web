@@ -21,8 +21,13 @@ export interface IApi {
 
     post<O>(url: string, args: any): Promise<O>;
 
+    delete<O>(url: string, args: any): Promise<O>;
+
+    put<O>(url: string, args: any): Promise<O>;
+
 }
 
+type method = 'post' | 'delete' | 'put';
 class Api implements IApi {
 
     observers: Set<IObserver<any>> = new Set();
@@ -62,9 +67,9 @@ class Api implements IApi {
         }
     }
 
-    async post<O = string>(url: string, args: any = {}) {
+    private async method<O = string>(method: method, url: string, args: any = {}) {
         const response = await fetch(`${API_URL}/${url}`, {
-            method: 'POST',
+            method: method.toUpperCase(),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -77,6 +82,18 @@ class Api implements IApi {
                 if (success) return data;
                 else throw new Error(reason);
             });
+    }
+
+    async post<O = string>(url: string, args: any = {}) {
+        return this.method('post', url, args);
+    }
+
+    async put<O = string>(url: string, args: any = {}) {
+        return this.method('put', url, args);
+    }
+
+    async delete<O = string>(url: string, args: any = {}) {
+        return this.method('delete', url, args);
     }
 
 }

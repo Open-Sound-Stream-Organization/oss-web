@@ -5,8 +5,12 @@ html {
 }
 
 a {
-    text-decoration: none;
-    color: $text !important;
+    &,
+    &:hover,
+    &:active {
+        text-decoration: none;
+        color: $text;
+    }
 }
 
 @mixin grid-borders() {
@@ -84,24 +88,24 @@ span + svg {
 }
 
 @keyframes load {
-  from {
-    padding: 10px;
-    opacity: 0.6;
-  }
-  to {
-    padding: 30px;
-    opacity: 1;
-  }
+    from {
+        padding: 10px;
+        opacity: 0.6;
+    }
+    to {
+        padding: 30px;
+        opacity: 1;
+    }
 }
 
 .loading {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: $text;
-  border-radius: 100%;
-  animation: load 0.5s ease-out infinite alternate;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: $text;
+    border-radius: 100%;
+    animation: load 0.5s ease-out infinite alternate;
 }
 
 @import "./nav.scss";
