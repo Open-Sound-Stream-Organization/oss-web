@@ -67,11 +67,13 @@ class Api implements IApi {
 
     public async audio(url: string) {
 
-        const response = await fetch(require('../test.mp3'), {
+        const response = await fetch(url, {
             headers: {
                 'Authorization': this.getApiKey()
             }
         });
+
+        console.log(response);
 
         const content = await response.body?.getReader().read();
         if (!content?.value) throw new Error('No audio found');
