@@ -3,6 +3,12 @@ name: Rebuild Project for Deployment with OSS-Server
 on:
   push:
     branches: [ master ]
+    paths:
+    - 'src/**'
+    - 'public/**'
+    - 'package.json'
+    - 'tsconfig.json'
+
 jobs:
   build:
 
