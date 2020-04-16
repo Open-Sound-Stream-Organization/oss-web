@@ -44,12 +44,12 @@ function LoadingTrackRow({ url }: { url: string }) {
 
 function Artist({ url }: { url: string }) {
     const [a] = useApi<IArtist>(url);
-    return a ? <Link className='seperate-comma' to={`artist/${a.id}`}>{a.name}</Link> : null;
+    return a ? <Link className='seperate-comma' to={`/artists/${a.id}`}>{a.name}</Link> : null;
 }
 
 function Album({ url }: { url: string }) {
     const [a] = useApi<IAlbum>(url);
-    return a ? <Link className='seperate-comma' to={`album/${a.id}`}>{a.name}</Link> : null;
+    return a ? <Link className='seperate-comma' to={`/albums/${a.id}`}>{a.name}</Link> : null;
 }
 
 export default TrackList;
