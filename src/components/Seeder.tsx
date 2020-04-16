@@ -1,14 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SEEDER from "../api/Seeder";
 import { useApi } from '../api/Hooks';
+import classes from 'classnames';
 
 function Seeder() {
-    const [r] = useApi('');
-    console.log(r);
+    const [loading, setLoading] = useState(false);
 
     return (
         <>
-            <button>Seed!</button>
+            <button className={classes({ disabled: loading })} onClick={() => {
+
+                setLoading(true);
+                SEEDER.seed()
+                    .catch(e => console.error(e))
+                    .then(() => setLoading(false));
+
+            }}>
+                {loading ? 'Seeding...' : 'Seed!'}
+            </button>
         </>
     );
 }

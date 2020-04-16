@@ -1,5 +1,6 @@
 .tracklist {
     width: 100%;
+    border-collapse: collapse;
 
     $border: #555;
 
@@ -10,7 +11,7 @@
     }
 
     tbody, thead {
-        border: $border-width solid $border;
+        border-bottom: $border-width solid $border;
     }
 
     overflow: scroll;

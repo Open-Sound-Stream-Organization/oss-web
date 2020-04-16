@@ -3,7 +3,8 @@ import Cell from './Cell';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute, faRedoAlt } from '@fortawesome/free-solid-svg-icons'
-import { IActiveTrack } from '../api/Models';
+import { IActiveTrack, IArtist } from '../api/Models';
+import { useApi } from '../api/Hooks';
 
 function IconButton(props: { icon: IconDefinition, area?: string, onClick?: () => unknown }) {
     const { area, icon, ...rest } = props;
@@ -15,6 +16,7 @@ function IconButton(props: { icon: IconDefinition, area?: string, onClick?: () =
 }
 
 function Player({ track }: { track?: IActiveTrack }) {
+
     return (
         <Cell area='player'>
             {track && <TrackInfo {...track} />}
@@ -37,12 +39,12 @@ function timestamp(time: number) {
 }
 
 function TrackInfo(track: IActiveTrack) {
-    const { title: name, artist, length, position } = track;
+    const { title, artists, length, position } = track;
 
     return (
         <Cell area='info'>
-            <h4>{name}</h4>
-            <p>{artist.map(a => a.name).join(' | ')}</p>
+            <h4>{title}</h4>
+            <p>{artists.map(a => <Artist url={a} />)}</p>
             <div className='track-progress'>
                 <span>{timestamp(position)}</span>
                 <span>-{timestamp(length - position)}</span>
@@ -50,6 +52,11 @@ function TrackInfo(track: IActiveTrack) {
             </div>
         </Cell>
     );
+}
+
+function Artist({ url }: { url: string }) {
+    const [a] = useApi<IArtist>(url);
+    return a ? <span>{a.name}</span> : null;
 }
 
 /**

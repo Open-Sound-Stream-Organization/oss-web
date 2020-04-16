@@ -30,7 +30,7 @@ export interface IApi {
 type Method = 'post' | 'delete' | 'put' | 'get';
 class Api implements IApi {
 
-    observers: Set<IObserver<any>> = new Set();
+    private observers: Set<IObserver<any>> = new Set();
 
     call<O>(observer: IObserver<O>) {
         const { url, params, callback } = observer;
@@ -58,12 +58,14 @@ class Api implements IApi {
 
     async fetch<O>(endpoint: string, params?: ParsedUrlQueryInput | string) {
         const query = typeof params === 'string' ? params : querystring.encode(params ?? {});
-        return this.method<O>('get', `${endpoint}?${query}`);
+        return this.method<O>('get', `${endpoint}/?${query}`);
     }
 
     private async method<O>(method: Method, endpoint: string, args?: any) {
 
-        const url = `${API_URL}/${endpoint}`;
+        let url = endpoint;
+        if(!url.startsWith(API_URL)) url = `${API_URL}/${url}`
+        if (method !== 'get') url += '/';
 
         const apiKey = 'testapikey';
 

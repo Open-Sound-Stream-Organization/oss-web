@@ -1,17 +1,18 @@
 #playlists {
-
     display: grid;
     grid-template:
         "list songs"
         / 1fr 6fr;
 
     ul {
-        padding: 10px;
-        list-style: none;
+        border-right: $border-width solid #444;
     }
 
-    & > h1 {
-        text-align: center;
-    }
+    .songs {
+        padding-top: 10px;
 
+        h1 {
+            text-align: center;
+        }
+    }
 }

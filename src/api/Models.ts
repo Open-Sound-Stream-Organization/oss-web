@@ -4,8 +4,8 @@ export interface IModel {
 
 export interface ITrack extends IModel {
     title: string;
-    artist: IArtist[];
-    album: IAlbum;
+    artists: string[];
+    album: string;
     length: number;
 }
 
@@ -24,22 +24,21 @@ export interface IArtist extends IModel {
     type: Type;
     begin?: date;
     end?: date;
-    tags: ITag[];
+    tags: string[];
 
 }
 
 export interface IAlbum extends IModel {
     name: string;
     release: date;
-    artist: IArtist[];
+    artists: string[];
     cover_url?: string;
-    tags: ITag[];
+    tags: string[];
 }
 
 export interface IPlaylist extends IModel {
     name: string;
-    tracks: ITrack[],
-    tags: ITag[],
+    tags: string[],
 }
 
 export interface IList<O> {
