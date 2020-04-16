@@ -13,6 +13,7 @@ function Nav() {
         { href: '/albums', text: 'Albums', icon: faCompactDisc },
         { href: '/artists', text: 'Artists', icon: faUser },
         { href: '/tracks', text: 'Tracks', icon: faMusic },
+        {href: '/login', text: 'Login', icon: faUser}
     ]
 
     return (

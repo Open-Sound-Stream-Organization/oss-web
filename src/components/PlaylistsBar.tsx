@@ -15,8 +15,7 @@ function Playlist() {
 
     return (
         <Cell area='playlists'>
-            <Jumbotron fluid className="Playlist">
-                <Container>
+           <div>
                     <ul>
                         {playlists.map((list) =>
                             <ListGroup className="ListGroup" variant="flush">
@@ -28,8 +27,7 @@ function Playlist() {
                             </ListGroup>
                         )}
                     </ul>
-                </Container>
-            </Jumbotron>
+               </div>
         </Cell>
     );
 }
