@@ -1,10 +1,15 @@
 import React from 'react';
 import { IAlbum } from '../api/Models';
-import { ModelView } from './Shared';
+import { ModelView, Cover } from './Shared';
 import TrackList from './TrackList';
 
-function Active({ name, id, tracks }: IAlbum) {
-    return <TrackList {...{ tracks }} />
+function Active({ name, id, tracks, cover_url }: IAlbum) {
+    return (
+        <>
+            <Cover src={cover_url} alt={name} />
+            <TrackList {...{ tracks }} />
+        </>
+    )
 }
 
 function Albums() {
