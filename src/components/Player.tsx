@@ -2,8 +2,10 @@ import React, { useState, MouseEvent } from 'react';
 import Cell from './Cell';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
-import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons'
-import { IActiveTrack } from '../api/Models';
+import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute, faRedoAlt, faPause } from '@fortawesome/free-solid-svg-icons'
+import { IArtist, ITrack } from '../api/Models';
+import { useApi } from '../api/Hooks';
+import usePlayer, { useVolume } from '../api/Audio';
 
 function IconButton(props: { icon: IconDefinition, area?: string, onClick?: () => unknown }) {
     const { area, icon, ...rest } = props;
@@ -14,15 +16,18 @@ function IconButton(props: { icon: IconDefinition, area?: string, onClick?: () =
     )
 }
 
-function Player({ track }: { track?: IActiveTrack }) {
+function Player() {
+    const { track, position, play, pause, playing } = usePlayer();
+
     return (
         <Cell area='player'>
-            {track && <TrackInfo {...track} />}
+            {track && <TrackInfo {...track} {...{ position }} />}
 
             <IconButton icon={faStepBackward} area='previous' />
             <IconButton icon={faStepForward} area='next' />
-            <IconButton icon={faPlay} area='play' />
+            <IconButton onClick={playing() ? pause : () => play()} icon={playing() ? faPause : faPlay} area='play' />
             <IconButton icon={faRandom} area='shuffle' />
+            <IconButton icon={faRedoAlt} area='repeat' />
 
             <Volume />
         </Cell>
@@ -32,16 +37,16 @@ function Player({ track }: { track?: IActiveTrack }) {
 function timestamp(time: number) {
     const minutes = Math.floor(time / 60);
     const seconds = time - minutes * 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toFixed(0).padStart(2, '0')}`;
 }
 
-function TrackInfo(track: IActiveTrack) {
-    const { title: name, artist, length, position } = track;
+function TrackInfo(track: ITrack & { position: number }) {
+    const { title, artists, length, position } = track;
 
     return (
         <Cell area='info'>
-            <h4>{name}</h4>
-            <p>{artist.map(a => a.name).join(' | ')}</p>
+            <h4>{title}</h4>
+            <p>{artists?.map(a => <Artist key={a} url={a} />)}</p>
             <div className='track-progress'>
                 <span>{timestamp(position)}</span>
                 <span>-{timestamp(length - position)}</span>
@@ -51,24 +56,9 @@ function TrackInfo(track: IActiveTrack) {
     );
 }
 
-/**
- * Can be used anywhere to access and modify volume
- * TODO This is where the actual volume logic will happen
- */
-export function useVolume() {
-    const [volume, setVolume] = useState(40);
-    const [saveVolumed, saveVolume] = useState(volume);
-
-    const toggleVolume = () => {
-        if (volume > 0) {
-            saveVolume(volume);
-            setVolume(0);
-        } else {
-            setVolume(saveVolumed);
-        }
-    }
-
-    return { volume, setVolume, toggleVolume };
+function Artist({ url }: { url: string }) {
+    const [a] = useApi<IArtist>(url);
+    return a ? <span>{a.name}</span> : null;
 }
 
 function Volume() {
@@ -81,7 +71,6 @@ function Volume() {
             : faVolumeUp
 
     const adjust = (e: MouseEvent<HTMLDivElement>) => {
-        console.log(e.buttons);
         const w = e.currentTarget.offsetWidth;
         const l = e.currentTarget.getBoundingClientRect().left;
         const x = e.clientX - l;

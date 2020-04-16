@@ -5,16 +5,16 @@ nav {
     list-style-type: none;
 
     li {
-      padding: 10px;
-      a {
-        color: #aaa;
+
+      &, a {
+        padding: 10px;
         text-decoration: none;
       }
 
       &.active,
       &:hover {
         a {
-          color: white;
+          color: $primary;
         }
       }
     }

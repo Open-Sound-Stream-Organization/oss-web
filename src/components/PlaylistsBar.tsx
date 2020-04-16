@@ -1,37 +1,25 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+import classes from 'classnames';
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Jumbotron from 'react-bootstrap/Jumbotron';
-import ListGroup from 'react-bootstrap/ListGroup';
-import { useLocation } from 'react-router-dom';
-import '../style/general.scss';
+import { Link, useParams } from 'react-router-dom';
+import { Loading, useApi } from '../api/Hooks';
+import { IList, IPlaylist } from '../api/Models';
 import Cell from './Cell';
-import { useApi } from '../api/Hooks';
-import { IPlaylist } from '../api/Models';
-
 
 function Playlist() {
+    const { id: active } = useParams();
 
-    const [playlists] = useApi<IPlaylist[]>('playlist');
-    if (!playlists) return <p>Loading</p>
+    const [playlists] = useApi<IList<IPlaylist>>('playlist');
+    if (!playlists) return <Loading />
 
     return (
         <Cell area='playlists'>
-            <Jumbotron fluid className="Playlist">
-                <Container>
-                    <ul>
-                        {playlists.map((list) =>
-                            <ListGroup className="ListGroup" variant="flush">
-                                <ListGroup.Item action href="info">{list.name}</ListGroup.Item>
-                                {/*
-                                     <ListGroup.Item action variant = "info"></ListGroup.Item>
-                                    <ListGroup.Item action variant = "info">playlist2</ListGroup.Item> 
-                                */}
-                            </ListGroup>
-                        )}
-                    </ul>
-                </Container>
-            </Jumbotron>
+            <ul className='list'>
+                {playlists.objects.map(({ id, name }) =>
+                    <li key={id} className={classes({ active: id.toString() === active })}>
+                        <Link to={`/playlists/${id}`}>{name}</Link>
+                    </li>
+                )}
+            </ul>
         </Cell>
     );
 }

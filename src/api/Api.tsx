@@ -4,28 +4,33 @@ import { API_URL } from '../config';
 /**
  * Replaced once we know the format the data will be sent by the server
  */
-type Response<O> = any;
+type Response<O> = O;
 
 
 interface IObserver<O> {
     url: string;
-    params?: ParsedUrlQueryInput;
+    params?: ParsedUrlQueryInput | string;
     callback: (result?: O, error?: Error) => unknown;
 }
 
 export interface IApi {
 
-    subscribe<O>(url: string, params?: ParsedUrlQueryInput): ({
+    subscribe<O>(url: string, params?: ParsedUrlQueryInput | string): ({
         then: (callback: (result?: O | undefined, error?: Error | undefined) => unknown) => () => void;
     });
 
     post<O>(url: string, args: any): Promise<O>;
 
+    delete<O>(url: string, args: any): Promise<O>;
+
+    put<O>(url: string, args: any): Promise<O>;
+
 }
 
+type Method = 'post' | 'delete' | 'put' | 'get';
 class Api implements IApi {
 
-    observers: Set<IObserver<any>> = new Set();
+    private observers: Set<IObserver<any>> = new Set();
 
     call<O>(observer: IObserver<O>) {
         const { url, params, callback } = observer;
@@ -38,18 +43,7 @@ class Api implements IApi {
         this.observers.forEach(o => this.call(o));
     }
 
-    async fetch<O>(url: string, params?: ParsedUrlQueryInput) {
-
-        const query = params ? '?' + querystring.encode(params) : '';
-        return await fetch(`${API_URL}/${url}${query}`)
-            .then(raw => raw.json() as Promise<Response<O>>)
-            .then(({ success, reason, data, ...e }: Response<O>) => {
-                if (success) return data;
-                else throw new Error(reason);
-            });
-    }
-
-    subscribe<O>(url: string, params?: ParsedUrlQueryInput) {
+    subscribe<O>(url: string, params?: ParsedUrlQueryInput | string) {
         return {
             then: (callback: (result?: O, error?: Error) => unknown) => {
                 const o = { url, params, callback };
@@ -62,21 +56,62 @@ class Api implements IApi {
         }
     }
 
-    async post<O = string>(url: string, args: any = {}) {
-        const response = await fetch(`${API_URL}/${url}`, {
-            method: 'POST',
+    async fetch<O>(endpoint: string, params?: ParsedUrlQueryInput | string) {
+        const query = typeof params === 'string' ? params : querystring.encode(params ?? {});
+        return this.method<O>('get', `${endpoint}/?${query}`);
+    }
+
+    private getApiKey() {
+        return 'testapikey';
+    }
+
+    public async audio(url: string) {
+
+        const response = await fetch(require('../test.mp3'), {
+            headers: {
+                'Authorization': this.getApiKey()
+            }
+        });
+
+        const content = await response.body?.getReader().read();
+        if (!content?.value) throw new Error('No audio found');
+
+        const blob = new Blob([content.value], { type: 'audio/mp3' })
+        return URL.createObjectURL(blob);
+
+    }
+
+    private async method<O>(method: Method, endpoint: string, args?: any) {
+
+        let url = endpoint;
+        if (!url.startsWith(API_URL)) url = `${API_URL}/${url}`
+        if (method !== 'get') url += '/';
+
+        const response = await fetch(url, {
+            method: method.toUpperCase(),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': this.getApiKey(),
             },
-            body: JSON.stringify(args),
+            body: args ? JSON.stringify(args) : undefined,
         });
-        this.update();
-        return response.json()
-            .then(({ success, reason, data, ...e }: Response<O>) => {
-                if (success) return data;
-                else throw new Error(reason);
-            });
+
+        if (method !== 'get') this.update();
+
+        return response.json() as Promise<Response<O>>;
+    }
+
+    async post<O = string>(url: string, args: any = {}) {
+        return this.method<O>('post', url, args);
+    }
+
+    async put<O = string>(url: string, args: any = {}) {
+        return this.method<O>('put', url, args);
+    }
+
+    async delete<O = string>(url: string, args: any = {}) {
+        return this.method<O>('delete', url, args);
     }
 
 }

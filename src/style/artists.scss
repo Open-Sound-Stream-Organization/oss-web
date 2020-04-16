@@ -1,10 +1,27 @@
-.ArtistsContainer
-{
-    width: 20%;
-    margin-left: 30%;
-    
-    .ListGroupArtists{
-        width: 20%;
-        background-color: darken;
+#artists {
+    @include model-view();
+
+    .albums {
+        div {
+            display: grid;
+            grid-template:
+                "cover info"
+                "cover tracks";
+            justify-content: start;
+            width: fit-content;
+
+            table {
+                grid-area: tracks;
+            }
+
+            h5 {
+                grid-area: info;
+            }
+
+            .cover {
+                height: 150px;
+                width: 150px;
+            }
+        }
     }
 }

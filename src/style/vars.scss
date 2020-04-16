@@ -1,5 +1,12 @@
-$primary: rgb(131, 131, 131);
-$bg: rgb(31, 31, 31);
+$primary: #0094FF;
+$light-gray: #787878;
+$gray: #212121;
+$dark-gray: #181818;
+
+$bg: $dark-gray;
 $text: white;
 
-$playlist: blue
+$playlist: blue;
+
+$sidebar-width: 300px;
+$border-width: 2px;

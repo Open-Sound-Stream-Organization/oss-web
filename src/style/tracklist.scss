@@ -1,0 +1,27 @@
+.tracklist {
+    width: 100%;
+    border-collapse: collapse;
+
+    grid-area: tracks;
+
+    $border: #555;
+
+    td,
+    th {
+        padding: 0 10px;
+        &:not(:first-child) {
+            border-left: $border-width solid $border;
+        }
+        &:not(:last-child) {
+            border-right: $border-width solid $border;
+        }
+    }
+
+    tbody,
+    thead {
+        border-top: $border-width solid $border;
+        border-bottom: $border-width solid $border;
+    }
+
+    overflow: scroll;
+}

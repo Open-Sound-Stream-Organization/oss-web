@@ -2,8 +2,8 @@
     user-select: none;
     display: grid;
     grid-template:
-        "previous play next info shuffle volume"
-        / 1fr 1fr 1fr 6fr 1fr 2fr;
+        "previous play next info shuffle repeat volume"
+        / 1fr 1fr 1fr 8fr 1fr 1fr 3fr;
 
     & > * {
         justify-self: center;
@@ -23,7 +23,7 @@
         div {
             pointer-events: none;
             height: 100%;
-            background-color: $text;
+            background-color: $primary;
         }
     }
 
