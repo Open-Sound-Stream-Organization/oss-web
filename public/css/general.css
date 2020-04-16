@@ -1,0 +1,313 @@
+html {
+  overflow: hidden;
+}
+
+a, a:hover, a:active {
+  text-decoration: none;
+  color: white;
+}
+
+#root {
+  background-color: #181818;
+  font-family: sans-serif;
+  color: white;
+  height: 100vh;
+  display: -ms-grid;
+  display: grid;
+  grid-template: "nav player" 80px "nav page" "playlists page" "cover page" / 300px;
+  border-bottom: 2px solid #444;
+  border-right: 2px solid #444;
+}
+
+#root .cover {
+  -ms-flex-item-align: end;
+      -ms-grid-row-align: end;
+      align-self: end;
+}
+
+#root > * {
+  border-top: 2px solid #444;
+  border-left: 2px solid #444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-transition: background 0.1s linear, opacity 0.1s linear, -webkit-filter 0.1s linear;
+  transition: background 0.1s linear, opacity 0.1s linear, -webkit-filter 0.1s linear;
+  transition: background 0.1s linear, opacity 0.1s linear, filter 0.1s linear;
+  transition: background 0.1s linear, opacity 0.1s linear, filter 0.1s linear, -webkit-filter 0.1s linear;
+}
+
+img {
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.icon-button {
+  border-radius: 100%;
+  -webkit-transition: background 0.1s linear;
+  transition: background 0.1s linear;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background-color: #fff3;
+}
+
+.seperate-comma:not(:last-child)::after {
+  content: ", ";
+}
+
+span + svg {
+  margin-left: 10px;
+}
+
+@-webkit-keyframes load {
+  from {
+    padding: 10px;
+    opacity: 0.6;
+  }
+  to {
+    padding: 30px;
+    opacity: 1;
+  }
+}
+
+@keyframes load {
+  from {
+    padding: 10px;
+    opacity: 0.6;
+  }
+  to {
+    padding: 30px;
+    opacity: 1;
+  }
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 100%;
+  -webkit-animation: load 0.5s ease-out infinite alternate;
+          animation: load 0.5s ease-out infinite alternate;
+}
+
+nav {
+  grid-area: nav;
+}
+
+nav ul {
+  list-style-type: none;
+}
+
+nav ul li {
+  padding: 10px;
+}
+
+nav ul li a {
+  text-decoration: none;
+}
+
+nav ul li.active a, nav ul li:hover a {
+  color: #0094FF;
+}
+
+.player {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  display: -ms-grid;
+  display: grid;
+  grid-template: "previous play next info shuffle repeat volume" / 1fr 1fr 1fr 8fr 1fr 1fr 3fr;
+}
+
+.player > * {
+  -ms-grid-column-align: center;
+      justify-self: center;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+}
+
+.player .info {
+  width: 100%;
+  text-align: center;
+}
+
+.player .volume .bar,
+.player .track-progress {
+  width: 100%;
+  cursor: pointer;
+}
+
+.player .volume .bar div,
+.player .track-progress div {
+  pointer-events: none;
+  height: 100%;
+  background-color: #0094FF;
+}
+
+.player .volume {
+  display: -ms-grid;
+  display: grid;
+  grid-auto-flow: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 10px;
+}
+
+.player .volume .bar {
+  position: relative;
+  height: 50px;
+  width: 100px;
+}
+
+.player .volume .bar::before, .player .volume .bar div {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 100%;
+  width: 100%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  height: 20%;
+  pointer-events: none;
+}
+
+.player .volume .bar::before {
+  background-color: #333;
+}
+
+.player .volume .bar div {
+  left: 0;
+  -webkit-transform: translate(0, -50%);
+          transform: translate(0, -50%);
+}
+
+.player .track-progress {
+  height: 10px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+}
+
+.player .track-progress span {
+  position: absolute;
+  top: 0;
+  font-size: 0.7rem;
+  -webkit-transform: translate(0, -70%);
+          transform: translate(0, -70%);
+}
+
+.player .track-progress span:first-of-type {
+  left: 5px;
+}
+
+.player .track-progress span:last-of-type {
+  right: 5px;
+}
+
+.player .track-progress div {
+  position: absolute;
+  height: 40%;
+  bottom: 0;
+}
+
+.Playlist {
+  background-color: #ff2f4b;
+  float: left;
+  width: 15%;
+}
+
+.Playlist ul {
+  width: 90%;
+  background-color: black;
+}
+
+.Playlist ul .ListGroup {
+  background-color: blue;
+}
+
+.ArtistsContainer {
+  width: 20%;
+  margin-left: 30%;
+}
+
+.ArtistsContainer .ListGroupArtists {
+  width: 20%;
+  background-color: darken;
+}
+
+#playlists {
+  display: -ms-grid;
+  display: grid;
+  grid-template: "list songs" / 1fr 6fr;
+}
+
+#playlists ul {
+  padding: 10px;
+  list-style: none;
+}
+
+#playlists > h1 {
+  text-align: center;
+}
+
+.tracklist {
+  width: 100%;
+  overflow: scroll;
+}
+
+.tracklist td, .tracklist th {
+  padding: 0 10px;
+  border-left: 2px solid #555;
+  border-right: 2px solid #555;
+}
+
+.tracklist tbody, .tracklist thead {
+  border: 2px solid #555;
+}
+
+.dialog {
+  position: fixed;
+  z-index: 1000;
+  top: 150%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-transition: top 0.3s cubic-bezier(0.7, 0.2, 0.6, 1.2);
+  transition: top 0.3s cubic-bezier(0.7, 0.2, 0.6, 1.2);
+  border: 1px solid #444;
+  padding: 20px 40px;
+  border-radius: 10px;
+}
+
+.dialog.enter-done {
+  top: 50%;
+}
+
+.dialog p {
+  font-size: 2rem;
+}
+
+.dialog ul {
+  display: -ms-grid;
+  display: grid;
+  grid-auto-flow: column;
+  gap: 10px;
+  grid-auto-columns: 1fr;
+  grid-auto-rows: 1fr;
+}
+/*# sourceMappingURL=general.css.map */

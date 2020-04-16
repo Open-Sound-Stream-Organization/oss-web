@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import '../style/general.scss';
 import ActiveSong from './ActiveSong';
@@ -8,16 +8,23 @@ import Nav from './NavBar';
 import Player from './Player';
 import PlaylistsBar from './PlaylistsBar';
 import { useApi } from '../api/Hooks';
-import { IActiveTrack } from '../api/Models';
+import { IList, ITrack } from '../api/Models';
 import Playlists from './Playlists';
 import classes from 'classnames';
 import Albums from './Albums';
 import Tracks from './Tracks';
 import Dialog, { Provider as DialogProvider, DialogProps } from './Dialog';
+import Seeder from './Seeder';
 
 function App() {
 
-	const [activeTrack] = useApi<IActiveTrack>('active-track');
+	//const [activeTrack] = useApi<IActiveTrack>('active-track');
+	const [tracks] = useApi<IList<ITrack>>('track');
+	const randomTrack = useMemo(() => tracks?.objects.sort((a, b) => Math.random() - 0.5)[0], [tracks]);
+	const activeTrack = randomTrack ? {
+		...randomTrack, position: 23,
+	} : undefined;
+
 	const dialog = useState<DialogProps | null>(null);
 
 	const pages: IPage[] = [
@@ -26,6 +33,7 @@ function App() {
 		{ path: '/artists', component: Artists },
 		{ path: '/albums', component: Albums },
 		{ path: '/tracks', component: Tracks },
+		{ path: '/seed', component: Seeder },
 	];
 
 	return (
@@ -36,24 +44,24 @@ function App() {
 				<Player track={activeTrack} />
 				{activeTrack && <ActiveSong track={activeTrack} />}
 				<PlaylistsBar />
-        
+
 				<Dialog dialog={dialog[0]} />
-        
-        <Switch>
 
-          {pages.map(page =>
-            <Route key={page.path} path={page.path}>
-              <Page {...page} />
-            </Route >
-          )}
+				<Switch>
 
-          <Route exact path='/'>
-            <Redirect to='/playlists' />
-          </Route>
+					{pages.map(page =>
+						<Route key={page.path} path={page.path}>
+							<Page {...page} />
+						</Route >
+					)}
 
-			  </Switch>
-		  </Router>
-    </DialogProvider>
+					<Route exact path='/'>
+						<Redirect to='/playlists' />
+					</Route>
+
+				</Switch>
+			</Router>
+		</DialogProvider>
 	);
 }
 
@@ -77,7 +85,7 @@ function Page(page: IPage) {
 		<Cell area='page' id={key}>
 			<page.component />
 		</Cell>
-  );
+	);
 }
 
 export default App;

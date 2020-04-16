@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLoading } from '../api/Hooks';
-import { IPlaylist } from '../api/Models';
+import { IPlaylist, IList } from '../api/Models';
 import { useDialog } from './Dialog';
 import { Link, useParams } from 'react-router-dom';
 import TrackList from './TrackList';
@@ -9,9 +9,9 @@ import '../style/playlist.scss';
 
 function List() {
     const { open } = useDialog();
-    return useLoading<IPlaylist[]>('playlist', playlists =>
+    return useLoading<IList<IPlaylist>>('playlist', ({ objects }) =>
         <ul>
-            {playlists.map(({ name, id }) =>
+            {objects.map(({ name, id }) =>
                 <li>
                     <Link to={`/playlists/${id}`}>
                         {name}

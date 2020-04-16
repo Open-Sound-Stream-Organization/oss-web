@@ -1,0 +1,10 @@
+.ArtistsContainer {
+  width: 20%;
+  margin-left: 30%;
+}
+
+.ArtistsContainer .ListGroupArtists {
+  width: 20%;
+  background-color: darken;
+}
+/*# sourceMappingURL=artists.css.map */

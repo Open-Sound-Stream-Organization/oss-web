@@ -61,6 +61,30 @@ a {
     transition: background 0.1s linear, opacity 0.1s linear, filter 0.1s linear;
 }
 
+button, input[type=submit], [role=button] {
+    cursor: pointer;
+    border: 1px solid $light-gray;
+    color: $text;
+    background-color: $gray;
+}
+
+input, button {
+    transition: border 0.1s linear, box-shadow 0.1s linear;
+
+    &:focus, &:hover {
+        outline: none;
+        border-color: transparent;
+    }
+
+    &:focus {
+        box-shadow: 0 0 0 2px $primary;
+    }
+
+    &:hover {
+        box-shadow: 0 0 0 2px $light-gray;
+    }
+}
+
 img {
     width: 100%;
     object-fit: contain;
@@ -114,5 +138,6 @@ span + svg {
 @import "./artists.scss";
 @import "./albums.scss";
 @import "./playlists.scss";
+@import "./seeder.scss";
 @import "./tracklist.scss";
 @import "./dialog.scss";
