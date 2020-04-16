@@ -1,5 +1,5 @@
 import { IApi } from "./Api";
-import { IModel, ITrack, IActiveTrack, IArtist, IAlbum, ITag, IPlaylist } from "./Models";
+import { IModel, ITrack, IArtist, IAlbum, ITag, IPlaylist } from "./Models";
 import { ParsedUrlQueryInput } from "querystring";
 import Seeder from './Seeder';
 

@@ -8,10 +8,7 @@ export interface ITrack extends IModel {
     artists: string[];
     album: string;
     length: number;
-}
-
-export interface IActiveTrack extends ITrack {
-    position: number;
+    audio: string;
 }
 
 export interface ITag extends IModel {

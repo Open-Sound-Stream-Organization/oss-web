@@ -2,13 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApi, useLoading } from '../api/Hooks';
 import { IAlbum, IArtist, ITrack } from '../api/Models';
+import { TrackButton } from '../api/Audio';
 
 function TrackList({ tracks }: { tracks: (ITrack | string)[] }) {
-    if((tracks?.length ?? 0) === 0) return <p className='center'>No tracks yet</p>
+    if ((tracks?.length ?? 0) === 0) return <p className='center'>No tracks yet</p>
     return (
         <table className='tracklist'>
             <thead>
                 <tr>
+                    <th></th>
                     <th>Title</th>
                     <th>Artists</th>
                     <th>Album</th>
@@ -16,7 +18,9 @@ function TrackList({ tracks }: { tracks: (ITrack | string)[] }) {
                 </tr>
             </thead>
             <tbody>
-                {tracks.map(track => <TrackRow {...{ track }} />)}
+                {tracks.map(track =>
+                    <TrackRow key={typeof track === 'string' ? track : track.id} {...{ track }} />
+                )}
             </tbody>
         </table>
     )
@@ -28,9 +32,10 @@ function TrackRow({ track }: { track: ITrack | string }) {
     const { album, artists, title, length } = track;
     return (
         <tr>
+            <td><TrackButton {...{ track }} /></td>
             <td>{title}</td>
             <td>{artists.map(a =>
-                <Artist url={a} />
+                <Artist key={a} url={a} />
             )}</td>
             <td><Album url={album} /></td>
             <td>{length}</td>

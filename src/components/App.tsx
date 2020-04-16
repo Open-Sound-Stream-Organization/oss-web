@@ -16,19 +16,14 @@ import Tracks from './Tracks';
 import Dialog, { Provider as DialogProvider, DialogProps } from './Dialog';
 import Seeder from './Seeder';
 import Login from './Login';
+import { useCreateAudio, Provider as AudioProvider } from '../api/Audio';
 
 export const NO_COVER = require('../img/example-cover.jpg');
 
 function App() {
 
-	//const [activeTrack] = useApi<IActiveTrack>('active-track');
-	const [tracks] = useApi<IList<ITrack>>('track');
-	const randomTrack = useMemo(() => tracks?.objects.sort((a, b) => Math.random() - 0.5)[0], [tracks]);
-	const activeTrack = randomTrack ? {
-		...randomTrack, position: 23,
-	} : undefined;
-
 	const dialog = useState<DialogProps | null>(null);
+	const audio = useCreateAudio();
 
 	const pages: IPage[] = [
 		{ path: '/tracks', component: Tracks },
@@ -42,29 +37,32 @@ function App() {
 
 	return (
 		<DialogProvider value={dialog}>
+			<AudioProvider value={audio}>
 
-			<Router>
-				<Nav />
-				<Player track={activeTrack} />
-				{activeTrack && <ActiveSong track={activeTrack} />}
-				<PlaylistsBar />
+				<Router>
+					<Nav />
+					<Player />
+					<ActiveSong />
+					<PlaylistsBar />
 
-				<Dialog dialog={dialog[0]} />
+					<Dialog dialog={dialog[0]} />
 
-				<Switch>
+					<Switch>
 
-					{pages.map(page =>
-						<Route key={page.path} path={page.path}>
-							<Page {...page} />
-						</Route >
-					)}
+						{pages.map(page =>
+							<Route key={page.path} path={page.path}>
+								<Page {...page} />
+							</Route >
+						)}
 
-					<Route exact path='/'>
-						<Redirect to='/playlists' />
-					</Route>
+						<Route exact path='/'>
+							<Redirect to='/playlists' />
+						</Route>
 
-				</Switch>
-			</Router>
+					</Switch>
+				</Router>
+
+			</AudioProvider>
 		</DialogProvider>
 	);
 }

@@ -1,5 +1,5 @@
 import querystring, { ParsedUrlQueryInput } from 'querystring';
-import { API_URL, DEV } from '../config';
+import { API_URL } from '../config';
 
 /**
  * Replaced once we know the format the data will be sent by the server
@@ -61,20 +61,38 @@ class Api implements IApi {
         return this.method<O>('get', `${endpoint}/?${query}`);
     }
 
+    private getApiKey() {
+        return 'testapikey';
+    }
+
+    public async audio(url: string) {
+
+        const response = await fetch(require('../test.mp3'), {
+            headers: {
+                'Authorization': this.getApiKey()
+            }
+        });
+
+        const content = await response.body?.getReader().read();
+        if (!content?.value) throw new Error('No audio found');
+
+        const blob = new Blob([content.value], { type: 'audio/mp3' })
+        return URL.createObjectURL(blob);
+
+    }
+
     private async method<O>(method: Method, endpoint: string, args?: any) {
 
         let url = endpoint;
-        if(!url.startsWith(API_URL)) url = `${API_URL}/${url}`
+        if (!url.startsWith(API_URL)) url = `${API_URL}/${url}`
         if (method !== 'get') url += '/';
-
-        const apiKey = 'testapikey';
 
         const response = await fetch(url, {
             method: method.toUpperCase(),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': apiKey,
+                'Authorization': this.getApiKey(),
             },
             body: args ? JSON.stringify(args) : undefined,
         });
