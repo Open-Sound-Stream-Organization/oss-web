@@ -1,9 +1,30 @@
 import classes from 'classnames';
-import React from 'react';
+import React, { useMemo, useState, CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Render, useLoading } from '../api/Hooks';
 import { IList, IModel } from '../api/Models';
 import Cell from './Cell';
+import { faHeadphones, faMusic, faGuitar, faDrum, faRecordVinyl, faCompactDisc } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
+
+const ICONS = [faHeadphones, faMusic, faGuitar, faDrum, faRecordVinyl, faCompactDisc];
+
+export function Cover(props: { alt: string, src?: string } & CSSProperties) {
+    const { src, alt, ...rest } = props;
+    const [hasImage, setImage] = useState(false);
+
+    const icon = useMemo(() => ICONS[Math.floor(Math.random() * ICONS.length)], [])
+
+    return <Cell area='cover' style={{ ...rest }}>
+        <img
+            onLoad={() => setImage(true)}
+            onError={() => setImage(false)}
+            draggable={false}
+            {... { alt, src }}
+        />
+        {!hasImage && <Icon icon={icon} />}
+    </Cell>
+}
 
 export function ModelView<M extends IModel>(props: { endpoint: string, render: Render<M> }) {
     const { endpoint } = props;

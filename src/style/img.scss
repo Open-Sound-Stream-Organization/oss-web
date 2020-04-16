@@ -1,0 +1,23 @@
+
+.cover {
+    position: relative;
+  
+    img {
+      height: 100%;
+      width: 100%;
+  
+      &:after {
+        @include pseudo();
+        background-color: #222;
+      }
+  
+      & + svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 6rem;
+        color: #333;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }

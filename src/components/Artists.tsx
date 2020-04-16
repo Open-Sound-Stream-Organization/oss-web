@@ -4,7 +4,7 @@ import { Loading, useApi, useLoading } from '../api/Hooks';
 import { IAlbum, IArtist, IList, ITrack } from '../api/Models';
 import { NO_COVER } from './App';
 import Cell from './Cell';
-import { ModelSidebar, ModelView } from './Shared';
+import { ModelSidebar, ModelView, Cover } from './Shared';
 
 function Artists() {
     const { id } = useParams();
@@ -32,9 +32,8 @@ function Album({ url }: { url: string }) {
     return useLoading<IAlbum>(url, ({ cover_url, name, release, tracks }) => (
         <div>
             <h5>{name} - (Genre {release})</h5>
-            <img
-                className="mr-3"
-                src={cover_url ?? NO_COVER}
+            <Cover
+                src={cover_url}
                 alt="Cover"
             />
             <table>

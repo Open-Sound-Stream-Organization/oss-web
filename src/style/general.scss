@@ -70,14 +70,15 @@ a {
         "nav player" 80px
         "nav page"
         "playlists page"
-        "cover page" 300px
-        / 300px;
+        "cover page"
+        / $sidebar-width;
 
     .playlists {
         overflow: hidden;
     }
 
-    .cover {
+    & > .cover {
+        height: $sidebar-width;
         align-self: end;
     }
 
@@ -179,3 +180,4 @@ span + svg {
 @import "./tracklist.scss";
 @import "./dialog.scss";
 @import "./list.scss";
+@import "./img.scss";
