@@ -1,12 +1,13 @@
-import React from 'react';
-import { ITrack } from '../api/Models';
+import React, { useState, useRef } from 'react';
+import { ITrack, IList } from '../api/Models';
 import { Link } from 'react-router-dom';
 import { useLoading } from '../api/Hooks';
 import TrackList from './TrackList';
+import API from '../api/FakeApi';
 
 function Tracks() {
-    return useLoading<ITrack[]>('track', tracks =>
-        <TrackList {...{ tracks }} />
+    return useLoading<IList<ITrack>>('track', ({ objects }) =>
+        <TrackList tracks={objects} />
     )
 }
 

@@ -1,5 +1,6 @@
 import { IAlbum, IArtist, ITag, ITrack, IPlaylist } from './Models';
-import API from './Api';
+import Api from './Api';
+import { faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 
 const tracknames = [
     "Daunting Moons",
@@ -80,51 +81,58 @@ function randomDate() {
 
 class Seeder {
 
-    tags(count: number): ITag[] {
+    tags(count: number) {
         return []
     }
 
-    artists(count: number): IArtist[] {
+    artists(count: number) {
         return [
             {
                 name: 'Dieter Bohlen',
-                tags: this.tags(2),
                 type: 'P',
             }
-        ].map((a, id) => ({ ...a, id } as IArtist));
+        ].slice(0, count).map((a) => ({ ...a }));
     }
 
-    albums(count: number): IAlbum[] {
+    albums(count: number) {
         return [
             {
                 name: 'Top 10 Nationalhymnen',
                 release: randomDate(),
                 artist: this.artists(2),
-                cover_url: require('../img/example-cover.jpg'),
-                tags: this.tags(3),
+                cover_url: require('../img/example-cover.jpg')
             }
-        ].map((a, id) => ({ ...a, id }));
+        ].slice(0, count).map((a) => ({ ...a }));
     }
 
-    tracks(count: number): ITrack[] {
+    tracks(count: number) {
         return range(tracknames, count).map((title, id) => ({
-            id,
             title,
-            artist: this.artists(Math.random() * 1 + 1),
-            album: this.albums(1)[0],
+            //artist: this.artists(Math.random() * 1 + 1),
+            //album: this.albums(1)[0],
             length: Math.floor(Math.random() * 100 + 100),
         }));
     }
 
-    playlists(count: number): IPlaylist[] {
-        return new Array(count).fill(null).map((_, id) => ({
-            id, name: 'A Playlist', tags: [], tracks: this.tracks(Math.random() * 5 + 6)
+    playlists(count: number) {
+        return new Array(count).fill(null).map((_, i) => ({
+            name: 'Playlist ' + i,
         }));
     }
 
-    seed() {
+    async seed() {
 
-        
+        const artists = this.artists(20);
+        const albums = this.artists(20);
+        const tracks = this.tracks(1);
+        const playlists = this.playlists(6);
+
+        await Promise.all([
+            //...artists.map(a => Api.post('artist', a)),
+            //...albums.map(a => Api.post('album', a)),
+            ...tracks.map(t => Api.post('track', t)),
+            //...playlists.map(p => Api.post('playlist', p)),
+        ]).then(r => console.log(r));
 
     }
 

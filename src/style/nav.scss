@@ -5,8 +5,9 @@ nav {
     list-style-type: none;
 
     li {
-      padding: 10px;
-      a {
+
+      &, a {
+        padding: 10px;
         text-decoration: none;
       }
 
