@@ -41,3 +41,12 @@ export interface IPlaylist extends IModel {
     tracks: ITrack[],
     tags: ITag[],
 }
+
+export interface IList<O> {
+    objects: O[];
+    meta: {
+        limit: number;
+        offset: number;
+        total_count: number;
+    }
+}

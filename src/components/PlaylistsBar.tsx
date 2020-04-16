@@ -3,14 +3,14 @@ import Container from 'react-bootstrap/Container';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { Loading, useApi } from '../api/Hooks';
-import { IPlaylist } from '../api/Models';
+import { IPlaylist, IList } from '../api/Models';
 import '../style/general.scss';
 import Cell from './Cell';
 
 
 function Playlist() {
 
-    const [playlists] = useApi<IPlaylist[]>('playlist');
+    const [playlists] = useApi<IList<IPlaylist>>('playlist');
     if (!playlists) return <Loading />
 
     return (
@@ -18,7 +18,7 @@ function Playlist() {
             <Jumbotron fluid className="Playlist">
                 <Container>
                     <ul>
-                        {playlists.map((list) =>
+                        {playlists.objects.map(list =>
                             <ListGroup className="ListGroup" variant="flush">
                                 <ListGroup.Item action href="info">{list.name}</ListGroup.Item>
                                 {/*

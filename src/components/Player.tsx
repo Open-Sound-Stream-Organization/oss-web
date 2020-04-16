@@ -82,7 +82,6 @@ function Volume() {
             : faVolumeUp
 
     const adjust = (e: MouseEvent<HTMLDivElement>) => {
-        console.log(e.buttons);
         const w = e.currentTarget.offsetWidth;
         const l = e.currentTarget.getBoundingClientRect().left;
         const x = e.clientX - l;

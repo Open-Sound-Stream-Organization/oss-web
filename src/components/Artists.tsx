@@ -11,12 +11,12 @@ import { linkSync } from 'fs';
 import img from 'react-bootstrap/Image';
 import Row from 'react-bootstrap/Row';
 import { useApi, Loading } from '../api/Hooks';
-import { IArtist, IAlbum } from '../api/Models';
+import { IArtist, IAlbum, IList } from '../api/Models';
 
 function Artists() {
 
-    const [artists] = useApi<IArtist[]>('artist');
-    const [albums] = useApi<IAlbum[]>('album');
+    const [artists] = useApi<IList<IArtist>>('artist');
+    const [albums] = useApi<IList<IAlbum>>('album');
 
     if (!artists || !albums) return <Loading />
 
@@ -27,7 +27,7 @@ function Artists() {
     return (
         <>
             <Container className="ArtistsContainer">
-                {artists.map(artist =>
+                {artists.objects.map(artist =>
                     <ListGroup className="ListGroupArtists">
                         <ListGroup.Item onClick={handleClick}>{artist.name}</ListGroup.Item>
                     </ListGroup>
@@ -35,8 +35,8 @@ function Artists() {
             </Container>
 
             <Container className="EachArtist">
-                {artists.map(artist =>
-                    albums.map(album =>
+                {artists.objects.map(artist =>
+                    albums.objects.map(album =>
                         <ListGroup className="ListGroupForEachArtist">
                             <Media>
                                 <img

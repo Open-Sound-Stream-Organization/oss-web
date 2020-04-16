@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,iBAAiB,CACjB;EACI,KAAK,EAAE,GAAG;EACV,WAAW,EAAE,GAAG;CAMnB;;AATD,AAKI,iBALa,CAKb,iBAAiB,CAAA;EACb,KAAK,EAAE,GAAG;EACV,gBAAgB,EAAE,MAAM;CAC3B",
+    "sources": [
+        "../../src/style/artists.scss"
+    ],
+    "names": [],
+    "file": "artists.css"
+}

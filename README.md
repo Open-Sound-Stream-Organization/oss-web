@@ -4,6 +4,21 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 To install all dependencies run `npm install`
 
+Get server container
+```bash
+opensoundstream/oss-server:alpine
+```
+
+Run docker container with
+```bash
+docker run -p 8080:8000 -e DJANGO_HOST=*  opensoundstream/oss-server:alpine
+```
+On windows if using Docker Toolbox do the following:
+- Open Virtual Box
+- Select `default`
+- Open Settings -> Network -> Adapter 1 -> Advanced -> Port Forwarding
+- Create Entry with Host & Guest Port `8080`, leave IPs blank
+
 ## Available Scripts
 
 In the project directory, you can run:

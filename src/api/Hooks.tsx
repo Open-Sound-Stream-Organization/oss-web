@@ -1,6 +1,6 @@
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import React, { SyntheticEvent, useEffect, useState } from 'react';
-import API from './FakeApi';
+import API from './Api';
 
 /**
  * React hook to subscibe to a specific api endpoint
@@ -12,16 +12,15 @@ export function useApi<R>(endpoint: string, params?: ParsedUrlQueryInput) {
     const [loading, setLoading] = useState(true);
 
     const query = querystring.encode(params);
-    const url = `${endpoint}?${query}`;
     useEffect(() => {
         setLoading(true);
         setResult(undefined);
 
-        return API.subscribe<R>(url).then(r => {
+        return API.subscribe<R>(endpoint, query).then(r => {
             setResult(r);
             setLoading(false);
         })
-    }, [url]);
+    }, [query, endpoint]);
 
     return [result, loading] as [R | undefined, boolean];
 }
