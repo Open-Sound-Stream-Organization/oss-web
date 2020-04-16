@@ -14,12 +14,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
+    
     - run: npm install
+    
     - run: npm run build
       env:
         CI: false
+    
     - name: Add build folder to git repo
       run: git add build/\*\* -f
+    
     - name: Commit and Push Changes
       uses: stefanzweifel/git-auto-commit-action@v4.1.2
       with:
@@ -29,3 +33,10 @@ jobs:
         commit_user_name: anjomro
         commit_user_email: github@anjomro.de
         commit_author: anjomro <github@anjomro.de>
+    
+    - name: Notify server workflow
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        repository: Open-Sound-Stream-Organization/oss-server
+        event-type: build
