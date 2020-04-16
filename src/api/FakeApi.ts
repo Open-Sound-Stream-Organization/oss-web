@@ -10,6 +10,9 @@ interface FakeMethods<O> {
 }
 
 class FakeApi implements IApi {
+    catch(arg0: (e: any) => void) {
+        throw new Error("Method not implemented.");
+    }
 
     private fakes = new Map<string, FakeMethods<any>>();
 

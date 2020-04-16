@@ -1,5 +1,5 @@
 .Playlist{
-    background-color: rgb(255, 47, 75);
+    background-color: #181818;
     float: left;
     width: 15%;
 
@@ -7,8 +7,6 @@
         width: 90%;
         background-color: darken($color: #000000, $amount: 0);
 
-        .ListGroup{
-            background-color: $playlist;
-        }
+       
     }
 }

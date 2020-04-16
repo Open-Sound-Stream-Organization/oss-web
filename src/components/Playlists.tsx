@@ -5,6 +5,7 @@ import { useDialog } from './Dialog';
 import { Link, useParams } from 'react-router-dom';
 import TrackList from './TrackList';
 import Cell from './Cell';
+import '../style/playlist.scss';
 
 function List() {
     const { open } = useDialog();
