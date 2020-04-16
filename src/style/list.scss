@@ -1,6 +1,8 @@
 @mixin list {
     height: 100%;
     list-style: none;
+    overflow: hidden;
+    overflow-y: scroll;
 
     li {
         text-overflow: ellipsis;
@@ -11,12 +13,29 @@
             padding: 10px;
         }
 
-        &:hover, &.active {
+        &:hover,
+        &.active {
             background-color: $light-gray;
         }
     }
 }
 
-.list {
+ul.list {
     @include list();
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: $gray;
+}
+
+::-webkit-scrollbar-thumb {
+    background: $light-gray;
+
+    &:hover{
+        background: #CCC;
+    }
 }

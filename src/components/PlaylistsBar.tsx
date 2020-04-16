@@ -1,33 +1,25 @@
+import classes from 'classnames';
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Jumbotron from 'react-bootstrap/Jumbotron';
-import ListGroup from 'react-bootstrap/ListGroup';
+import { Link, useParams } from 'react-router-dom';
 import { Loading, useApi } from '../api/Hooks';
-import { IPlaylist, IList } from '../api/Models';
-import '../style/general.scss';
+import { IList, IPlaylist } from '../api/Models';
 import Cell from './Cell';
 
-
 function Playlist() {
+    const { id: active } = useParams();
 
     const [playlists] = useApi<IList<IPlaylist>>('playlist');
     if (!playlists) return <Loading />
 
     return (
         <Cell area='playlists'>
-           <div>
-                    <ul>
-                        {playlists.objects.map(list =>
-                            <ListGroup className="ListGroup" variant="flush">
-                                <ListGroup.Item action href="info">{list.name}</ListGroup.Item>
-                                {/*
-                                     <ListGroup.Item action variant = "info"></ListGroup.Item>
-                                    <ListGroup.Item action variant = "info">playlist2</ListGroup.Item> 
-                                */}
-                            </ListGroup>
-                        )}
-                    </ul>
-               </div>
+            <ul className='list'>
+                {playlists.objects.map(({ id, name }) =>
+                    <li key={id} className={classes({ active: id.toString() === active })}>
+                        <Link to={`/playlists/${id}`}>{name}</Link>
+                    </li>
+                )}
+            </ul>
         </Cell>
     );
 }

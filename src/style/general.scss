@@ -33,6 +33,31 @@ a {
     transform: translate(-50%, -50%);
 }
 
+@mixin model-view {
+    display: grid;
+    grid-template:
+        "list active"
+        / 1fr 4fr;
+
+    ul.list {
+        min-width: 200px;
+        border-right: $border-width solid #444;
+    }
+
+    .active {
+        padding-top: 10px;
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    }
+}
+
+.center {
+    text-align: center;
+}
+
 #root {
     background-color: $bg;
     font-family: sans-serif;
@@ -44,9 +69,13 @@ a {
     grid-template:
         "nav player" 80px
         "nav page"
-        "playlists page" 100px
-        "cover page"
+        "playlists page"
+        "cover page" 300px
         / 300px;
+
+    .playlists {
+        overflow: hidden;
+    }
 
     .cover {
         align-self: end;

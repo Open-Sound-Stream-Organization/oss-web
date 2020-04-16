@@ -1,5 +1,6 @@
 export interface IModel {
     id: number;
+    name: string;
 }
 
 export interface ITrack extends IModel {
@@ -14,31 +15,29 @@ export interface IActiveTrack extends ITrack {
 }
 
 export interface ITag extends IModel {
-    name: string;
 }
 
 type date = string;
 type Type = 'P' | 'G' | 'O' | 'C' | 'F' | 'O';
 export interface IArtist extends IModel {
-    name: string;
     type: Type;
     begin?: date;
     end?: date;
     tags: string[];
-
+    albums: string[];
 }
 
 export interface IAlbum extends IModel {
-    name: string;
     release: date;
     artists: string[];
     cover_url?: string;
     tags: string[];
+    tracks: string[];
 }
 
 export interface IPlaylist extends IModel {
-    name: string;
-    tags: string[],
+    tags: string[];
+    tracks: string[];
 }
 
 export interface IList<O> {

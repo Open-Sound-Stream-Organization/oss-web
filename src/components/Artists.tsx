@@ -1,63 +1,64 @@
 import React from 'react';
-import '../style/general.scss';
-import { Link, useLocation, useRouteMatch } from 'react-router-dom';
-import classes from 'classnames';
-import Jumbotron from 'react-bootstrap/Jumbotron';
-import Container from 'react-bootstrap/Container';
-import Media from 'react-bootstrap/Media';
-import ListGroup from 'react-bootstrap/ListGroup';
-import ListGroupItem from 'react-bootstrap/ListGroupItem';
-import { linkSync } from 'fs';
-import img from 'react-bootstrap/Image';
-import Row from 'react-bootstrap/Row';
-import { useApi, Loading } from '../api/Hooks';
-import { IArtist, IAlbum, IList } from '../api/Models';
+import { useParams } from 'react-router-dom';
+import { Loading, useApi, useLoading } from '../api/Hooks';
+import { IAlbum, IArtist, IList, ITrack } from '../api/Models';
+import { NO_COVER } from './App';
+import Cell from './Cell';
+import { ModelSidebar, ModelView } from './Shared';
 
 function Artists() {
-
+    const { id } = useParams();
     const [artists] = useApi<IList<IArtist>>('artist');
-    const [albums] = useApi<IList<IAlbum>>('album');
 
-    if (!artists || !albums) return <Loading />
+    if (!artists) return <Loading />
 
-    function handleClick() {
-        console.log('funktioniert');
-    }
+    return <ModelView endpoint='artist' render={(a: IArtist) => <Artist {...a} />} />;
+}
 
+function Artist({ albums }: IArtist) {
     return (
         <>
-            <Container className="ArtistsContainer">
-                {artists.objects.map(artist =>
-                    <ListGroup className="ListGroupArtists">
-                        <ListGroup.Item onClick={handleClick}>{artist.name}</ListGroup.Item>
-                    </ListGroup>
-                )}
-            </Container>
-
-            <Container className="EachArtist">
-                {artists.objects.map(artist =>
-                    albums.objects.map(album =>
-                        <ListGroup className="ListGroupForEachArtist">
-                            <Media>
-                                <img
-                                    width={64}
-                                    height={64}
-                                    className="mr-3"
-                                    src={album.cover_url}
-                                    alt="Cover"
-                                />
-                            </Media>
-                            <p>{album.name}</p>
-                            {/* Genre not yet avaiable <p>{album.genre} - </p> */}
-                            <p>{album.release}</p>
-                            <Row>
-                                <ListGroup.Item onClick={handleClick}>{artist.name}</ListGroup.Item>
-                            </Row>
-                        </ListGroup>
-                    )
-                )}
-            </Container>
+            <Cell area='albums'>
+                {albums.length > 0
+                    ? albums.map(a => <Album key={a} url={a} />)
+                    : <p className='center'>No albums yet</p>
+                }
+            </Cell>
         </>
+    );
+}
+
+function Album({ url }: { url: string }) {
+    return useLoading<IAlbum>(url, ({ cover_url, name, release, tracks }) => (
+        <div>
+            <h5>{name} - (Genre {release})</h5>
+            <img
+                className="mr-3"
+                src={cover_url ?? NO_COVER}
+                alt="Cover"
+            />
+            <table>
+                <tbody>
+                    {tracks.map(t => <TrackRow key={t} url={t} />)}
+                </tbody>
+            </table>
+        </div>
+    ));
+}
+
+function TrackRow({ url }: { url: string }) {
+    const [track] = useApi<ITrack>(url);
+
+    return (
+        <tr>
+            {track
+                ? <>
+                    <td>{track.name}</td>
+                    <td>{track.length}</td>
+                </>
+                : <td rowSpan={2}><Loading /></td>
+            }
+        </tr>
     );
 }
 

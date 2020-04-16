@@ -58,10 +58,10 @@ export function useSubmit<R = any>(endpoint: string, data?: any, cb?: (r?: R) =>
  * A universal loading component
  */
 export function Loading() {
-    return <div className='loading' />;
+    return <span className='loading' />;
 }
 
-type Render<R> = (result: R) => JSX.Element | null;
+export type Render<R> = (result: R) => JSX.Element | null;
 
 /**
  * React hook to render loading componets universally

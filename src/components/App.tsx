@@ -15,6 +15,9 @@ import Albums from './Albums';
 import Tracks from './Tracks';
 import Dialog, { Provider as DialogProvider, DialogProps } from './Dialog';
 import Seeder from './Seeder';
+import Login from './Login';
+
+export const NO_COVER = require('../img/example-cover.jpg');
 
 function App() {
 
@@ -30,10 +33,11 @@ function App() {
 	const pages: IPage[] = [
 		{ path: '/tracks', component: Tracks },
 		{ path: '/playlists/:id?', component: Playlists },
-		{ path: '/artists', component: Artists },
-		{ path: '/albums', component: Albums },
+		{ path: '/artists/:id?', component: Artists },
+		{ path: '/albums/:id?', component: Albums },
 		{ path: '/tracks', component: Tracks },
 		{ path: '/seed', component: Seeder },
+		{ path: '/login', component: Login },
 	];
 
 	return (

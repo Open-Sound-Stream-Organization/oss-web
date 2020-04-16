@@ -44,7 +44,7 @@ function TrackInfo(track: IActiveTrack) {
     return (
         <Cell area='info'>
             <h4>{title}</h4>
-            <p>{artists.map(a => <Artist url={a} />)}</p>
+            <p>{artists.map(a => <Artist key={a} url={a} />)}</p>
             <div className='track-progress'>
                 <span>{timestamp(position)}</span>
                 <span>-{timestamp(length - position)}</span>

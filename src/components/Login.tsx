@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import API from '../api/FakeApi';
-import { Z_STREAM_ERROR } from 'zlib';
 import { Link } from 'react-router-dom';
-
 
 
 function Login() {
@@ -11,8 +9,6 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
 
-    API.catch(e => setError(error));
-   
     return (
         <div className="userlogin">
             <form name="LoginForm">
@@ -29,7 +25,7 @@ function Login() {
                     <input
                         type="password"
                         placeholder="Passwort"
-                        onChange={e=> setPassword(e.target.value)}
+                        onChange={e => setPassword(e.target.value)}
                         value={password}
                         required />
                 </label>
@@ -40,15 +36,15 @@ function Login() {
                         onClick={() => API.post("api/v1/apikey/", { name: username, password: password })}>Login</button>
                 </label>
                 <label>
-                    <Link to = {`/registration/`} >Noch nicht eingeloggt? Dann hier registrieren.</Link>
-                
+                    <Link to={`/registration/`} >Noch nicht eingeloggt? Dann hier registrieren.</Link>
+
                 </label>
             </form>
-           
+
         </div>
 
 
     );
 }
-export default Login; 
+export default Login;
 

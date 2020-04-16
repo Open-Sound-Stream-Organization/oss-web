@@ -1,6 +1,4 @@
-import { IAlbum, IArtist, ITag, ITrack, IPlaylist } from './Models';
 import Api from './Api';
-import { faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 
 const tracknames = [
     "Daunting Moons",

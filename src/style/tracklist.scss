@@ -4,16 +4,22 @@
 
     $border: #555;
 
-    td, th {
+    td,
+    th {
         padding: 0 10px;
-        border-left: $border-width solid $border;
-        border-right: $border-width solid $border;
+        &:not(:first-child) {
+            border-left: $border-width solid $border;
+        }
+        &:not(:last-child) {
+            border-right: $border-width solid $border;
+        }
     }
 
-    tbody, thead {
+    tbody,
+    thead {
+        border-top: $border-width solid $border;
         border-bottom: $border-width solid $border;
     }
 
     overflow: scroll;
-
 }

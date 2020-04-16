@@ -1,9 +1,10 @@
 import React from 'react';
-import { ITrack, IAlbum, IArtist } from '../api/Models';
 import { Link } from 'react-router-dom';
-import { useApi } from '../api/Hooks';
+import { useApi, useLoading } from '../api/Hooks';
+import { IAlbum, IArtist, ITrack } from '../api/Models';
 
-function TrackList({ tracks }: { tracks: ITrack[] }) {
+function TrackList({ tracks }: { tracks: (ITrack | string)[] }) {
+    if((tracks?.length ?? 0) === 0) return <p className='center'>No tracks yet</p>
     return (
         <table className='tracklist'>
             <thead>
@@ -15,19 +16,30 @@ function TrackList({ tracks }: { tracks: ITrack[] }) {
                 </tr>
             </thead>
             <tbody>
-                {tracks.map(({ album, artists, title, length }) =>
-                    <tr>
-                        <td>{title}</td>
-                        <td>{artists.map(a =>
-                            <Artist url={a} />
-                        )}</td>
-                        <td><Album url={album} /></td>
-                        <td>{length}</td>
-                    </tr>
-                )}
+                {tracks.map(track => <TrackRow {...{ track }} />)}
             </tbody>
         </table>
     )
+}
+
+function TrackRow({ track }: { track: ITrack | string }) {
+    if (typeof track === 'string') return <LoadingTrackRow url={track} />
+
+    const { album, artists, title, length } = track;
+    return (
+        <tr>
+            <td>{title}</td>
+            <td>{artists.map(a =>
+                <Artist url={a} />
+            )}</td>
+            <td><Album url={album} /></td>
+            <td>{length}</td>
+        </tr>
+    );
+}
+
+function LoadingTrackRow({ url }: { url: string }) {
+    return useLoading<ITrack>(url, track => <TrackRow {...{ track }} />);
 }
 
 function Artist({ url }: { url: string }) {

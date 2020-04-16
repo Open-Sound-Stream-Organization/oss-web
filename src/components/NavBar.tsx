@@ -1,9 +1,8 @@
 import { faCompactDisc, faList, faMusic, faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import classes from 'classnames';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import '../style/general.scss';
-import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 
 function Nav() {
     const path = useLocation().pathname;

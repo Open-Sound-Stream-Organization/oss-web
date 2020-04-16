@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import SEEDER from "../api/Seeder";
-import { useApi } from '../api/Hooks';
 import classes from 'classnames';
 
 function Seeder() {
