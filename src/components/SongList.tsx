@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApi, useLoading } from '../api/Hooks';
-import { IAlbum, IArtist, ITrack } from '../api/Models';
-import { TrackButton } from '../api/Audio';
+import { IAlbum, IArtist, ISong } from '../api/Models';
+import { SongButton } from '../api/Audio';
 
-function TrackList({ tracks }: { tracks: (ITrack | string)[] }) {
-    if ((tracks?.length ?? 0) === 0) return <p className='empty-info'>No tracks yet</p>
+function Songs({ songs }: { songs: (ISong | string)[] }) {
+    if ((songs?.length ?? 0) === 0) return <p className='empty-info'>No songs yet</p>
     return (
-        <table className='tracklist'>
+        <table className='songlist'>
             <thead>
                 <tr>
                     <th></th>
@@ -18,21 +18,21 @@ function TrackList({ tracks }: { tracks: (ITrack | string)[] }) {
                 </tr>
             </thead>
             <tbody>
-                {tracks.map(track =>
-                    <TrackRow key={typeof track === 'string' ? track : track.id} {...{ track }} />
+                {songs.map(song =>
+                    <SongRow key={typeof song === 'string' ? song : song.id} {...{ song: song }} />
                 )}
             </tbody>
         </table>
     )
 }
 
-function TrackRow({ track }: { track: ITrack | string }) {
-    if (typeof track === 'string') return <LoadingTrackRow url={track} />
+function SongRow({ song }: { song: ISong | string }) {
+    if (typeof song === 'string') return <LoadingSongRow url={song} />
 
-    const { album, artists, title, length } = track;
+    const { album, artists, title, length } = song;
     return (
         <tr>
-            <td><TrackButton {...{ track }} /></td>
+            <td><SongButton {...{ song }} /></td>
             <td>{title}</td>
             <td>{artists.map(a =>
                 <Artist key={a} url={a} />
@@ -43,8 +43,8 @@ function TrackRow({ track }: { track: ITrack | string }) {
     );
 }
 
-function LoadingTrackRow({ url }: { url: string }) {
-    return useLoading<ITrack>(url, track => <TrackRow {...{ track }} />);
+function LoadingSongRow({ url }: { url: string }) {
+    return useLoading<ISong>(url, song => <SongRow {...{ song }} />);
 }
 
 function Artist({ url }: { url: string }) {
@@ -57,4 +57,4 @@ function Album({ url }: { url: string }) {
     return a ? <Link className='seperate-comma' to={`/albums/${a.id}`}>{a.name}</Link> : null;
 }
 
-export default TrackList;
+export default Songs;

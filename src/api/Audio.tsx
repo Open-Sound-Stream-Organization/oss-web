@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo, createContext, useContext } from "react";
-import { ITrack } from "./Models";
+import { ISong } from "./Models";
 import Api from "./Api";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 
 interface PlayerData {
-    track?: ITrack;
-    play: (t?: ITrack) => void;
+    song?: ISong;
+    play: (t?: ISong) => void;
     pause: () => void;
     position: number;
     shuffle: boolean;
@@ -54,7 +54,7 @@ export function useVolume() {
 }
 
 export function useCreateAudio(): PlayerData {
-    const [track, setTrack] = useState<ITrack | undefined>(undefined);
+    const [song, setSong] = useState<ISong | undefined>(undefined);
     const [shuffle, setShuffle] = useState(false);
     const [repeat, setRepeat] = useState(true);
     const [position, setPosition] = useState(0);
@@ -68,11 +68,11 @@ export function useCreateAudio(): PlayerData {
         return () => audio.removeEventListener('timeupdate', update);
     }, [audio])
 
-    const play = async (track?: ITrack) => {
+    const play = async (song?: ISong) => {
 
-        if (track) await Api.audio(track.audio)
+        if (song) await Api.audio(song.audio)
             .then(src => {
-                setTrack(track);
+                setSong(song);
 
                 audio.src = src;
                 audio.currentTime = 0;
@@ -88,7 +88,7 @@ export function useCreateAudio(): PlayerData {
     }
 
     return {
-        track: track ? { ...track, length: audio.duration } : undefined,
+        song: song ? { ...song, length: audio.duration } : undefined,
         play, pause,
         shuffle, repeat, setShuffle, setRepeat,
         playing: () => !!audio && !audio.paused,
@@ -96,19 +96,19 @@ export function useCreateAudio(): PlayerData {
     };
 }
 
-export function TrackButton({ track }: { track: ITrack }) {
-    const { play, pause, playing, track: s } = usePlayer();
-    const selected = track.id === s?.id;
+export function SongButton({ song }: { song: ISong }) {
+    const { play, pause, playing, song: s } = usePlayer();
+    const selected = song.id === s?.id;
 
     const onClick = () => {
         if (selected) {
             if (playing()) pause();
             else play();
-        } else play(track);
+        } else play(song);
     }
 
     return (
-        <button className='track-button' {...{ onClick }}>
+        <button className='song-button' {...{ onClick }}>
             <Icon icon={(selected && playing()) ? faPause : faPlay} />
         </button>
     );

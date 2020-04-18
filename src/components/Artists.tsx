@@ -1,17 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Loading, useApi, useLoading } from '../api/Hooks';
-import { IAlbum, IArtist, IList, ITrack } from '../api/Models';
-import { NO_COVER } from './App';
+import { IAlbum, IArtist, IList, ISong } from '../api/Models';
 import Cell from './Cell';
-import { ModelSidebar, ModelView, Cover } from './Shared';
+import { Cover, ModelView } from './Shared';
 
 function Artists() {
-    const { id } = useParams();
-    const [artists] = useApi<IList<IArtist>>('artist');
-
-    if (!artists) return <Loading />
-
     return <ModelView endpoint='artist' render={(a: IArtist) => <Artist {...a} />} />;
 }
 
@@ -29,31 +23,34 @@ function Artist({ albums }: IArtist) {
 }
 
 function Album({ url }: { url: string }) {
-    return useLoading<IAlbum>(url, ({ cover_url, name, release, tracks }) => (
+    return useLoading<IAlbum>(url, ({ cover_url, name, release, songs }) => (
         <div>
             <h5>{name} - (Genre {release})</h5>
             <Cover
                 src={cover_url}
-                alt="Cover"
+                alt='Cover'
             />
             <table>
                 <tbody>
-                    {tracks.map(t => <TrackRow key={t} url={t} />)}
+                    {(songs.length > 0)
+                        ? songs.map(t => <SongRow key={t} url={t} />)
+                        : <tr><td className='empty-info'>No songs yet</td></tr>
+                    }
                 </tbody>
             </table>
         </div>
     ));
 }
 
-function TrackRow({ url }: { url: string }) {
-    const [track] = useApi<ITrack>(url);
+function SongRow({ url }: { url: string }) {
+    const [song] = useApi<ISong>(url);
 
     return (
         <tr>
-            {track
+            {song
                 ? <>
-                    <td>{track.name}</td>
-                    <td>{track.length}</td>
+                    <td>{song.name}</td>
+                    <td>{song.length}</td>
                 </>
                 : <td rowSpan={2}><Loading /></td>
             }

@@ -4,8 +4,9 @@
     & > .active {
         display: grid;
         grid-template:
-            "name cover" 120px
-            "tracks tracks"
+            "name cover" 80px
+            "artists cover" 40px
+            "songs songs"
             / 5fr 1fr;
 
         .cover {
@@ -14,6 +15,15 @@
 
             svg {
                 font-size: 4rem;
+            }
+        }
+
+        .artists {
+            text-align: center;
+            & > *:not(:last-child) {
+                &::after {
+                  content: ', ';  
+                }
             }
         }
 

@@ -2,23 +2,30 @@
     @include model-view();
 
     .albums {
+        padding: 10px;
+        justify-content: start;
+        
         div {
             display: grid;
             grid-template:
                 "cover info"
-                "cover tracks";
+                "cover songs";
             justify-content: start;
             width: fit-content;
 
+            margin: 10px 0;
+
             table {
-                grid-area: tracks;
+                grid-area: songs;
             }
 
             h5 {
+                padding: 0 10px;
                 grid-area: info;
             }
 
             .cover {
+                margin-top: 0;
                 height: 150px;
                 width: 150px;
             }

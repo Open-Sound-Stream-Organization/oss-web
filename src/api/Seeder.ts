@@ -2,7 +2,7 @@ import Api from './Api';
 import { IList, IModel, IArtist, IAlbum } from './Models';
 import { Dispatch, SetStateAction } from 'react';
 
-const trackNames = [
+const songNames = [
     "Daunting Moons",
     "The Inside-Out Matter",
     "No One Works At Anger",
@@ -132,9 +132,10 @@ function randomDate() {
     return `${1960 + Math.floor(Math.random() * 60)}`;
 }
 
-export interface ITracker {
+export interface ISonger {
     setTotal: Dispatch<SetStateAction<number>>,
     setProgress: Dispatch<SetStateAction<number>>,
+    setMessage?: Dispatch<SetStateAction<string | null>>,
 }
 
 class Seeder {
@@ -148,16 +149,16 @@ class Seeder {
     }
 
     albums(artists: IArtist[]) {
-        const artistIds = artists.map(a => ({ id: a.id }));
-        return (count: number) => range(trackNames, count).map(name => ({
+        const artistIds = artists.map(a => a.resource_uri);
+        return (count: number) => range(songNames, count).map(name => ({
             name,
-            artists: range(artistIds, Math.random() * 1.2 + 1),
+            artists: range(artistIds, 2),
             release: randomDate(),
         }));
     }
 
-    tracks(count: number) {
-        return range(trackNames, count).map((title, id) => ({
+    songs(count: number) {
+        return range(songNames, count).map(title => ({
             title,
             length: Math.floor(Math.random() * 100 + 100),
         }));
@@ -173,37 +174,43 @@ class Seeder {
         return new Promise(res => setTimeout(res, millis));
     }
 
-    private async seedModels<M extends IModel>(endpoint: string, count: number, generator: (i: number) => unknown[], tracker?: ITracker) {
-        tracker?.setProgress(0);
+    private async seedModels<M extends IModel>(endpoint: string, count: number, generator: (i: number) => unknown[], songer?: ISonger) {
+
+        songer?.setMessage?.call(null, `Fetching ${endpoint}s`)
+        songer?.setProgress(0);
 
         const old = await Api.fetch<IList<IModel>>(endpoint);
-        tracker?.setTotal(old.objects.length + count);
+        songer?.setTotal(old.objects.length + count);
 
-        console.log(generator(1)[0]);
-
+        songer?.setMessage?.call(null, `Deleting ${endpoint}s`)
         await Promise.all(old.objects.map(m =>
             Api.delete(m.resource_uri, {}, false)
                 .catch(e => console.error(e))
-                .then(() => tracker?.setProgress(i => i + 1))
+                .then(() => songer?.setProgress(i => i + 1))
         ));
 
+        songer?.setMessage?.call(null, `Seeding ${endpoint}s`)
         await Promise.all(generator(count).map(m =>
             Api.post(endpoint, m, false)
                 .catch(e => console.error(e))
-                .then(() => tracker?.setProgress(i => i + 1))
+                .then(() => songer?.setProgress(i => i + 1))
         ));
 
         const { objects } = await Api.fetch<IList<M>>(endpoint);
         return objects;
     }
 
-    async seed(tracker?: ITracker) {
+    async seed(songer?: ISonger) {
 
-        const artists = await this.seedModels<IArtist>('artist', 20, this.artists, tracker);
-        const albums = await this.seedModels<IAlbum>('album', 20, this.albums(artists), tracker);
+        const artists = await this.seedModels<IArtist>('artist', 20, this.artists, songer);
+        const albums = await this.seedModels<IAlbum>('album', 20, this.albums(artists), songer);
 
+        songer?.setMessage?.call(null, 'Done');
         this.wait(200);
-        tracker?.setTotal(0);
+        songer?.setTotal(0);
+        songer?.setMessage?.call(null, null);
+
+        Api.update();
 
     }
 

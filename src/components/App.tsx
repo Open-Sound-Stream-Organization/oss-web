@@ -8,11 +8,11 @@ import Nav from './NavBar';
 import Player from './Player';
 import PlaylistsBar from './PlaylistsBar';
 import { useApi } from '../api/Hooks';
-import { IList, ITrack } from '../api/Models';
+import { IList, ISong } from '../api/Models';
 import Playlists from './Playlists';
 import classes from 'classnames';
 import Albums from './Albums';
-import Tracks from './Tracks';
+import Songs from './Songs';
 import Dialog, { Provider as DialogProvider, DialogProps } from './Dialog';
 import Seeder from './Seeder';
 import Login from './Login';
@@ -26,11 +26,11 @@ function App() {
 	const audio = useCreateAudio();
 
 	const pages: IPage[] = [
-		{ path: '/tracks', component: Tracks },
+		{ path: '/songs', component: Songs },
 		{ path: '/playlists/:id?', component: Playlists },
 		{ path: '/artists/:id?', component: Artists },
 		{ path: '/albums/:id?', component: Albums },
-		{ path: '/tracks', component: Tracks },
+		{ path: '/songs', component: Songs },
 		{ path: '/seed', component: Seeder },
 		{ path: '/login', component: Login },
 	];

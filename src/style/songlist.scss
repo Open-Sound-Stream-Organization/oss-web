@@ -1,8 +1,8 @@
-.tracklist {
+.songlist {
     width: 100%;
     border-collapse: collapse;
 
-    grid-area: tracks;
+    grid-area: songs;
 
     $border: #555;
 
@@ -37,7 +37,7 @@
     overflow: scroll;
 }
 
-.track-button {
+.song-button {
     border: none;
     transition: color 0.1s linear;
 
