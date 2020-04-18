@@ -5,7 +5,7 @@ import { IAlbum, IArtist, ITrack } from '../api/Models';
 import { TrackButton } from '../api/Audio';
 
 function TrackList({ tracks }: { tracks: (ITrack | string)[] }) {
-    if ((tracks?.length ?? 0) === 0) return <p className='center'>No tracks yet</p>
+    if ((tracks?.length ?? 0) === 0) return <p className='empty-info'>No tracks yet</p>
     return (
         <table className='tracklist'>
             <thead>

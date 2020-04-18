@@ -1,6 +1,8 @@
 import Api from './Api';
+import { IList, IModel, IArtist, IAlbum } from './Models';
+import { Dispatch, SetStateAction } from 'react';
 
-const tracknames = [
+const trackNames = [
     "Daunting Moons",
     "The Inside-Out Matter",
     "No One Works At Anger",
@@ -69,12 +71,70 @@ const tracknames = [
     "Hungry"
 ];
 
+const artistNames = [
+    'Talking Heads',
+    'Carl Perkins',
+    'Curtis Mayfield',
+    'R.E.M.',
+    'Diana Ross and the Supremes',
+    'Lynyrd Skynyrd',
+    'Nine Inch Nails',
+    'Booker T. and the MGs',
+    'Guns n’ Roses',
+    'Tom Petty',
+    'Carlos Santana',
+    'The Yardbirds',
+    'Jay-Z',
+    'Gram Parsons',
+    'Tupac Shakur',
+    'Black Sabbath',
+    'James Taylor',
+    'Eminem',
+    'Creedence Clearwater Revival',
+    'The Drifters',
+    'Elvis Costello',
+    'The Four Tops',
+    'The Stooges',
+    'Beastie Boys',
+    'The Shirelles',
+    'Eagles',
+    'Hank Williams',
+    'Radiohead',
+    'AC/DC',
+    'Frank Zappa',
+    'The Police',
+    'Jackie Wilson',
+    'The Temptations',
+    'Cream',
+    'Al Green',
+    'The Kinks',
+    'Phil Spector',
+    'Tina Turner',
+    'Joni Mitchell',
+    'Metallica',
+    'The Sex Pistols',
+    'Aerosmith',
+    'Parliament and Funkadelic',
+    'Grateful Dead',
+    'Dr. Dre',
+    'Eric Clapton',
+    'Howlin’ Wolf',
+    'The Allman Brothers Band',
+    'Queen',
+    'Pink Floyd'
+]
+
 function range<T>(array: T[], i: number) {
     return array.sort((a, b) => Math.random() - 0.5).slice(0, Math.min(array.length, i));
 }
 
 function randomDate() {
     return `${1960 + Math.floor(Math.random() * 60)}`;
+}
+
+export interface ITracker {
+    setTotal: Dispatch<SetStateAction<number>>,
+    setProgress: Dispatch<SetStateAction<number>>,
 }
 
 class Seeder {
@@ -84,30 +144,21 @@ class Seeder {
     }
 
     artists(count: number) {
-        return [
-            {
-                name: 'Dieter Bohlen',
-                type: 'P',
-            }
-        ].slice(0, count).map((a) => ({ ...a }));
+        return range(artistNames, count).map(name => ({ name, type: 'P' }));
     }
 
-    albums(count: number) {
-        return [
-            {
-                name: 'Top 10 Nationalhymnen',
-                release: randomDate(),
-                artist: this.artists(2),
-                cover_url: require('../img/example-cover.jpg')
-            }
-        ].slice(0, count).map((a) => ({ ...a }));
+    albums(artists: IArtist[]) {
+        const artistIds = artists.map(a => ({ id: a.id }));
+        return (count: number) => range(trackNames, count).map(name => ({
+            name,
+            artists: range(artistIds, Math.random() * 1.2 + 1),
+            release: randomDate(),
+        }));
     }
 
     tracks(count: number) {
-        return range(tracknames, count).map((title, id) => ({
+        return range(trackNames, count).map((title, id) => ({
             title,
-            //artist: this.artists(Math.random() * 1 + 1),
-            //album: this.albums(1)[0],
             length: Math.floor(Math.random() * 100 + 100),
         }));
     }
@@ -118,19 +169,41 @@ class Seeder {
         }));
     }
 
-    async seed() {
+    private wait(millis: number) {
+        return new Promise(res => setTimeout(res, millis));
+    }
 
-        const artists = this.artists(20);
-        const albums = this.artists(20);
-        const tracks = this.tracks(1);
-        const playlists = this.playlists(6);
+    private async seedModels<M extends IModel>(endpoint: string, count: number, generator: (i: number) => unknown[], tracker?: ITracker) {
+        tracker?.setProgress(0);
 
-        await Promise.all([
-            //...artists.map(a => Api.post('artist', a)),
-            //...albums.map(a => Api.post('album', a)),
-            ...tracks.map(t => Api.post('track', t)),
-            //...playlists.map(p => Api.post('playlist', p)),
-        ]).then(r => console.log(r));
+        const old = await Api.fetch<IList<IModel>>(endpoint);
+        tracker?.setTotal(old.objects.length + count);
+
+        console.log(generator(1)[0]);
+
+        await Promise.all(old.objects.map(m =>
+            Api.delete(m.resource_uri, {}, false)
+                .catch(e => console.error(e))
+                .then(() => tracker?.setProgress(i => i + 1))
+        ));
+
+        await Promise.all(generator(count).map(m =>
+            Api.post(endpoint, m, false)
+                .catch(e => console.error(e))
+                .then(() => tracker?.setProgress(i => i + 1))
+        ));
+
+        const { objects } = await Api.fetch<IList<M>>(endpoint);
+        return objects;
+    }
+
+    async seed(tracker?: ITracker) {
+
+        const artists = await this.seedModels<IArtist>('artist', 20, this.artists, tracker);
+        const albums = await this.seedModels<IAlbum>('album', 20, this.albums(artists), tracker);
+
+        this.wait(200);
+        tracker?.setTotal(0);
 
     }
 

@@ -62,7 +62,7 @@ export function useCreateAudio(): PlayerData {
     const update = () => setPosition(audio.currentTime);
 
     const audio = useMemo(() => new Audio(), []);
-    
+
     useEffect(() => {
         audio.addEventListener('timeupdate', update);
         return () => audio.removeEventListener('timeupdate', update);
@@ -88,7 +88,7 @@ export function useCreateAudio(): PlayerData {
     }
 
     return {
-        track: track ? {...track, length: audio.duration} : undefined,
+        track: track ? { ...track, length: audio.duration } : undefined,
         play, pause,
         shuffle, repeat, setShuffle, setRepeat,
         playing: () => !!audio && !audio.paused,
@@ -101,14 +101,15 @@ export function TrackButton({ track }: { track: ITrack }) {
     const selected = track.id === s?.id;
 
     const onClick = () => {
-        if (playing()) pause();
-        else if (selected) play();
-        else play(track);
+        if (selected) {
+            if (playing()) pause();
+            else play();
+        } else play(track);
     }
 
     return (
-        <button {...{ onClick }}>
-            <Icon icon={playing() ? faPause : faPlay} />
+        <button className='track-button' {...{ onClick }}>
+            <Icon icon={(selected && playing()) ? faPause : faPlay} />
         </button>
     );
 }

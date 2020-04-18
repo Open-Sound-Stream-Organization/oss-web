@@ -21,7 +21,7 @@ function Artist({ albums }: IArtist) {
             <Cell area='albums'>
                 {albums.length > 0
                     ? albums.map(a => <Album key={a} url={a} />)
-                    : <p className='center'>No albums yet</p>
+                    : <p className='empty-info'>No albums yet</p>
                 }
             </Cell>
         </>
