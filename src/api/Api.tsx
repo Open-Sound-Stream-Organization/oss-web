@@ -62,16 +62,19 @@ class Api implements IApi {
     }
 
     private getApiKey() {
-        return 'testapikey';
+        return 'webuserkey';
     }
 
     public async audio(url: string) {
 
         const response = await fetch(require('../test.mp3'), {
+            //const response = await fetch(url, {
             headers: {
                 'Authorization': this.getApiKey()
             }
         });
+
+        console.log(response);
 
         const content = await response.body?.getReader().read();
         if (!content?.value) throw new Error('No audio found');
@@ -81,7 +84,7 @@ class Api implements IApi {
 
     }
 
-    private async method<O>(method: Method, endpoint: string, args?: any) {
+    private async method<O>(method: Method, endpoint: string, args?: any, update = true) {
 
         let url = endpoint;
         if (!url.startsWith(API_URL)) url = `${API_URL}/${url}`
@@ -97,21 +100,25 @@ class Api implements IApi {
             body: args ? JSON.stringify(args) : undefined,
         });
 
-        if (method !== 'get') this.update();
+        if (update && method !== 'get') this.update();
 
-        return response.json() as Promise<Response<O>>;
+        if (response.status === 200)
+            return response.json() as Promise<Response<O>>;
+        else
+            return {} as Response<O>;
+
     }
 
-    async post<O = string>(url: string, args: any = {}) {
-        return this.method<O>('post', url, args);
+    async post<O = string>(url: string, args: any = {}, update = true) {
+        return this.method<O>('post', url, args, update);
     }
 
-    async put<O = string>(url: string, args: any = {}) {
-        return this.method<O>('put', url, args);
+    async put<O = string>(url: string, args: any = {}, update = true) {
+        return this.method<O>('put', url, args, update);
     }
 
-    async delete<O = string>(url: string, args: any = {}) {
-        return this.method<O>('delete', url, args);
+    async delete<O = string>(url: string, args: any = {}, update = true) {
+        return this.method<O>('delete', url, args, update);
     }
 
 }

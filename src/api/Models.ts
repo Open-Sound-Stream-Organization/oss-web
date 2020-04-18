@@ -1,6 +1,7 @@
 export interface IModel {
     id: number;
     name: string;
+    resource_uri: string;
 }
 
 export interface ITrack extends IModel {

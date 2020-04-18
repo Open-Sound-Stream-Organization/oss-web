@@ -1,16 +1,64 @@
 #seed {
     position: relative;
 
-    button {
-        position: absolute;
+    .endpoints {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        padding: 20px;
+        gap: 20px;
 
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        & > * {
+            border: $border-width $gray solid;
+            padding: 10px;
+
+            p {
+                text-align: center;
+                text-transform: capitalize;
+                padding: 3px;
+            }
+        }
+    }
+
+    button {
+        margin: 50px;
+
+        margin-left: 50%;
+        transform: translateX(-50%);
 
         padding: 50px;
         font-size: 4rem;
+    }
 
+    .progress {
+        $height: 40px;
+
+        height: $height;
+        background-color: $gray;
+        width: 80%;
+        margin: 0 auto;
+        position: relative;
+        text-align: center;
+
+        p {
+            position: absolute;
+            width: 100%;
+            font-size: $height * 0.5;
+            padding: $height * 0.2 0;
+            z-index: 2;
+            user-select: none;
+        }
+
+        &, div {
+            border-radius: $height;
+        }
+
+        div {
+            position: absolute;
+            background-color: $primary;
+            height: 100%;
+            transition: width 0.2s linear;
+        }
     }
 
 }
