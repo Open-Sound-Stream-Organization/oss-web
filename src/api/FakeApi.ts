@@ -1,5 +1,5 @@
 import { IApi } from "./Api";
-import { IModel, ITrack, IArtist, IAlbum, ITag, IPlaylist } from "./Models";
+import { IModel, ISong, IArtist, IAlbum, ITag, IPlaylist } from "./Models";
 import { ParsedUrlQueryInput } from "querystring";
 import Seeder from './Seeder';
 
@@ -92,15 +92,15 @@ class FakeApi implements IApi {
 
 const API = new FakeApi();
 
-//API.fakeModels<ITrack>('track', Seeder.tracks(20));
+//API.fakeModels<ISong>('song', Seeder.songs(20));
 //API.fakeModels<IArtist>('artist', Seeder.artists(20));
 //API.fakeModels<IAlbum>('album', Seeder.albums(20));
 //API.fakeModels<ITag>('tag', Seeder.tags(20));
 //API.fakeModels<IPlaylist>('playlist', Seeder.playlists(6));
 
-//API.fake<IActiveTrack>('active-track', () => {
-//    const track = Seeder.tracks(1)[0];
-//    return { ...track, position: Math.floor(Math.random() * track.length) }
+//API.fake<IActiveSong>('active-song', () => {
+//    const song = Seeder.songs(1)[0];
+//    return { ...song, position: Math.floor(Math.random() * song.length) }
 //});
 
 

@@ -3,7 +3,7 @@ import Cell from './Cell';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute, faRedoAlt, faPause } from '@fortawesome/free-solid-svg-icons'
-import { IArtist, ITrack } from '../api/Models';
+import { IArtist, ISong } from '../api/Models';
 import { useApi } from '../api/Hooks';
 import usePlayer, { useVolume } from '../api/Audio';
 
@@ -17,11 +17,11 @@ function IconButton(props: { icon: IconDefinition, area?: string, onClick?: () =
 }
 
 function Player() {
-    const { track, position, play, pause, playing } = usePlayer();
+    const { song, position, play, pause, playing } = usePlayer();
 
     return (
         <Cell area='player'>
-            {track && <TrackInfo {...track} {...{ position }} />}
+            {song && <SongInfo {...song} {...{ position }} />}
 
             <IconButton icon={faStepBackward} area='previous' />
             <IconButton icon={faStepForward} area='next' />
@@ -40,14 +40,14 @@ function timestamp(time: number) {
     return `${minutes}:${seconds.toFixed(0).padStart(2, '0')}`;
 }
 
-function TrackInfo(track: ITrack & { position: number }) {
-    const { title, artists, length, position } = track;
+function SongInfo(song: ISong & { position: number }) {
+    const { title, artists, length, position } = song;
 
     return (
         <Cell area='info'>
             <h4>{title}</h4>
             <p>{artists?.map(a => <Artist key={a} url={a} />)}</p>
-            <div className='track-progress'>
+            <div className='song-progress'>
                 <span>{timestamp(position)}</span>
                 <span>-{timestamp(length - position)}</span>
                 <div style={{ width: `${position / length * 100}%` }} />

@@ -61,6 +61,7 @@ a {
 .empty-info {
     text-align: center;
     padding: 10px;
+    color: $light-gray;
 }
 
 #root {
@@ -166,13 +167,22 @@ span + svg {
 }
 
 .loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: $text;
-    border-radius: 100%;
-    animation: load 0.5s ease-out infinite alternate;
+    position: relative;
+    height: 100%;
+    width: 100%;
+
+    &::after {
+        content: "";
+        
+        transform: translate(-50%, -50%);
+        
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background-color: $text;
+        border-radius: 100%;
+        animation: load 0.5s ease-out infinite alternate;
+    }
 }
 
 @import "./nav.scss";
@@ -182,7 +192,7 @@ span + svg {
 @import "./albums.scss";
 @import "./playlists.scss";
 @import "./seeder.scss";
-@import "./tracklist.scss";
+@import "./songlist.scss";
 @import "./dialog.scss";
 @import "./list.scss";
 @import "./img.scss";

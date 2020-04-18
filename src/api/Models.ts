@@ -4,7 +4,7 @@ export interface IModel {
     resource_uri: string;
 }
 
-export interface ITrack extends IModel {
+export interface ISong extends IModel {
     title: string;
     artists: string[];
     album: string;
@@ -30,12 +30,12 @@ export interface IAlbum extends IModel {
     artists: string[];
     cover_url?: string;
     tags: string[];
-    tracks: string[];
+    songs: string[];
 }
 
 export interface IPlaylist extends IModel {
     tags: string[];
-    tracks: string[];
+    songs: string[];
 }
 
 export interface IList<O> {

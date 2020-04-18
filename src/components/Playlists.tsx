@@ -1,10 +1,10 @@
 import React from 'react';
 import { IPlaylist } from '../api/Models';
 import { ModelView } from './Shared';
-import TrackList from './TrackList';
+import SongList from './SongList';
 
-function Active({ tracks , ...rest }: IPlaylist) {
-    return <TrackList {...{ tracks }} />
+function Active({ songs , ...rest }: IPlaylist) {
+    return <SongList {...{ songs: songs }} />
 }
 
 function Playlists() {

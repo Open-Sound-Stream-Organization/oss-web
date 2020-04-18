@@ -1,25 +1,26 @@
 import React from 'react';
 import { IAlbum, IArtist } from '../api/Models';
 import { ModelView, Cover } from './Shared';
-import TrackList from './TrackList';
+import SongList from './SongList';
 import Cell from './Cell';
 import { useLoading } from '../api/Hooks';
+import { Link } from 'react-router-dom';
 
-function Active({ name, artists, tracks, cover_url }: IAlbum) {
+function Active({ name, artists, songs, cover_url }: IAlbum) {
     return (
         <>
             <Cover src={cover_url} alt={name} />
             <Cell area='artists'>
                 {artists.map(a => <Artist key={a} url={a} />)}
             </Cell>
-            <TrackList {...{ tracks }} />
+            <SongList {...{ songs }} />
         </>
     )
 }
 
 function Artist({ url }: { url: string }) {
-    return useLoading<IArtist>(url, ({ name }) =>
-        <span>{name}</span>
+    return useLoading<IArtist>(url, ({ name, id }) =>
+        <Link to={`/artists/${id}`}>{name}</Link>
     );
 }
 

@@ -31,11 +31,12 @@ function Endpoint({ endpoint }: { endpoint: string }) {
 function Seeder() {
     const [progress, setProgress] = useState(0);
     const [total, setTotal] = useState(0);
-    const loading =(total > 0);
+    const [message, setMessage] = useState<string | null>(null);
+    const loading = (total > 0);
 
     const [endpoints] = useApi<IEndpoints>('');
 
-    const seed = () => SEEDER.seed({ setProgress, setTotal }).catch(e => console.error(e))
+    const seed = () => SEEDER.seed({ setProgress, setTotal, setMessage }).catch(e => console.error(e))
 
     return (
         <>
@@ -50,10 +51,13 @@ function Seeder() {
             </button>
 
             {loading &&
-                <div className='progress'>
-                    <div style={{ width: `${progress / total * 100}%` }} />
-                    <p>{progress} / {total}</p>
-                </div>
+                <>
+                    <div className='progress'>
+                        <div style={{ width: `${progress / total * 100}%` }} />
+                        <p>{progress} / {total}</p>
+                    </div>
+                    <p>{message}</p>
+                </>
             }
         </>
     );
