@@ -8,7 +8,7 @@
 
     td,
     th {
-        padding: 0 10px;
+        padding: 5px 10px;
         &:not(:first-child) {
             border-left: $border-width solid $border;
         }
@@ -19,9 +19,31 @@
 
     tbody,
     thead {
-        border-top: $border-width solid $border;
         border-bottom: $border-width solid $border;
     }
 
+    tbody {
+        tr {
+            &:nth-of-type(odd) {
+                background-color: $gray;
+            }
+        }
+    }
+
+    &:not(:first-child) {
+        border-top: $border-width solid $border;
+    }
+
     overflow: scroll;
+}
+
+.track-button {
+    border: none;
+    transition: color 0.1s linear;
+
+    &:focus,
+    &:hover {
+        box-shadow: none;
+        color: $primary;
+    }
 }

@@ -32,27 +32,6 @@
         grid-auto-flow: column;
         align-items: center;
         gap: 10px;
-
-        .bar {
-            position: relative;
-            height: 50px;
-            width: 100px;
-
-            &::before, div {
-                @include pseudo();
-                height: 20%;
-                pointer-events: none;
-            }
-
-            &::before {
-                background-color: #333;
-            }
-
-            div {
-                left: 0;
-                transform: translate(0, -50%);
-            }
-        }
     }
 
     .track-progress {
