@@ -1,12 +1,12 @@
 
-#login{
+#registration{
     display: grid;
     justify-content: center;
     align-items: center;
     color: white;
 }
 
-.userlogin{
+.userregistration{
     width: 320px;
     height: 420px;
     background-color: #212121;
@@ -16,12 +16,6 @@
     vertical-align: middle;
     margin: 0 auto;
     padding: 0 auto;
-
-    .linkBox{
-        margin-left: 20px;
-    }
-    
-    
     
     .LoginForm{
    
@@ -31,14 +25,14 @@
     }
    
 }
-.userlogin p{
+.userregistration p{
     font-weight: bolder;
    
     padding-bottom: 10px;
     padding-left: 70px;
 
 }
-.userlogin h1{
+.userregistration h1{
     display: grid;
     justify-content: center;
     align-items: center;
@@ -46,7 +40,7 @@
     
 }
 
-.userlogin input{
+.userregistration input{
     border-bottom: 1px solid #0094FF;
     background: transparent;
     display: grid;
@@ -61,7 +55,7 @@
     border-top: none;
 
 }
-.userlogin button{
+.userregistration button{
     border: 1px solid #0094FF;
     border-spacing: 20px;
     position: absolute;
@@ -77,19 +71,8 @@ font-size: 1.0em;
     
     font-weight: 300;
    
- border-radius: 20px;
-    
+    border-radius: 20px;
 }
-#linkBox{
-    margin-top: 20px;
-    margin-left: 140px;
- color: #0094FF;
-    text-align: center;
-    font-size: 1.0em;
-    padding: 5px 12px; 
-    font-weight: 300;
- border-radius: 20px;
-    
-}
+
 
 
