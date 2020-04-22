@@ -1,4 +1,4 @@
-import { faCompactDisc, faList, faMusic, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCompactDisc, faList, faMusic, faUser, faSeedling, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import classes from 'classnames';
 import React from 'react';
@@ -12,8 +12,9 @@ function Nav() {
         { href: '/albums', text: 'Albums', icon: faCompactDisc },
         { href: '/artists', text: 'Artists', icon: faUser },
         { href: '/songs', text: 'Songs', icon: faMusic },
-        {href: '/login', text: 'Login', icon: faUser}
-    ]
+        { href: '/seed', text: 'Seeder', icon: faSeedling },
+        { href: '/logout', text: 'Logout', icon: faDoorOpen },
+    ];
 
     return (
         <nav>

@@ -16,7 +16,7 @@ function Playlist() {
                         <li key={id} className={classes({ active: id.toString() === active })}>
                             <Link to={`/playlists/${id}`}>{name}</Link>
                         </li>
-                    )}''
+                    )}
                 </ul>
                 : <p className='empty-info'>No playlists yet</p>
             }

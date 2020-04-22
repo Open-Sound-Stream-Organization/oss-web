@@ -7,22 +7,18 @@ import { SongButton } from '../api/Audio';
 function Songs({ songs }: { songs: (ISong | string)[] }) {
     if ((songs?.length ?? 0) === 0) return <p className='empty-info'>No songs yet</p>
     return (
-        <table className='songlist'>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Title</th>
-                    <th>Artists</th>
-                    <th>Album</th>
-                    <th>Length</th>
-                </tr>
-            </thead>
-            <tbody>
-                {songs.map(song =>
-                    <SongRow key={typeof song === 'string' ? song : song.id} {...{ song: song }} />
-                )}
-            </tbody>
-        </table>
+        <div className='songlist'>
+            <div>
+                <p id='play'></p>
+                <p id='title'>Title</p>
+                <p id='artists'>Artists</p>
+                <p id='album'>Album</p>
+                <p id='length'>Length</p>
+            </div>
+            {songs.map(song =>
+                <SongRow key={typeof song === 'string' ? song : song.id} {...{ song: song }} />
+            )}
+        </div>
     )
 }
 
@@ -31,15 +27,15 @@ function SongRow({ song }: { song: ISong | string }) {
 
     const { album, artists, title, length } = song;
     return (
-        <tr>
-            <td><SongButton {...{ song }} /></td>
-            <td>{title}</td>
-            <td>{artists.map(a =>
+        <div>
+            <p><SongButton {...{ song }} /></p>
+            <p>{title}</p>
+            <p>{artists.map(a =>
                 <Artist key={a} url={a} />
-            )}</td>
-            <td><Album url={album} /></td>
-            <td>{length}</td>
-        </tr>
+            )}</p>
+            <p><Album url={album} /></p>
+            <p>{length}</p>
+        </div>
     );
 }
 

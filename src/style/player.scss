@@ -11,6 +11,7 @@
     }
 
     .info {
+        height: 45px;
         width: 100%;
         text-align: center;
     }
@@ -19,8 +20,13 @@
     .song-progress {
         width: 100%;
         cursor: pointer;
+        position: relative;
 
         div {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translate(0, -50%);
             pointer-events: none;
             height: 100%;
             background-color: $primary;
@@ -28,6 +34,15 @@
     }
 
     .volume {
+        .bar {
+            height: 20px;
+            min-width: 80px;
+
+            div {
+                height: 50%;
+            }
+        }
+
         display: grid;
         grid-auto-flow: column;
         align-items: center;
@@ -52,7 +67,7 @@
             &:first-of-type {
                 left: $marg;
             }
-            
+
             &:last-of-type {
                 right: $marg;
             }

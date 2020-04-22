@@ -1,5 +1,5 @@
 import Api from './Api';
-import { IList, IModel, IArtist, IAlbum } from './Models';
+import { IList, IModel, IArtist, IAlbum, ISong } from './Models';
 import { Dispatch, SetStateAction } from 'react';
 
 const songNames = [
@@ -128,11 +128,15 @@ function range<T>(array: T[], i: number) {
     return array.sort((a, b) => Math.random() - 0.5).slice(0, Math.min(array.length, i));
 }
 
+function random<T>(array: T[]) {
+    return range(array, 1)[0];
+}
+
 function randomDate() {
     return `${1960 + Math.floor(Math.random() * 60)}`;
 }
 
-export interface ISonger {
+export interface ITracker {
     setTotal: Dispatch<SetStateAction<number>>,
     setProgress: Dispatch<SetStateAction<number>>,
     setMessage?: Dispatch<SetStateAction<string | null>>,
@@ -157,11 +161,16 @@ class Seeder {
         }));
     }
 
-    songs(count: number) {
-        return range(songNames, count).map(title => ({
-            title,
-            length: Math.floor(Math.random() * 100 + 100),
-        }));
+    songs(albums: IAlbum[]) {
+        return (count: number) => range(songNames, count).map(title => {
+            const { artists, resource_uri } = random(albums);
+            return {
+                title,
+                artists,
+                album: resource_uri,
+                length: Math.floor(Math.random() * 100 + 100),
+            };
+        })
     }
 
     playlists(count: number) {
@@ -174,41 +183,58 @@ class Seeder {
         return new Promise(res => setTimeout(res, millis));
     }
 
-    private async seedModels<M extends IModel>(endpoint: string, count: number, generator: (i: number) => unknown[], songer?: ISonger) {
+    private async seedModels<M extends IModel>(endpoint: string, count: number, generator: (i: number) => unknown[], tracker?: ITracker) {
 
-        songer?.setMessage?.call(null, `Fetching ${endpoint}s`)
-        songer?.setProgress(0);
+        tracker?.setMessage?.call(null, `Fetching ${endpoint}s`)
+        tracker?.setProgress(0);
 
         const old = await Api.fetch<IList<IModel>>(endpoint);
-        songer?.setTotal(old.objects.length + count);
+        tracker?.setTotal(old.objects.length + count);
 
-        songer?.setMessage?.call(null, `Deleting ${endpoint}s`)
+        tracker?.setMessage?.call(null, `Deleting ${endpoint}s`)
         await Promise.all(old.objects.map(m =>
             Api.delete(m.resource_uri, {}, false)
                 .catch(e => console.error(e))
-                .then(() => songer?.setProgress(i => i + 1))
+                .then(() => tracker?.setProgress(i => i + 1))
         ));
 
-        songer?.setMessage?.call(null, `Seeding ${endpoint}s`)
+        tracker?.setMessage?.call(null, `Seeding ${endpoint}s`)
         await Promise.all(generator(count).map(m =>
             Api.post(endpoint, m, false)
                 .catch(e => console.error(e))
-                .then(() => songer?.setProgress(i => i + 1))
+                .then(() => tracker?.setProgress(i => i + 1))
         ));
 
         const { objects } = await Api.fetch<IList<M>>(endpoint);
         return objects;
     }
 
-    async seed(songer?: ISonger) {
+    async uploadFile(songs: ISong[], tracker?: ITracker) {
+        tracker?.setTotal(songs.length);
+        tracker?.setProgress(0);
+        tracker?.setMessage?.call(null, 'Uploading Songs');
+        
+        songs.map(() => {
 
-        const artists = await this.seedModels<IArtist>('artist', 20, this.artists, songer);
-        const albums = await this.seedModels<IAlbum>('album', 20, this.albums(artists), songer);
+            const audio = require('../test.mp3');
+            console.log(audio);
 
-        songer?.setMessage?.call(null, 'Done');
+            tracker?.setProgress(i => i + 1);
+        });
+    }
+
+    async seed(tracker?: ITracker) {
+
+        const artists = await this.seedModels<IArtist>('artist', 20, this.artists, tracker);
+        const albums = await this.seedModels<IAlbum>('album', 20, this.albums(artists), tracker);
+        const songs = await this.seedModels<ISong>('song', 70, this.songs(albums), tracker);
+        await this.uploadFile(songs, tracker);
+
+
+        tracker?.setMessage?.call(null, 'Done');
         this.wait(200);
-        songer?.setTotal(0);
-        songer?.setMessage?.call(null, null);
+        tracker?.setTotal(0);
+        tracker?.setMessage?.call(null, null);
 
         Api.update();
 

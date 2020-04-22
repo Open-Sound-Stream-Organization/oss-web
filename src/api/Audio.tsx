@@ -14,6 +14,9 @@ interface PlayerData {
     setShuffle: (b: boolean) => void;
     setRepeat: (b: boolean) => void;
     playing: () => boolean;
+    volume: number;
+    setVolume: (v: number) => void;
+    toggleVolume: () => void;
 }
 
 const context = createContext<PlayerData>({
@@ -25,6 +28,9 @@ const context = createContext<PlayerData>({
     setShuffle: () => { },
     setRepeat: () => { },
     playing: () => false,
+    volume: 0,
+    setVolume: () => { },
+    toggleVolume: () => { },
 });
 
 export const Provider = context.Provider;
@@ -37,9 +43,23 @@ export function usePlayer(): PlayerData {
  * Can be used anywhere to access and modify volume
  * TODO This is where the actual volume logic will happen
  */
-export function useVolume() {
-    const [volume, setVolume] = useState(40);
+function useVolume(audio: HTMLAudioElement) {
+    const [volume, set] = useState(0.4);
     const [saveVolumed, saveVolume] = useState(volume);
+
+    const setVolume = (v: number) => {
+        audio.volume = v;
+    }
+
+    useEffect(() => {
+        const update = () => set(audio.volume);
+        audio.addEventListener('volumechange', update);
+        return () => audio.removeEventListener('volumechange', update);
+    }, [audio]);
+
+    useEffect(() => {
+        audio.volume = volume;
+    }, [volume, audio]);
 
     const toggleVolume = () => {
         if (volume > 0) {
@@ -62,6 +82,7 @@ export function useCreateAudio(): PlayerData {
     const update = () => setPosition(audio.currentTime);
 
     const audio = useMemo(() => new Audio(), []);
+    const volume = useVolume(audio);
 
     useEffect(() => {
         audio.addEventListener('timeupdate', update);
@@ -93,6 +114,7 @@ export function useCreateAudio(): PlayerData {
         shuffle, repeat, setShuffle, setRepeat,
         playing: () => !!audio && !audio.paused,
         position,
+        ...volume
     };
 }
 

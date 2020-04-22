@@ -1,32 +1,32 @@
 .songlist {
     width: 100%;
-    border-collapse: collapse;
-
     grid-area: songs;
-
     $border: #555;
 
-    td,
-    th {
-        padding: 5px 10px;
-        &:not(:first-child) {
-            border-left: $border-width solid $border;
-        }
-        &:not(:last-child) {
-            border-right: $border-width solid $border;
+    & > div {
+        width: 100%;
+        display: grid;
+        grid-auto-columns: 30px 1fr 1fr 1fr 100px;
+        grid-auto-flow: column;
+        border-right: $border-width solid $border;
+
+        p {
+            padding: 5px 10px;
+            width: calc(100% - 20px);
+
+            &:not(:first-child) {
+                border-left: $border-width solid $border;
+            }
         }
     }
 
-    tbody,
-    thead {
+    & > div:first-child {
         border-bottom: $border-width solid $border;
     }
 
-    tbody {
-        tr {
-            &:nth-of-type(odd) {
-                background-color: $gray;
-            }
+    & > div {
+        &:nth-of-type(odd) {
+            background-color: $gray;
         }
     }
 
