@@ -1,27 +1,42 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, ReactNode } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Provider as AudioProvider, useCreateAudio } from '../api/Audio';
 import '../style/general.scss';
 import ActiveSong from './ActiveSong';
+import Albums from './Albums';
 import Artists from './Artists';
 import Cell from './Cell';
+import Dialog, { DialogProps, Provider as DialogProvider } from './Dialog';
 import Nav from './NavBar';
 import Player from './Player';
-import PlaylistsBar from './PlaylistsBar';
-import { useApi } from '../api/Hooks';
-import { IList, ISong } from '../api/Models';
 import Playlists from './Playlists';
-import classes from 'classnames';
-import Albums from './Albums';
-import Songs from './Songs';
-import Dialog, { Provider as DialogProvider, DialogProps } from './Dialog';
-import Seeder from './Seeder';
-import Login from './Login';
-import { useCreateAudio, Provider as AudioProvider } from '../api/Audio';
+import PlaylistsBar from './PlaylistsBar';
 import Registration from './Registration';
+import Seeder from './Seeder';
+import Songs from './Songs';
+import Api from '../api/Api';
+import Login from './Login';
+import { Loading } from '../api/Hooks';
 
 export const NO_COVER = require('../img/example-cover.jpg');
 
+function SinglePage({ children }: { children: ReactNode }) {
+	return <section className='single'>{children}</section>;
+}
+
+function Logout() {
+	useEffect(() => {
+		Api.logout();
+	});
+	return <Redirect to='' />
+}
+
 function App() {
+	const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+
+	useEffect(() => {
+		Api.isLoginIn().then(b => setLoggedIn(b));
+	})
 
 	const dialog = useState<DialogProps | null>(null);
 	const audio = useCreateAudio();
@@ -33,35 +48,49 @@ function App() {
 		{ path: '/albums/:id?', component: Albums },
 		{ path: '/songs', component: Songs },
 		{ path: '/seed', component: Seeder },
-		{ path: '/login', component: Login },
-		{path: '/registrierung', component: Registration}
 	];
 
 	return (
 		<DialogProvider value={dialog}>
 			<AudioProvider value={audio}>
-
 				<Router>
-					<Nav />
-					<Player />
-					<ActiveSong />
-					<PlaylistsBar />
 
-					<Dialog dialog={dialog[0]} />
+					{loggedIn
+						? <section className='container'>
+							<Nav />
+							<Player />
+							<ActiveSong />
+							<PlaylistsBar />
 
-					<Switch>
+							<Dialog dialog={dialog[0]} />
 
-						{pages.map(page =>
-							<Route key={page.path} path={page.path}>
-								<Page {...page} />
-							</Route >
-						)}
+							<Switch>
 
-						<Route exact path='/'>
-							<Redirect to='/playlists' />
-						</Route>
+								{pages.map(page =>
+									<Route key={page.path} path={page.path}>
+										<Page {...page} />
+									</Route >
+								)}
 
-					</Switch>
+								<Route exact path='/'>
+									<Redirect to='/playlists' />
+								</Route>
+
+								<Route path='/logout'>
+									<Logout />
+								</Route>
+
+							</Switch>
+						</section>
+
+						: <SinglePage>
+							{loggedIn === false
+								? <Login />
+								: <Loading />
+							}
+						</SinglePage>
+					}
+
 				</Router>
 
 			</AudioProvider>

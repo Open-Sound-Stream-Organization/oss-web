@@ -10,19 +10,21 @@ import API from './Api';
 export function useApi<R>(endpoint: string, params?: ParsedUrlQueryInput) {
     const [result, setResult] = useState<undefined | R>();
     const [loading, setLoading] = useState(true);
+    const [message, setMessage] = useState<string | undefined>();
 
     const query = querystring.encode(params);
     useEffect(() => {
         setLoading(true);
         setResult(undefined);
 
-        return API.subscribe<R>(endpoint, query).then(r => {
+        return API.subscribe<R>(endpoint, query).then((r, e) => {
             setResult(r);
+            setMessage(e?.message);
             setLoading(false);
         })
     }, [query, endpoint]);
 
-    return [result, loading] as [R | undefined, boolean];
+    return [result, loading, message] as [R | undefined, boolean, string | undefined];
 }
 
 /**
@@ -72,9 +74,9 @@ export type Render<R> = (result: R) => JSX.Element | null;
 export function useLoading<R>(enpoint: string, params: ParsedUrlQueryInput | Render<R>, render?: Render<R>): JSX.Element | null {
     const p = typeof params === 'object' ? params : undefined;
     const r = typeof params === 'function' ? params : render;
-    const [result, loading] = useApi<R>(enpoint, p);
+    const [result, loading, error] = useApi<R>(enpoint, p);
 
     if (loading) return <Loading />
-    if (!result) return <span>Not found</span>
+    if (!result) return <span className='empty-info'>{error || 'Not found'}</span>
     return r ? r(result) : null;
 }

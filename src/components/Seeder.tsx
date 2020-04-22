@@ -11,9 +11,17 @@ interface IEndpoints {
     }
 }
 
+const ignore = [
+    'songinplaylist',
+    'track',
+    'apikey',
+]
+
 function Endpoint({ endpoint }: { endpoint: string }) {
     const [models] = useApi<IList<unknown>>(endpoint);
-    const count = models?.objects.length;
+    const count = models?.objects?.length;
+
+    if(models && count === undefined) return null;
 
     return (
         <div>
@@ -41,7 +49,7 @@ function Seeder() {
     return (
         <>
             <div className='endpoints'>
-                {endpoints && Object.keys(endpoints).filter(e => e !== 'apikey').map(e =>
+                {endpoints && Object.keys(endpoints).filter(e => !ignore.includes(e.toLowerCase())).map(e =>
                     <Endpoint key={e} endpoint={e} />
                 )}
             </div>

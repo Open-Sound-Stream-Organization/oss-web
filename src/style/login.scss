@@ -1,95 +1,53 @@
-
-#login{
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    color: white;
-}
-
-.userlogin{
+.user-login {
     width: 320px;
-    height: 420px;
     background-color: #212121;
-    top: 50%;
-    left: 50%;
-    border: 1px solid #0094FF ;
-    vertical-align: middle;
-    margin: 0 auto;
-    padding: 0 auto;
+    border: 1px solid #0094ff;
 
-    .linkBox{
-        margin-left: 20px;
-    }
-    
-    
-    
-    .LoginForm{
-   
+    padding: 30px 50px;
+    padding-bottom: 80px;
+
+    form {
         margin: 0 auto;
-       background: transparent;
-       
+        background: transparent;
+
+        div {
+            display: grid;
+            margin: 20px 0;
+
+            &:last-of-type {
+                margin-bottom: 50px;
+            }
+
+            label {
+                margin-bottom: 10px;
+            }
+
+            input {
+                border-bottom: 1px solid #0094ff;
+                height: 30px;
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        button,
+        a {
+            padding: 5px 12px;
+            font-size: 1rem;
+            font-weight: 300;
+            border-radius: 20px;
+        }
+
+        button {
+            border: 1px solid #0094ff;
+        }
+
+        a {
+            color: #0094ff;
+            text-align: center;
+        }
     }
-   
 }
-.userlogin p{
-    font-weight: bolder;
-   
-    padding-bottom: 10px;
-    padding-left: 70px;
-
-}
-.userlogin h1{
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    margin-top: 50px;
-    
-}
-
-.userlogin input{
-    border-bottom: 1px solid #0094FF;
-    background: transparent;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    margin-left: 70px;
-    color: white;
-    height: 30px;
-    width: 150px;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-
-}
-.userlogin button{
-    border: 1px solid #0094FF;
-    border-spacing: 20px;
-    position: absolute;
-    
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    margin-left: 70px;
-    border-radius: 20px;
- 
-font-size: 1.0em;
-    padding: 5px 12px; 
-    
-    font-weight: 300;
-   
- border-radius: 20px;
-    
-}
-#linkBox{
-    margin-top: 20px;
-    margin-left: 140px;
- color: #0094FF;
-    text-align: center;
-    font-size: 1.0em;
-    padding: 5px 12px; 
-    font-weight: 300;
- border-radius: 20px;
-    
-}
-
-

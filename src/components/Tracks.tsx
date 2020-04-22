@@ -1,9 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { ISong, IList } from '../api/Models';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import { useLoading } from '../api/Hooks';
+import { IList, ISong } from '../api/Models';
 import SongList from './SongList';
-import API from '../api/FakeApi';
 
 function Songs() {
     return useLoading<IList<ISong>>('song', ({ objects }) =>

@@ -1,5 +1,7 @@
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { API_URL } from '../config';
+import format from 'dateformat';
+import { IApiKey } from './Models'
 
 /**
  * Replaced once we know the format the data will be sent by the server
@@ -36,7 +38,7 @@ class Api implements IApi {
         const { url, params, callback } = observer;
         this.fetch<O>(url, params)
             .then(r => callback(r))
-            .catch(() => callback(undefined, new Error(`Unable to fetch ${url}`)));
+            .catch(e => callback(undefined, e));
     }
 
     update() {
@@ -61,20 +63,34 @@ class Api implements IApi {
         return this.method<O>('get', `${endpoint}/?${query}`);
     }
 
-    private getApiKey() {
-        return localStorage.getItem("apikey")??"";
+    private getApiKey(): IApiKey | null {
+        const key = localStorage.getItem('apikey');
+        if (key) return JSON.parse(key);
+        return null;
+    }
+
+    public async isLoginIn() {
+        if (!this.getApiKey()) return false;
+
+        return this.fetch('artist')
+            .then(() => true)
+            .catch(e => {
+                console.log(e);
+                localStorage.removeItem('apikey');
+                return false;
+            });
     }
 
     public async audio(url: string) {
+        const apiKey = this.getApiKey();
+        if (!apiKey) throw new Error('Not logged in');
 
         const response = await fetch(require('../test.mp3'), {
             //const response = await fetch(url, {
             headers: {
-                'Authorization': this.getApiKey()
+                'Authorization': apiKey.key
             }
         });
-
-        console.log(response);
 
         const content = await response.body?.getReader().read();
         if (!content?.value) throw new Error('No audio found');
@@ -85,6 +101,8 @@ class Api implements IApi {
     }
 
     private async method<O>(method: Method, endpoint: string, args?: any, update = true) {
+        const apiKey = this.getApiKey();
+        if (!apiKey) throw new Error('Not logged n');
 
         let url = endpoint;
         if (!url.startsWith(API_URL)) url = `${API_URL}/${url}`
@@ -95,7 +113,7 @@ class Api implements IApi {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': this.getApiKey(),
+                'Authorization': apiKey.key,
             },
             body: args ? JSON.stringify(args) : undefined,
         });
@@ -105,7 +123,7 @@ class Api implements IApi {
         if (response.status === 200)
             return response.json() as Promise<Response<O>>;
         else
-            return {} as Response<O>;
+            throw new Error('Not logged in');
 
     }
 
@@ -121,30 +139,42 @@ class Api implements IApi {
         return this.method<O>('delete', url, args, update);
     }
 
+    async logout() {
+        const apiKey = this.getApiKey();
+
+        if (apiKey) await this.delete(`apikey/${apiKey.id}`)
+            .catch(e => console.error(e))
+
+        localStorage.removeItem('apikey');
+        window.location.reload();
+
+    }
+
     async login(base64: string) {
 
-        let url = "apikey";
-        if (!url.startsWith(API_URL)) url = `${API_URL}/${url}/`
+        const url = `${API_URL}/apikey/`;
+
+        const { platform, vendor } = navigator;
+        const date = format(new Date());
 
         const response = await fetch(url, {
-            method: "POST",
+            method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': `Basic ${base64}`,
             },
-            body: JSON.stringify({ "purpose": "Web-Application" }),
+            body: JSON.stringify({ purpose: `${vendor} ${platform}, ${date}` }),
         });
 
         this.update();
 
-        if (response.status === 201) {
-            const {key} = await response.json()
-            localStorage.setItem("apikey", key)
-            
-        }
-        else console.error(response.status);
+        if (response.status !== 201) throw new Error('Invalid credentials');
 
+        const key = await response.json()
+        localStorage.setItem('apikey', JSON.stringify(key));
+
+        window.location.reload();
 
     }
 

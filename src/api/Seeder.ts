@@ -214,7 +214,7 @@ class Seeder {
         tracker?.setProgress(0);
         tracker?.setMessage?.call(null, 'Uploading Songs');
         
-        songs.map(song => {
+        songs.map(() => {
 
             const audio = require('../test.mp3');
             console.log(audio);

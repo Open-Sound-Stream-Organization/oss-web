@@ -5,7 +5,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute, faRedoAlt, faPause } from '@fortawesome/free-solid-svg-icons'
 import { IArtist, ISong } from '../api/Models';
 import { useApi } from '../api/Hooks';
-import usePlayer, { useVolume } from '../api/Audio';
+import usePlayer from '../api/Audio';
 
 function IconButton(props: { icon: IconDefinition, area?: string, onClick?: () => unknown }) {
     const { area, icon, ...rest } = props;
@@ -62,11 +62,11 @@ function Artist({ url }: { url: string }) {
 }
 
 function Volume() {
-    const { volume, setVolume, toggleVolume } = useVolume();
+    const { volume, setVolume, toggleVolume } = usePlayer();
 
     const icon = volume === 0
         ? faVolumeMute
-        : volume < 50
+        : volume < 0.5
             ? faVolumeDown
             : faVolumeUp
 
@@ -74,7 +74,7 @@ function Volume() {
         const w = e.currentTarget.offsetWidth;
         const l = e.currentTarget.getBoundingClientRect().left;
         const x = e.clientX - l;
-        const v = Math.round(x / w * 100)
+        const v = x / w;
         setVolume(v);
     }
 
@@ -84,7 +84,7 @@ function Volume() {
             <div className='bar' onClick={adjust} onMouseMove={e => {
                 if (e.buttons > 0) adjust(e);
             }}>
-                <div style={{ width: `${volume}%` }} />
+                <div style={{ width: `${volume * 100}%` }} />
             </div>
         </Cell>
     );

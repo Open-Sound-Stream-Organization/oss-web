@@ -4,6 +4,11 @@ export interface IModel {
     resource_uri: string;
 }
 
+export interface IApiKey {
+    id: number;
+    key: string;
+}
+
 export interface ISong extends IModel {
     title: string;
     artists: string[];
