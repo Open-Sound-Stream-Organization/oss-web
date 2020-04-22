@@ -62,7 +62,7 @@ class Api implements IApi {
     }
 
     private getApiKey() {
-        return 'webuserkey';
+        return localStorage.getItem("apikey")??"";
     }
 
     public async audio(url: string) {
@@ -121,7 +121,36 @@ class Api implements IApi {
         return this.method<O>('delete', url, args, update);
     }
 
+    async login(base64: string) {
+
+        let url = "apikey";
+        if (!url.startsWith(API_URL)) url = `${API_URL}/${url}/`
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${base64}`,
+            },
+            body: JSON.stringify({ "purpose": "Web-Application" }),
+        });
+
+        this.update();
+
+        if (response.status === 201) {
+            const {key} = await response.json()
+            localStorage.setItem("apikey", key)
+            
+        }
+        else console.error(response.status);
+
+
+    }
+
 }
+
+
 
 const API = new Api();
 

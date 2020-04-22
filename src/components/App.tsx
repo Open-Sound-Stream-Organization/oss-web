@@ -17,6 +17,7 @@ import Dialog, { Provider as DialogProvider, DialogProps } from './Dialog';
 import Seeder from './Seeder';
 import Login from './Login';
 import { useCreateAudio, Provider as AudioProvider } from '../api/Audio';
+import Registration from './Registration';
 
 export const NO_COVER = require('../img/example-cover.jpg');
 
@@ -33,6 +34,7 @@ function App() {
 		{ path: '/songs', component: Songs },
 		{ path: '/seed', component: Seeder },
 		{ path: '/login', component: Login },
+		{path: '/registrierung', component: Registration}
 	];
 
 	return (
