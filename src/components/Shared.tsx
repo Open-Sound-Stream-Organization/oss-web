@@ -36,7 +36,7 @@ export function ModelView<M extends IModel>(props: { endpoint: string, render: R
             <Cell area='active'>
                 {id
                     ? <Single {...{ id }} {...props} />
-                    : <h1>Select a{endpoint.match(/^[aeiou]/i) ? 's' : ''} {endpoint}</h1>
+                    : <h1>Select a{endpoint.match(/^[aeiou]/i) ? 'n' : ''} {endpoint}</h1>
                 }
             </Cell>
         </>
@@ -59,13 +59,16 @@ export function ModelSidebar<M extends IModel>({ endpoint }: { endpoint: string 
     return useLoading<IList<M>>(endpoint, ({ objects }) =>
         <Cell area='list'>
             <ul className='list'>
-                {objects.map(({ name, id }) =>
-                    <li key={id} className={classes({ active: id.toString() === active })}>
-                        <Link to={`/${endpoint}s/${id}`}>
-                            {name}
-                        </Link>
-                    </li>
-                )}
+                {(objects.length > 0)
+                    ? objects.map(({ name, id }) =>
+                        <li key={id} className={classes({ active: id.toString() === active })}>
+                            <Link to={`/${endpoint}s/${id}`}>
+                                {name}
+                            </Link>
+                        </li>
+                    )
+                : <li className='empty-info'>No {endpoint}s yet</li>
+                }
             </ul>
         </Cell>
     );
