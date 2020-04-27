@@ -1,8 +1,14 @@
-import React, { useState, useEffect, useMemo, createContext, useContext } from "react";
+import React, { useState, useEffect, useMemo, createContext, useContext, Dispatch, SetStateAction } from "react";
 import { ISong } from "./Models";
 import Api from "./Api";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
+
+interface Queue {
+    songs: ISong[];
+    add: (s: ISong) => void;
+    remove: (i: number) => void;
+}
 
 interface PlayerData {
     song?: ISong;
@@ -17,6 +23,7 @@ interface PlayerData {
     volume: number;
     setVolume: (v: number) => void;
     toggleVolume: () => void;
+    queue?: Queue;
 }
 
 const context = createContext<PlayerData>({
@@ -73,18 +80,37 @@ function useVolume(audio: HTMLAudioElement) {
     return { volume, setVolume, toggleVolume };
 }
 
+function useQueue(setSong: Dispatch<SetStateAction<ISong | undefined>>): Queue {
+    const [songs, setSongs] = useState<ISong[]>([]);
+
+    const add = (s: ISong) => {
+        setSongs(old => [...old, s]);
+    }
+
+    const remove = (index: number) => {
+        setSongs(old => {
+            const n = [...old]
+            n.splice(index, 1);
+            return n;
+        })
+    }
+
+    return { songs, add, remove };
+}
+
 export function useCreateAudio(): PlayerData {
-    const [song, setSong] = useState<ISong | undefined>(undefined);
+    const [song, setSong] = useState<ISong>();
     const [shuffle, setShuffle] = useState(false);
     const [repeat, setRepeat] = useState(true);
     const [position, setPosition] = useState(0);
 
-    const update = () => setPosition(audio.currentTime);
 
     const audio = useMemo(() => new Audio(), []);
     const volume = useVolume(audio);
+    const queue = useQueue(setSong);
 
     useEffect(() => {
+        const update = () => setPosition(audio.currentTime);
         audio.addEventListener('timeupdate', update);
         return () => audio.removeEventListener('timeupdate', update);
     }, [audio])
@@ -114,7 +140,8 @@ export function useCreateAudio(): PlayerData {
         shuffle, repeat, setShuffle, setRepeat,
         playing: () => !!audio && !audio.paused,
         position,
-        ...volume
+        ...volume,
+        queue
     };
 }
 
