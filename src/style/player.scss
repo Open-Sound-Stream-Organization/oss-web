@@ -2,8 +2,8 @@
     user-select: none;
     display: grid;
     grid-template:
-        "previous play next info shuffle repeat volume"
-        / 1fr 1fr 1fr 8fr 1fr 1fr 3fr;
+        "previous play next info shuffle repeat volume queue"
+        / 1fr 1fr 1fr 8fr 1fr 1fr 3fr 1fr;
 
     & > * {
         justify-self: center;

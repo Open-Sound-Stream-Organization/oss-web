@@ -4,7 +4,7 @@ import Api from "./Api";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 
-interface Queue {
+export interface IQueue {
     songs: ISong[];
     add: (s: ISong) => void;
     remove: (i: number) => void;
@@ -23,7 +23,7 @@ interface PlayerData {
     volume: number;
     setVolume: (v: number) => void;
     toggleVolume: () => void;
-    queue?: Queue;
+    queue?: IQueue;
 }
 
 const context = createContext<PlayerData>({
@@ -80,7 +80,7 @@ function useVolume(audio: HTMLAudioElement) {
     return { volume, setVolume, toggleVolume };
 }
 
-function useQueue(setSong: Dispatch<SetStateAction<ISong | undefined>>): Queue {
+function useQueue(setSong: Dispatch<SetStateAction<ISong | undefined>>): IQueue {
     const [songs, setSongs] = useState<ISong[]>([]);
 
     const add = (s: ISong) => {

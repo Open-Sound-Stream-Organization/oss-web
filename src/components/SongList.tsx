@@ -2,11 +2,11 @@ import React, { useState, useMemo, SetStateAction } from 'react';
 import { Link } from 'react-router-dom';
 import { useApi, useLoading } from '../api/Hooks';
 import { IAlbum, IArtist, ISong, IModel } from '../api/Models';
-import { SongButton } from '../api/Audio';
+import usePlayer, { SongButton } from '../api/Audio';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, IconDefinition, faList } from '@fortawesome/free-solid-svg-icons';
 import { useDialog } from './Dialog';
-import { LoadedSongEditor } from './Upload';
+//import { LoadedSongEditor } from './Upload';
 import classes from 'classnames';
 
 interface ISelection {
@@ -97,18 +97,18 @@ function useSelection<T extends IModel>(models: T[]): ISelection {
 
 function Songs({ songs }: { songs: ISong[] }) {
     const selection = useSelection(songs);
-
     if ((songs?.length ?? 0) === 0) return <p className='empty-info'>No songs yet</p>
 
     return (
         <div className='songlist'>
             <div>
-                <p id='play' />
-                <p id='title'>Title</p>
-                <p id='artists'>Artists</p>
-                <p id='album'>Album</p>
-                <p id='length'>Length</p>
-                <p id='edit' />
+                <p />
+                <p>Title</p>
+                <p>Artists</p>
+                <p>Album</p>
+                <p>Length</p>
+                <p />
+                <p />
             </div>
             {songs.map(song =>
                 <SongRow
@@ -122,6 +122,8 @@ function Songs({ songs }: { songs: ISong[] }) {
 
 function SongRow(props: { song: ISong | string, selection?: ISelection }) {
     const { song, selection } = props;
+    const { open } = useDialog();
+    const { queue } = usePlayer();
 
     if (typeof song === 'string') return <LoadingSongRow url={song} {...{ selection }} />
 
@@ -137,16 +139,17 @@ function SongRow(props: { song: ISong | string, selection?: ISelection }) {
             )}</p>
             <p><Album url={album} /></p>
             <p>{length}</p>
-            <EditButton {...{ song }} />
+            <IconButton icon={faEdit} /*onClick={() => open(<LoadedSongEditor {...{ song }} />)}*/ />
+            <IconButton icon={faList} onClick={() => queue?.add(song)} />
+
         </div>
     );
 }
 
-function EditButton({ song }: { song: ISong }) {
-    const { open } = useDialog();
+function IconButton({ onClick, icon }: { onClick?: () => void, icon: IconDefinition }) {
 
-    return <button /*onClick={() => open(<LoadedSongEditor {...{ song }} />)}*/>
-        <Icon icon={faEdit} />
+    return <button {...{ onClick }}>
+        <Icon {...{ icon }} />
     </button>
 }
 
