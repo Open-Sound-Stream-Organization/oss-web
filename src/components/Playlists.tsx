@@ -1,10 +1,12 @@
 import React from 'react';
-import { IPlaylist } from '../api/Models';
+import { IPlaylist, ISong } from '../api/Models';
 import { ModelView } from './Shared';
 import SongList from './SongList';
+import { useApiBunch } from '../api/Hooks';
 
-function Active({ songs , ...rest }: IPlaylist) {
-    return <SongList {...{ songs: songs }} />
+function Active({ songs: songURLs, ...rest }: IPlaylist) {
+    const [songs] = useApiBunch<ISong>(songURLs);
+    return <SongList {...{ songs }} />
 }
 
 function Playlists() {
