@@ -1,12 +1,14 @@
-import React from 'react';
-import { IAlbum, IArtist } from '../api/Models';
+import React, { useMemo, useEffect } from 'react';
+import { IAlbum, IArtist, ISong } from '../api/Models';
 import { ModelView, Cover } from './Shared';
 import SongList from './SongList';
 import Cell from './Cell';
-import { useLoading } from '../api/Hooks';
+import { useLoading, useApiBunch } from '../api/Hooks';
 import { Link } from 'react-router-dom';
 
-function Active({ name, artists, songs, cover_url }: IAlbum) {
+function Active({ name, artists, songs: songURLs, cover_url }: IAlbum) {
+    const [songs] = useApiBunch<ISong>(songURLs);
+
     return (
         <>
             <Cover src={cover_url} alt={name} />
