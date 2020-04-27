@@ -3,6 +3,7 @@ import { ISong } from "./Models";
 import Api from "./Api";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
+import { useMessages } from "../components/Message";
 
 export interface IQueue {
     songs: ISong[];
@@ -62,7 +63,7 @@ function useVolume(audio: HTMLAudioElement) {
 
     useEffect(() => {
         const update = () => set(v => {
-            if(audio.volume !== v) return audio.volume;
+            if (audio.volume !== v) return audio.volume;
             return v;
         });
         audio.addEventListener('volumechange', update);
@@ -87,9 +88,11 @@ function useVolume(audio: HTMLAudioElement) {
 
 function useQueue(setSong: Dispatch<SetStateAction<ISong | undefined>>): IQueue {
     const [songs, setSongs] = useState<ISong[]>([]);
+    const messages = useMessages();
 
     const add = (s: ISong) => {
         setSongs(old => [...old, s]);
+        messages.add({ text: `Added ${s.title} to the queue`, type: 'success' });
     }
 
     const remove = (index: number) => {

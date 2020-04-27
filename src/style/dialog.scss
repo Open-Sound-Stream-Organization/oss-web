@@ -17,21 +17,23 @@
         top: 50%;
     }
 
-    p {
-        font-size: 2rem;
-    }
+    .generic {
+        p {
+            font-size: 2rem;
+        }
 
-    ul {
-        display: grid;
-        grid-auto-flow: column;
-        gap: 10px;
-        grid-auto-columns: 1fr;
-        grid-auto-rows: 1fr;
+        ul {
+            display: grid;
+            grid-auto-flow: column;
+            gap: 10px;
+            grid-auto-columns: 1fr;
+            grid-auto-rows: 1fr;
+        }
     }
 }
 
 .curtain {
-    background-color: #000A;
+    background-color: #000a;
     position: fixed;
     height: 100vh;
     width: 100vw;

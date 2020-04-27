@@ -6,7 +6,7 @@ import usePlayer, { SongButton } from '../api/Audio';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { faEdit, IconDefinition, faList } from '@fortawesome/free-solid-svg-icons';
 import { useDialog } from './Dialog';
-//import { LoadedSongEditor } from './Upload';
+import { LoadedSongEditor } from './Upload';
 import classes from 'classnames';
 
 interface ISelection {
@@ -139,7 +139,7 @@ function SongRow(props: { song: ISong | string, selection?: ISelection }) {
             )}</p>
             <p><Album url={album} /></p>
             <p>{length}</p>
-            <IconButton icon={faEdit} /*onClick={() => open(<LoadedSongEditor {...{ song }} />)}*/ />
+            <IconButton icon={faEdit} onClick={() => open(<LoadedSongEditor {...{ song }} />)} />
             <IconButton icon={faList} onClick={() => queue?.add(song)} />
 
         </div>

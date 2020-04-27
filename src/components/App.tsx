@@ -1,22 +1,23 @@
-import React, { useEffect, useState, ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import Api from '../api/Api';
 import { Provider as AudioProvider, useCreateAudio } from '../api/Audio';
+import { Loading } from '../api/Hooks';
 import '../style/general.scss';
 import ActiveSong from './ActiveSong';
 import Albums from './Albums';
 import Artists from './Artists';
 import Cell from './Cell';
-import Dialog, { DialogProps, Provider as DialogProvider } from './Dialog';
+import Dialog, { Provider as DialogProvider } from './Dialog';
+import Messages, { Provider as MessageProvider, IMessage } from './Message';
+import Login from './Login';
 import Nav from './NavBar';
 import Player from './Player';
 import Playlists from './Playlists';
 import PlaylistsBar from './PlaylistsBar';
-import Upload, { SongEditor } from './Upload';
 import Seeder from './Seeder';
 import Songs from './Songs';
-import Api from '../api/Api';
-import Login from './Login';
-import { Loading } from '../api/Hooks';
+import Upload, { SongEditor } from './Upload';
 
 export const NO_COVER = require('../img/example-cover.jpg');
 
@@ -35,11 +36,12 @@ function App() {
 	const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
 	useEffect(() => {
-		Api.isLoginIn().then(b => setLoggedIn(b));
-	})
+		Api.isLoggedIn().then(b => setLoggedIn(b));
+	}, []);
 
 	const dialog = useState<JSX.Element | null>(null);
 	const audio = useCreateAudio();
+	const messages = useState<IMessage[]>([]);
 
 	const pages: IPage[] = [
 		{ path: '/playlists/:id?', component: Playlists },
@@ -54,54 +56,55 @@ function App() {
 	return (
 		<DialogProvider value={dialog}>
 			<AudioProvider value={audio}>
-				<Router>
+				<MessageProvider value={messages}>
+					<Router>
 
-					{loggedIn
-						? <section className='container'>
-							<Nav />
-							<Player />
-							<ActiveSong />
-							<PlaylistsBar />
+						{loggedIn
+							? <section className='container'>
+								<Nav />
+								<Player />
+								<ActiveSong />
+								<PlaylistsBar />
 
-							<Dialog>
-								{dialog[0]}
-							</Dialog>
+								<Dialog />
+								<Messages />
 
-							<Switch>
+								<Switch>
 
-								{pages.map(page =>
-									<Route key={page.path} path={page.path}>
-										<Page {...page} />
-									</Route >
-								)}
+									{pages.map(page =>
+										<Route key={page.path} path={page.path}>
+											<Page {...page} />
+										</Route >
+									)}
 
-								<Route exact path='/'>
-									<Redirect to='/playlists' />
-								</Route>
+									<Route exact path='/'>
+										<Redirect to='/playlists' />
+									</Route>
 
-								<Route path='/logout'>
-									<Logout />
-								</Route>
+									<Route path='/logout'>
+										<Logout />
+									</Route>
 
-								<Route>
-									<Cell area='page'>
-										<h1 className='empty-info'>404 - Not Found</h1>
-									</Cell>
-								</Route>
+									<Route>
+										<Cell area='page'>
+											<h1 className='empty-info'>404 - Not Found</h1>
+										</Cell>
+									</Route>
 
-							</Switch>
-						</section>
+								</Switch>
+							</section>
 
-						: <SinglePage>
-							{loggedIn === false
-								? <Login />
-								: <Loading />
-							}
-						</SinglePage>
-					}
+							: <SinglePage>
+								{loggedIn === false
+									? <Login />
+									: <Loading />
+								}
+							</SinglePage>
+						}
 
-				</Router>
+					</Router>
 
+				</MessageProvider>
 			</AudioProvider>
 		</DialogProvider>
 	);

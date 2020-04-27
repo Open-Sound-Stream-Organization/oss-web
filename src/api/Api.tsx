@@ -69,14 +69,14 @@ class Api implements IApi {
         return null;
     }
 
-    public async isLoginIn() {
+    public async isLoggedIn() {
         if (!this.getApiKey()) return false;
 
         return this.fetch('artist')
             .then(() => true)
             .catch(e => {
                 console.log(e);
-                localStorage.removeItem('apikey');
+                //localStorage.removeItem('apikey');
                 return false;
             });
     }
@@ -142,12 +142,15 @@ class Api implements IApi {
     async logout() {
         const apiKey = this.getApiKey();
 
+        console.log('Logout');
+        
+/*
         if (apiKey) await this.delete(`apikey/${apiKey.id}`)
             .catch(e => console.error(e))
 
         localStorage.removeItem('apikey');
         window.location.reload();
-
+*/
     }
 
     async login(base64: string) {

@@ -14,7 +14,7 @@ export function GenericDialog({ dialog }: { dialog: DialogProps }) {
     const { close } = useDialog();
 
     return (
-        <>
+        <div className='generic'>
             <p>{dialog.text}</p>
             <ul>
                 {dialog.buttons.map(({ text, className, click }, i) =>
@@ -26,16 +26,17 @@ export function GenericDialog({ dialog }: { dialog: DialogProps }) {
                     </button>
                 )}
             </ul>
-        </>
+        </div>
     )
 }
 
-function Dialog({ children }: { children: JSX.Element | null }) {
+function Dialog() {
+    const [children] = useContext(DialogContext);
     const { close } = useDialog();
 
     useEffect(() => {
         const listener = (e: KeyboardEvent) => {
-            if(e.keyCode === 27) close();
+            if (e.keyCode === 27) close();
         }
         window.addEventListener('keydown', listener);
         return () => window.removeEventListener('keydown', listener);

@@ -30,18 +30,20 @@ function Player() {
             <IconButton onClick={playing() ? pause : () => play()} icon={playing() ? faPause : faPlay} area='play' />
             <IconButton icon={faRandom} area='shuffle' />
             <IconButton icon={faRedoAlt} area='repeat' />
-            <IconButton icon={faList} area='queue' onClick={open()} />
+            {queue && <IconButton icon={faList} area='queue' onClick={() => open(<Queue {...queue} />)} />}
 
             <Volume />
         </Cell>
     );
 }
 
-function Queue(queue: IQueue) {
+function Queue({ songs, remove }: IQueue) {
     return (
-        <>
-
-        </>
+        <div className='queue'>
+            {songs.map(({ title, id }) =>
+                <p key={id}>{title}</p>
+            )}
+        </div>
     );
 }
 
