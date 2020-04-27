@@ -1,0 +1,48 @@
+#edit {
+    padding-top: 30px;
+}
+
+.editor {
+    display: grid;
+    justify-content: center;
+    grid-template:
+        "title"
+        "artists"
+        "album"
+        "submit";
+
+    max-width: 500px;
+    padding: 10px;
+    gap: 30px;
+    margin: 0 auto;
+
+    & > div {
+        display: grid;
+        align-items: center;
+        grid-template: "label input" / 1fr 3fr;
+    }
+
+    /*
+    label + * {
+        margin-top: 10px;
+    }
+    */
+
+    [type=submit] {
+        grid-area: submit;
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
+    input,
+    select,
+    option {
+        width: 100%;
+    }
+
+    #title {
+        width: calc(100% - 30px);
+        padding: 15px;
+        font-size: 1rem;
+    }
+}

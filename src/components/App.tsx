@@ -11,7 +11,7 @@ import Nav from './NavBar';
 import Player from './Player';
 import Playlists from './Playlists';
 import PlaylistsBar from './PlaylistsBar';
-import Registration from './Registration';
+import Upload, { SongEditor } from './Upload';
 import Seeder from './Seeder';
 import Songs from './Songs';
 import Api from '../api/Api';
@@ -38,16 +38,17 @@ function App() {
 		Api.isLoginIn().then(b => setLoggedIn(b));
 	})
 
-	const dialog = useState<DialogProps | null>(null);
+	const dialog = useState<JSX.Element | null>(null);
 	const audio = useCreateAudio();
 
 	const pages: IPage[] = [
-		{ path: '/songs', component: Songs },
 		{ path: '/playlists/:id?', component: Playlists },
 		{ path: '/artists/:id?', component: Artists },
 		{ path: '/albums/:id?', component: Albums },
+		{ path: '/songs/edit/:id', component: SongEditor, id: 'edit' },
 		{ path: '/songs', component: Songs },
 		{ path: '/seed', component: Seeder },
+		{ path: '/upload', component: Upload },
 	];
 
 	return (
@@ -62,7 +63,9 @@ function App() {
 							<ActiveSong />
 							<PlaylistsBar />
 
-							<Dialog dialog={dialog[0]} />
+							<Dialog>
+								{dialog[0]}
+							</Dialog>
 
 							<Switch>
 
@@ -78,6 +81,12 @@ function App() {
 
 								<Route path='/logout'>
 									<Logout />
+								</Route>
+
+								<Route>
+									<Cell area='page'>
+										<h1 className='empty-info'>404 - Not Found</h1>
+									</Cell>
 								</Route>
 
 							</Switch>
@@ -101,21 +110,21 @@ function App() {
 export interface IPage {
 	path: string;
 	component: () => JSX.Element | null;
-	key?: string;
+	id?: string;
 	text?: string;
 }
 
 function Page(page: IPage) {
 
 	const path = useLocation().pathname.slice(1) + '/';
-	const key = page.key ?? path.slice(0, path.indexOf('/'));
+	const id = page.id ?? path.slice(0, path.indexOf('/'));
 
 	useEffect(() => {
-		document.title = 'OSS - ' + key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
-	}, [key]);
+		document.title = 'OSS - ' + id.charAt(0).toUpperCase() + id.slice(1).toLowerCase();
+	}, [id]);
 
 	return (
-		<Cell area='page' id={key}>
+		<Cell area='page' id={id}>
 			<page.component />
 		</Cell>
 	);

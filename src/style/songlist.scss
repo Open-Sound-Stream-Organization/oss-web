@@ -1,6 +1,7 @@
 .songlist {
     width: 100%;
     grid-area: songs;
+    user-select: none;
     $border: #555;
 
     & > div {
@@ -10,23 +11,56 @@
         grid-auto-flow: column;
         border-right: $border-width solid $border;
 
-        p {
-            padding: 5px 10px;
-            width: calc(100% - 20px);
+        &:nth-of-type(odd) {
+            background-color: $gray;
+        }
 
+        &:hover {
+            background-color: $lighter-gray;
+        }
+
+        &.selected {
+            background-color: $lighter-gray;
+        }
+
+        & > * {
+            padding: 0;
+            width: 100%;
             &:not(:first-child) {
                 border-left: $border-width solid $border;
             }
+
+            &:last-child {
+                border-right: $border-width solid $border;
+            }
         }
-    }
 
-    & > div:first-child {
-        border-bottom: $border-width solid $border;
-    }
+        & > p {
+            padding: 5px 10px;
+            width: calc(100% - 20px);
+        }
 
-    & > div {
-        &:nth-of-type(odd) {
-            background-color: $gray;
+        &:first-child {
+            border-bottom: $border-width solid $border;
+
+            & > * {
+                border-color: transparent;
+            }
+
+            p {
+                padding-top: 8px;
+                padding-left: 20px;
+            }
+        }
+
+        button {
+            box-shadow: none;
+
+            &:focus,
+            &:hover {
+                color: $primary;
+                box-shadow: none;
+            }
         }
     }
 
@@ -34,16 +68,12 @@
         border-top: $border-width solid $border;
     }
 
-    overflow: scroll;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .song-button {
     border: none;
     transition: color 0.1s linear;
-
-    &:focus,
-    &:hover {
-        box-shadow: none;
-        color: $primary;
-    }
 }
