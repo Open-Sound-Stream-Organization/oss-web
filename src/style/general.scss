@@ -90,7 +90,7 @@ a {
 
 .container {
     grid-template:
-        "nav player" 80px
+        "nav player" $player-height
         "nav page"
         "playlists page"
         "cover page"
@@ -105,6 +105,10 @@ a {
         align-self: end;
     }
 
+    .page {
+        height: calc(100vh - #{$player-height});
+    }
+
     @include grid-borders();
 }
 
@@ -112,41 +116,6 @@ a {
     margin: 0;
     padding: 0;
     transition: background 0.1s linear, opacity 0.1s linear, filter 0.1s linear;
-}
-
-input,
-button {
-    background: transparent;
-    transition: border 0.1s linear, box-shadow 0.1s linear;
-    border: none;
-    color: $text;
-
-    &:focus,
-    &:hover {
-        outline: none;
-        border-color: transparent;
-    }
-
-    &:focus {
-        box-shadow: 0 0 0 2px $primary;
-    }
-
-    &:hover {
-        box-shadow: 0 0 0 2px $light-gray;
-    }
-
-    &.disabled {
-        pointer-events: none;
-    }
-}
-
-button,
-input[type="submit"],
-[role="button"] {
-    cursor: pointer;
-    border: 1px solid $light-gray;
-    color: $text;
-    background-color: $gray;
 }
 
 img {
@@ -206,6 +175,7 @@ span + svg {
     }
 }
 
+@import "./forms.scss";
 @import "./nav.scss";
 @import "./player.scss";
 @import "./playlist.scss";
@@ -218,4 +188,5 @@ span + svg {
 @import "./list.scss";
 @import "./img.scss";
 @import "./login.scss";
-@import "./registration.scss";
+@import "./editor.scss";
+@import "./upload.scss";

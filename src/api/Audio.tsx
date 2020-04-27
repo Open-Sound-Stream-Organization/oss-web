@@ -48,11 +48,16 @@ function useVolume(audio: HTMLAudioElement) {
     const [saveVolumed, saveVolume] = useState(volume);
 
     const setVolume = (v: number) => {
-        audio.volume = v;
+        const clamped = Math.min(1, Math.max(0, v));
+        set(clamped);
+        audio.volume = clamped;
     }
 
     useEffect(() => {
-        const update = () => set(audio.volume);
+        const update = () => set(v => {
+            if(audio.volume !== v) return audio.volume;
+            return v;
+        });
         audio.addEventListener('volumechange', update);
         return () => audio.removeEventListener('volumechange', update);
     }, [audio]);
