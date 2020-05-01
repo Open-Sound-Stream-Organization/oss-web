@@ -5,7 +5,7 @@ import { useLoading } from '../api/Hooks';
 import { IList, IPlaylist } from '../api/Models';
 import Cell from './Cell';
 
-function Playlist() {
+const Playlist = () => {
     const { id: active } = useParams();
 
     return useLoading<IList<IPlaylist>>('playlist', ({ objects }) =>

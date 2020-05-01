@@ -3,7 +3,7 @@ import API from '../api/Api';
 import { Link } from 'react-router-dom';
 
 
-function Registration() {
+const Registration = () => {
 
     const [username, setUsername] = useState('');
     const [password1, setPassword1] = useState('');

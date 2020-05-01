@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState, Provider, ExoticComponent, MemoExoticComponent } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import Api from '../api/Api';
 import { Provider as AudioProvider, useCreateAudio } from '../api/Audio';
@@ -21,18 +21,18 @@ import Upload, { SongEditor } from './Upload';
 
 export const NO_COVER = require('../img/example-cover.jpg');
 
-function SinglePage({ children }: { children: ReactNode }) {
+const SinglePage = ({ children }: { children: ReactNode }) => {
 	return <section className='single'>{children}</section>;
 }
 
-function Logout() {
+const Logout = () => {
 	useEffect(() => {
 		Api.logout();
 	});
 	return <Redirect to='' />
 }
 
-function App() {
+const App = () => {
 	const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
 	useEffect(() => {
@@ -47,7 +47,6 @@ function App() {
 		{ path: '/playlists/:id?', component: Playlists },
 		{ path: '/artists/:id?', component: Artists },
 		{ path: '/albums/:id?', component: Albums },
-		{ path: '/songs/edit/:id', component: SongEditor, id: 'edit' },
 		{ path: '/songs', component: Songs },
 		{ path: '/seed', component: Seeder },
 		{ path: '/upload', component: Upload },
@@ -112,12 +111,12 @@ function App() {
 
 export interface IPage {
 	path: string;
-	component: () => JSX.Element | null;
+	component: (() => JSX.Element | null) | MemoExoticComponent<() => JSX.Element | null>;
 	id?: string;
 	text?: string;
 }
 
-function Page(page: IPage) {
+const Page = (page: IPage) => {
 
 	const path = useLocation().pathname.slice(1) + '/';
 	const id = page.id ?? path.slice(0, path.indexOf('/'));

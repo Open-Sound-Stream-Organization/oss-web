@@ -6,13 +6,13 @@ import div from './Cell';
 import { useParams } from 'react-router-dom';
 import Cell from './Cell';
 
-function Upload() {
+const Upload = React.memo(() => {
     return (
         <>
             <SongEditor />
         </>
     )
-}
+});
 
 type State<T> = [T, Dispatch<SetStateAction<T>>];
 
@@ -50,7 +50,7 @@ export function ModelSelect<T extends IModel>(props: { endpoint: string, state: 
     )
 }
 
-export function MultiModelSelect(props: { endpoint: string, state: State<string[]> }) {
+export const MultiModelSelect = (props: { endpoint: string, state: State<string[]> }) => {
     const { endpoint, state } = props;
     const [initial, onChange] = state;
     const [models, set] = useState<(null | string)[]>(initial.length > 0 ? initial : [null]);
@@ -77,12 +77,12 @@ export function MultiModelSelect(props: { endpoint: string, state: State<string[
     </div>;
 }
 
-export function SongEditor() {
+export const SongEditor = () => {
     const { id } = useParams();
     return useLoading<ISong>(`song/${id}`, s => <LoadedSongEditor song={s} />)
 }
 
-export function LoadedSongEditor({ song }: { song?: ISong }) {
+export const LoadedSongEditor = ({ song }: { song?: ISong }) => {
 
     const [title, setTitle] = useState<string>(song?.title ?? '');
     const [album, setAlbum] = useState<null | string>(song?.album ?? null);

@@ -65,7 +65,6 @@ function useSelection<T extends IModel>(models: T[]): ISelection {
                     if (shift && last) {
                         const lower = Math.min(last, index);
                         const upper = Math.max(last, index);
-                        console.log(lower, upper);
                         for (let i = lower; i <= upper; i++) n.add(ids[i]);
                     }
 
@@ -95,7 +94,7 @@ function useSelection<T extends IModel>(models: T[]): ISelection {
     return { selected, isSelected, events };
 }
 
-function Songs({ songs }: { songs: ISong[] }) {
+const Songs = ({ songs }: { songs: ISong[] }) => {
     const selection = useSelection(songs);
     if ((songs?.length ?? 0) === 0) return <p className='empty-info'>No songs yet</p>
 
@@ -110,18 +109,18 @@ function Songs({ songs }: { songs: ISong[] }) {
                 <p />
                 <p />
             </div>
-            {songs.map(song =>
+            {songs.slice(0, 10).map(song =>
                 <SongRow
                     {...{ selection }}
-                    key={song.id} {...{ song }}
+                    key={song.id} {...{ song, songs }}
                 />
             )}
         </div>
     )
 }
 
-function SongRow(props: { song: ISong | string, selection?: ISelection }) {
-    const { song, selection } = props;
+const SongRow = (props: { song: ISong | string, selection?: ISelection, songs?: ISong[] }) => {
+    const { song, selection, songs } = props;
     const { open } = useDialog();
     const { queue } = usePlayer();
 
@@ -132,13 +131,15 @@ function SongRow(props: { song: ISong | string, selection?: ISelection }) {
 
     return (
         <div className={classes({ selected })} {...selection?.events(id)}>
-            <SongButton {...{ song }} />
+            <SongButton {...{ song, songs }} />
+
             <p>{title}</p>
             <p>{artists.map(a =>
                 <Artist key={a} url={a} />
             )}</p>
             <p><Album url={album} /></p>
             <p>{length}</p>
+
             <IconButton icon={faEdit} onClick={() => open(<LoadedSongEditor {...{ song }} />)} />
             <IconButton icon={faList} onClick={() => queue?.add(song)} />
 
@@ -146,23 +147,23 @@ function SongRow(props: { song: ISong | string, selection?: ISelection }) {
     );
 }
 
-function IconButton({ onClick, icon }: { onClick?: () => void, icon: IconDefinition }) {
+const IconButton = ({ onClick, icon }: { onClick?: () => void, icon: IconDefinition }) => {
 
     return <button {...{ onClick }}>
         <Icon {...{ icon }} />
     </button>
 }
 
-function LoadingSongRow({ url, ...rest }: { url: string, selection?: ISelection }) {
+const LoadingSongRow = ({ url, ...rest }: { url: string, selection?: ISelection }) => {
     return useLoading<ISong>(url, song => <SongRow {...rest} {...{ song }} />);
 }
 
-function Artist({ url }: { url: string }) {
+const Artist = ({ url }: { url: string }) => {
     const [a] = useApi<IArtist>(url);
     return a ? <Link className='seperate-comma' to={`/artists/${a.id}`}>{a.name}</Link> : null;
 }
 
-function Album({ url }: { url: string }) {
+const Album = ({ url }: { url: string }) => {
     const [a] = useApi<IAlbum>(url);
     return a ? <Link className='seperate-comma' to={`/albums/${a.id}`}>{a.name}</Link> : null;
 }

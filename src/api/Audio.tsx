@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, createContext, useContext, Dispatch, SetStateAction } from "react";
-import { ISong } from "./Models";
+import { ISong, IPlaylist } from "./Models";
 import Api from "./Api";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
@@ -13,45 +13,39 @@ export interface IQueue {
 
 interface PlayerData {
     song?: ISong;
-    play: (t?: ISong) => void;
+    play: (song?: ISong | ISong[], songs?: ISong[]) => void;
     pause: () => void;
+    next?: () => void,
+    previous?: () => void,
     position: number;
     shuffle: boolean;
     repeat: boolean;
-    setShuffle: (b: boolean) => void;
-    setRepeat: (b: boolean) => void;
+    setShuffle: Dispatch<SetStateAction<boolean>>;
+    setRepeat: Dispatch<SetStateAction<boolean>>;
     playing: () => boolean;
-    volume: number;
-    setVolume: (v: number) => void;
-    toggleVolume: () => void;
     queue?: IQueue;
+    songs: ISong[];
 }
 
-const context = createContext<PlayerData>({
-    play: () => { },
-    pause: () => { },
-    position: 0,
-    shuffle: false,
-    repeat: false,
-    setShuffle: () => { },
-    setRepeat: () => { },
-    playing: () => false,
-    volume: 0,
-    setVolume: () => { },
-    toggleVolume: () => { },
-});
+const Context = createContext<PlayerData & { audio: HTMLAudioElement } | null>(null);
 
-export const Provider = context.Provider;
+export const Provider = Context.Provider;
 
-export function usePlayer(): PlayerData {
-    return useContext(context);
+export const usePlayer: () => PlayerData = () => {
+    const context = useContext(Context);
+    if (!context) throw new Error('There is no player defined');
+    return context;
 }
 
 /**
  * Can be used anywhere to access and modify volume
  * TODO This is where the actual volume logic will happen
  */
-function useVolume(audio: HTMLAudioElement) {
+export const useVolume = () => {
+    const context = useContext(Context);
+    if (!context) throw new Error('There is no player defined');
+    const { audio } = context;
+
     const [volume, set] = useState(0.4);
     const [saveVolumed, saveVolume] = useState(volume);
 
@@ -86,7 +80,7 @@ function useVolume(audio: HTMLAudioElement) {
     return { volume, setVolume, toggleVolume };
 }
 
-function useQueue(setSong: Dispatch<SetStateAction<ISong | undefined>>): IQueue {
+const useQueue = (setSong: Dispatch<SetStateAction<ISong | undefined>>) => {
     const [songs, setSongs] = useState<ISong[]>([]);
     const messages = useMessages();
 
@@ -103,18 +97,21 @@ function useQueue(setSong: Dispatch<SetStateAction<ISong | undefined>>): IQueue 
         })
     }
 
-    return { songs, add, remove };
+    return { songs, add, remove } as IQueue;
 }
 
-export function useCreateAudio(): PlayerData {
+export const useCreateAudio = () => {
     const [song, setSong] = useState<ISong>();
     const [shuffle, setShuffle] = useState(false);
     const [repeat, setRepeat] = useState(true);
     const [position, setPosition] = useState(0);
 
+    const [unshuffled, setSongs] = useState<ISong[]>([]);
+    const shuffled = useMemo(() => unshuffled.sort((a, b) => Math.random() - 0.5), [unshuffled]);
+    const songs = shuffle ? unshuffled : shuffled;
+    const [index, setIndex] = useState(0);
 
     const audio = useMemo(() => new Audio(), []);
-    const volume = useVolume(audio);
     const queue = useQueue(setSong);
 
     useEffect(() => {
@@ -123,11 +120,16 @@ export function useCreateAudio(): PlayerData {
         return () => audio.removeEventListener('timeupdate', update);
     }, [audio])
 
-    const play = async (song?: ISong) => {
+    const play = async (song?: ISong | ISong[], songs?: ISong[]) => {
+        const ss = Array.isArray(song) ? song : songs;
+        const s1 = Array.isArray(song) ? undefined : song;
+        const s = s1 ?? (ss ? ss[0] : undefined);
 
-        if (song) await Api.audio(song.audio)
+        setSongs(ss ?? []);
+
+        if (s) await Api.audio(s.audio)
             .then(src => {
-                setSong(song);
+                setSong(s);
 
                 audio.src = src;
                 audio.currentTime = 0;
@@ -142,18 +144,35 @@ export function useCreateAudio(): PlayerData {
         audio?.pause();
     }
 
+    const previous = undefined;
+
+    const next = (() => {
+        if (queue.songs[0]) return () => {
+            play(queue.songs[0]);
+            queue.remove(0);
+        }
+        else {
+            const i = index + 1;
+            if (songs.length > 0 && (i < songs.length || repeat)) return () => {
+                play(songs[i % songs.length]);
+                setIndex(i);
+            };
+        }
+    })();
+
     return {
         song: song ? { ...song, length: audio.duration } : undefined,
-        play, pause,
+        play, pause, next, previous,
         shuffle, repeat, setShuffle, setRepeat,
         playing: () => !!audio && !audio.paused,
         position,
-        ...volume,
-        queue
+        queue,
+        audio,
+        songs: [...queue.songs, ...songs.slice(0, 5)],
     };
 }
 
-export function SongButton({ song }: { song: ISong }) {
+export const SongButton = ({ song, songs }: { song: ISong, songs?: ISong[] }) => {
     const { play, pause, playing, song: s } = usePlayer();
     const selected = song.id === s?.id;
 
@@ -161,7 +180,7 @@ export function SongButton({ song }: { song: ISong }) {
         if (selected) {
             if (playing()) pause();
             else play();
-        } else play(song);
+        } else play(song, songs);
     }
 
     return (

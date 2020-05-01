@@ -87,7 +87,7 @@ export function useSubmit<R = any>(endpoint: string, data?: any, cb?: (r?: R) =>
 /**
  * A universal loading component
  */
-export function Loading() {
+export const Loading = () => {
     return <span className='loading' />;
 }
 

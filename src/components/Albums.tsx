@@ -6,7 +6,7 @@ import Cell from './Cell';
 import { useLoading, useApiBunch } from '../api/Hooks';
 import { Link } from 'react-router-dom';
 
-function Active({ name, artists, songs: songURLs, cover_url }: IAlbum) {
+const Active = ({ name, artists, songs: songURLs, cover_url }: IAlbum) => {
     const [songs] = useApiBunch<ISong>(songURLs);
 
     return (
@@ -20,14 +20,14 @@ function Active({ name, artists, songs: songURLs, cover_url }: IAlbum) {
     )
 }
 
-function Artist({ url }: { url: string }) {
+const Artist = ({ url }: { url: string }) => {
     return useLoading<IArtist>(url, ({ name, id }) =>
         <Link to={`/artists/${id}`}>{name}</Link>
     );
 }
 
-function Albums() {
+const Albums = React.memo(() => {
     return <ModelView endpoint='album' render={(a: IAlbum) => <Active {...a} />} />
-}
+});
 
 export default Albums;

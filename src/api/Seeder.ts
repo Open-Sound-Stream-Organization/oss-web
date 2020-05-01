@@ -132,7 +132,7 @@ function random<T>(array: T[]) {
     return range(array, 1)[0];
 }
 
-function randomDate() {
+const randomDate = () => {
     return `${1960 + Math.floor(Math.random() * 60)}`;
 }
 

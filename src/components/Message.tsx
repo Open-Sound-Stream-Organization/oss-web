@@ -11,7 +11,7 @@ interface MessageProps {
 
 export type IMessage = MessageProps & { date: Date };
 
-function Messages() {
+const Messages = () => {
     const [messages] = useContext(MessageContext);
     const { add, close } = useMessages();
 
@@ -26,7 +26,7 @@ function Messages() {
     )
 }
 
-function Message({ text, type, close }: MessageProps & { close: () => void }) {
+const Message = ({ text, type, close }: MessageProps & { close: () => void }) => {
 
     const icon = (() => {
         switch (type) {
@@ -50,7 +50,7 @@ const MessageContext = React.createContext<[
     Dispatch<SetStateAction<IMessage[]>>,
 ]>([[], () => { }]);
 
-export function useMessages() {
+export const useMessages = () => {
     const [, setMessages] = useContext(MessageContext);
 
     useEffect(() => {

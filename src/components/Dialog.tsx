@@ -10,7 +10,7 @@ export interface DialogProps {
     }[];
 }
 
-export function GenericDialog({ dialog }: { dialog: DialogProps }) {
+export const GenericDialog = ({ dialog }: { dialog: DialogProps }) => {
     const { close } = useDialog();
 
     return (
@@ -30,7 +30,7 @@ export function GenericDialog({ dialog }: { dialog: DialogProps }) {
     )
 }
 
-function Dialog() {
+const Dialog = () => {
     const [children] = useContext(DialogContext);
     const { close } = useDialog();
 
@@ -63,7 +63,7 @@ const DialogContext = React.createContext<[
     (d: JSX.Element | null) => void
 ]>([null, () => { }]);
 
-export function useDialog() {
+export const useDialog = () => {
     const [, open] = useContext(DialogContext);
     const close = () => open(null);
     return { open, close };
