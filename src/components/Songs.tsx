@@ -14,7 +14,7 @@ function Songs() {
             <>
                 <SongList songs={objects} />
                 </>
-                //TODO song zu einer Playlist hinzufügen
+                //song zu einer Playlist hinzufügen
                 <>
                 <IconButton onClick={e => addSongToPlaylist(e.target.id)}><AddBoxIcon /></IconButton>
            </>
