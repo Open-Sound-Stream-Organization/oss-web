@@ -178,6 +178,19 @@ class Api implements IApi {
 
     }
 
+    async newPlayist(){
+        const url = `${API_URL}/playlist/`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${base64}`,
+            },
+             });
+        if (response.status !== 201) throw new Error('Playlist konnte nicht erstellt werden');
+    }
+
 }
 
 
