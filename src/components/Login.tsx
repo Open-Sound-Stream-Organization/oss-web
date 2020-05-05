@@ -7,7 +7,7 @@ function base64(string: string) {
     return new Buffer(string).toString('base64');
 }
 
-function Login() {
+const Login = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

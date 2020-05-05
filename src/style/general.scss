@@ -14,12 +14,8 @@ a {
 }
 
 @mixin grid-borders() {
-    border-bottom: $border-width solid #444;
-    border-right: $border-width solid #444;
-
     & > * {
-        border-top: $border-width solid #444;
-        border-left: $border-width solid #444;
+        box-shadow: 0 0 0 $border-width / 2 #444;
     }
 }
 
@@ -39,7 +35,15 @@ a {
         "list active"
         / 1fr 4fr;
 
-    ul.list {
+    & > .list {
+
+        button {
+            height: 40px;
+            width: 40px;
+            margin: 10px 50%;
+            transform: translateX(-50%);
+        }
+
         min-width: 200px;
         border-right: $border-width solid #444;
     }
@@ -90,19 +94,24 @@ a {
 
 .container {
     grid-template:
-        "nav player" 80px
-        "nav page"
+        "nav player" $player-height
+        "nav page" 240px - $player-height
         "playlists page"
-        "cover page"
-        / $sidebar-width;
+        "cover page" #{$sidebar-width}
+        / #{$sidebar-width} 1fr;
 
     .playlists {
         overflow: hidden;
+        height: 100%;
     }
 
     & > .cover {
         height: $sidebar-width;
         align-self: end;
+    }
+
+    .page {
+        height: calc(100vh - #{$player-height});
     }
 
     @include grid-borders();
@@ -112,41 +121,6 @@ a {
     margin: 0;
     padding: 0;
     transition: background 0.1s linear, opacity 0.1s linear, filter 0.1s linear;
-}
-
-input,
-button {
-    background: transparent;
-    transition: border 0.1s linear, box-shadow 0.1s linear;
-    border: none;
-    color: $text;
-
-    &:focus,
-    &:hover {
-        outline: none;
-        border-color: transparent;
-    }
-
-    &:focus {
-        box-shadow: 0 0 0 2px $primary;
-    }
-
-    &:hover {
-        box-shadow: 0 0 0 2px $light-gray;
-    }
-
-    &.disabled {
-        pointer-events: none;
-    }
-}
-
-button,
-input[type="submit"],
-[role="button"] {
-    cursor: pointer;
-    border: 1px solid $light-gray;
-    color: $text;
-    background-color: $gray;
 }
 
 img {
@@ -160,8 +134,14 @@ img {
     padding: 10px;
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &.active {
         background-color: #fff3;
+    }
+
+    &.disabled {
+        pointer-events: none;
+        color: $lighter-gray;
     }
 }
 
@@ -186,6 +166,7 @@ span + svg {
     }
 }
 
+/*
 .loading {
     position: relative;
     height: 100%;
@@ -205,17 +186,20 @@ span + svg {
         animation: load 0.5s ease-out infinite alternate;
     }
 }
+*/
 
+@import "./forms.scss";
 @import "./nav.scss";
 @import "./player.scss";
-@import "./playlist.scss";
 @import "./artists.scss";
 @import "./albums.scss";
 @import "./playlists.scss";
 @import "./seeder.scss";
 @import "./songlist.scss";
 @import "./dialog.scss";
+@import "./messages.scss";
 @import "./list.scss";
 @import "./img.scss";
 @import "./login.scss";
-@import "./registration.scss";
+@import "./editor.scss";
+@import "./upload.scss";

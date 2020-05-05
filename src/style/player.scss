@@ -2,8 +2,8 @@
     user-select: none;
     display: grid;
     grid-template:
-        "previous play next info shuffle repeat volume"
-        / 1fr 1fr 1fr 8fr 1fr 1fr 3fr;
+        "previous play next info shuffle repeat volume queue"
+        / 1fr 1fr 1fr 8fr 1fr 1fr 3fr 1fr;
 
     & > * {
         justify-self: center;
@@ -77,6 +77,35 @@
             position: absolute;
             height: 40%;
             bottom: 0;
+        }
+    }
+}
+.dialog .queue {
+    min-width: 500px;
+
+    p {
+        padding: 10px 0;
+        text-align: center;
+        font-weight: bold;
+
+        &::after {
+            content: ':';
+        }
+
+        &:not(:first-child) {
+            margin-top: 10px;
+        }
+    }
+
+    ul {
+        list-style-type: none;
+
+        li {
+            padding: 10px;
+
+            &:nth-child(odd) {
+                background-color: $gray;
+            }
         }
     }
 }

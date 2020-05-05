@@ -27,6 +27,28 @@ export function useApi<R>(endpoint: string, params?: ParsedUrlQueryInput) {
     return [result, loading, message] as [R | undefined, boolean, string | undefined];
 }
 
+export function useApiBunch<R>(endpoints: string[]) {
+    const [results, setResults] = useState<R[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [messages, setMessages] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (results.length === endpoints.length) setLoading(false);
+    }, [results, endpoints])
+
+    useEffect(() => {
+        setLoading(true);
+        setResults([]);
+
+        Promise.all(endpoints.map((endpoint, i) => API.fetch<R>(endpoint)
+            .catch(e => setMessages(m => [...m, e]))
+        )).then(results => setResults(results.filter(r => typeof r === 'object') as R[]));
+
+    }, [endpoints]);
+
+    return [results, loading, messages] as [R[], boolean, string[]];
+}
+
 /**
  * React hook to send post requests
  * @param endpoint The url
@@ -59,7 +81,7 @@ export function useSubmit<R = any>(endpoint: string, data?: any, cb?: (r?: R) =>
 /**
  * A universal loading component
  */
-export function Loading() {
+export const Loading = () => {
     return <span className='loading' />;
 }
 
@@ -67,14 +89,14 @@ export type Render<R> = (result: R) => JSX.Element | null;
 
 /**
  * React hook to render loading componets universally
- * @param enpoint The api url
+ * @param endpoint The api url
  * @param params Optional query parameters
  * @param render The render function called once the data has been received
  */
-export function useLoading<R>(enpoint: string, params: ParsedUrlQueryInput | Render<R>, render?: Render<R>): JSX.Element | null {
+export function useLoading<R>(endpoint: string, params: ParsedUrlQueryInput | Render<R>, render?: Render<R>): JSX.Element | null {
     const p = typeof params === 'object' ? params : undefined;
     const r = typeof params === 'function' ? params : render;
-    const [result, loading, error] = useApi<R>(enpoint, p);
+    const [result, loading, error] = useApi<R>(endpoint, p);
 
     if (loading) return <Loading />
     if (!result) return <span className='empty-info'>{error || 'Not found'}</span>

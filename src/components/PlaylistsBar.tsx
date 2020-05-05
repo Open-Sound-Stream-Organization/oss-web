@@ -5,7 +5,7 @@ import { useLoading } from '../api/Hooks';
 import { IList, IPlaylist } from '../api/Models';
 import Cell from './Cell';
 
-function Playlist() {
+const Playlist = () => {
     const { id: active } = useParams();
 
     return useLoading<IList<IPlaylist>>('playlist', ({ objects }) =>
@@ -13,9 +13,11 @@ function Playlist() {
             {(objects.length > 0)
                 ? <ul className='list'>
                     {objects.map(({ id, name }) =>
-                        <li key={id} className={classes({ active: id.toString() === active })}>
-                            <Link to={`/playlists/${id}`}>{name}</Link>
-                        </li>
+                        <Link key={id} to={`/playlists/${id}`}>
+                            <li className={classes({ active: id.toString() === active })}>
+                                {name}
+                            </li>
+                        </Link>
                     )}
                 </ul>
                 : <p className='empty-info'>No playlists yet</p>

@@ -1,3 +1,21 @@
 #playlists {
     @include model-view();
+
+    & > .active {
+        padding: 10px;
+
+        display: grid;
+        grid-template:
+            "name add" 40px
+            "songs songs"
+            / 1fr 40px;
+    }
+}
+
+.create-playlist {
+
+    display: grid;
+    grid-template: "a" "b";
+    gap: 20px;
+
 }

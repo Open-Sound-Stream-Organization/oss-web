@@ -69,14 +69,14 @@ class Api implements IApi {
         return null;
     }
 
-    public async isLoginIn() {
+    public async isLoggedIn() {
         if (!this.getApiKey()) return false;
 
         return this.fetch('artist')
             .then(() => true)
             .catch(e => {
                 console.log(e);
-                localStorage.removeItem('apikey');
+                //localStorage.removeItem('apikey');
                 return false;
             });
     }
@@ -100,9 +100,29 @@ class Api implements IApi {
 
     }
 
+    async upload(endpoint: string, file: File) {
+        const apiKey = this.getApiKey();
+        if (!apiKey) throw new Error('Not logged in');
+
+        let url = endpoint;
+        if (!url.startsWith(API_URL)) url = `${API_URL}/${url}`
+        url += '/';
+
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                //'Content-Type': 'application/json',
+                'Authorization': apiKey.key,
+            },
+            body: file,
+        });
+
+    }
+
     private async method<O>(method: Method, endpoint: string, args?: any, update = true) {
         const apiKey = this.getApiKey();
-        if (!apiKey) throw new Error('Not logged n');
+        if (!apiKey) throw new Error('Not logged in');
 
         let url = endpoint;
         if (!url.startsWith(API_URL)) url = `${API_URL}/${url}`
@@ -142,12 +162,15 @@ class Api implements IApi {
     async logout() {
         const apiKey = this.getApiKey();
 
-        if (apiKey) await this.delete(`apikey/${apiKey.id}`)
-            .catch(e => console.error(e))
+        console.log('Logout');
 
-        localStorage.removeItem('apikey');
-        window.location.reload();
-
+        /*
+                if (apiKey) await this.delete(`apikey/${apiKey.id}`)
+                    .catch(e => console.error(e))
+        
+                localStorage.removeItem('apikey');
+                window.location.reload();
+        */
     }
 
     async login(base64: string) {

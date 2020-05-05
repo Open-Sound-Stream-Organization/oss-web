@@ -6,19 +6,21 @@ import { NO_COVER } from './App'
 import usePlayer from '../api/Audio';
 import { Cover } from './Shared';
 
-function ActiveSong() {
+const ActiveSong = () => {
     const { song } = usePlayer();
-    return song ? <ActiveCover {...song} /> : null;
+    return song
+        ? <ActiveCover {...song} />
+        : <Cover alt='No song playing' />;
 }
 
-function ActiveCover(song: ISong) {
+const ActiveCover = (song: ISong) => {
     const [album] = useApi<IAlbum>(song.album);
 
     return (
-            <Cover
-                src={album?.cover_url}
-                alt='Active Song Cover'
-            />
+        <Cover
+            src={album?.cover_url}
+            alt='Active Song Cover'
+        />
     )
 }
 
