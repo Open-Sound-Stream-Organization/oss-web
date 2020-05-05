@@ -10,7 +10,8 @@ option {
 
 input,
 button,
-select {
+select,
+[role="button"] {
     background: $gray;
     transition: border 0.1s linear, box-shadow 0.1s linear;
     border: none;
@@ -33,9 +34,12 @@ select {
 
     &.disabled {
         pointer-events: none;
+        color: $light-gray;
     }
 
-    &[type="text"], &[type="password"], &[type="number"] {
+    &[type="text"],
+    &[type="password"],
+    &[type="number"] {
         background: transparent;
         transition: background 0.1s linear;
         border-bottom: solid 1px $primary;
@@ -49,7 +53,6 @@ select {
             background-color: $gray;
         }
     }
-
 }
 
 button,
@@ -75,4 +78,13 @@ input[type="submit"],
     gap: 10px;
 
     grid-auto-columns: 1fr;
+}
+
+label.file {
+    cursor: pointer;
+    padding: 20px;
+    text-align: center;
+
+    & + input[type="file"] {
+    }
 }

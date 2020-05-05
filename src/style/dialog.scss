@@ -1,6 +1,7 @@
 .dialog {
     position: fixed;
     z-index: 1000;
+    overflow: hidden;
 
     top: 150%;
     left: 50%;

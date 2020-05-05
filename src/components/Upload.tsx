@@ -1,15 +1,65 @@
+import { faUpload, faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import classes from 'classnames';
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { useApi, useSubmit, useLoading } from '../api/Hooks';
-import { IAlbum, IList, IModel, ISong } from '../api/Models';
-import div from './Cell';
 import { useParams } from 'react-router-dom';
+import { useApi, useLoading } from '../api/Hooks';
+import { IAlbum, IList, IModel, ISong } from '../api/Models';
 import Cell from './Cell';
+import API from '../api/Api';
 
 const Upload = React.memo(() => {
+    const [files, setFiles] = useState<File[]>([]);
+    const [uploading, setUploading] = useState<{ file: File, done: boolean }[]>([]);
+
+    const fileName = (f: File) => f.name.substring(0, f.name.lastIndexOf('.'));
+
+    const upload = () => {
+
+        setUploading(u => [...u, ...files.map((file, i) => {
+
+            API.post<ISong>('song', { title: fileName(file) })
+                .then(({ id }) => API.upload(`song/${id}`, file))
+                .then(() => setUploading(u => {
+                    const n = [...u];
+                    n[i] = { file, done: true };
+                    return n;
+                }))
+                .catch(e => console.error(e));
+
+            return { file, done: false };
+
+        }
+        )])
+
+    }
+
     return (
         <>
-            <SongEditor />
+            <form onSubmit={e => {
+                e.preventDefault();
+                upload();
+            }}>
+
+                <label role="button" className="file" htmlFor="file">
+                    <span>Choose Files</span>
+                    <Icon icon={faUpload} />
+                </label>
+
+                <input onChange={e => setFiles([...(e.target.files ?? []) as File[]])} multiple id="file" type="file" accept="audio/mp3" hidden />
+
+                <button className={classes({ disabled: files.length === 0 })} type="submit">Submit</button>
+
+            </form>
+
+            <ul className='uploading'>
+                {uploading.map(({ file, done }, i) =>
+                    <li key={i} className={classes({ done })}>
+                        <Icon icon={done ? faCheck : faSpinner} />
+                        <span>{fileName(file)}</span>
+                    </li>
+                )}
+            </ul>
         </>
     )
 });

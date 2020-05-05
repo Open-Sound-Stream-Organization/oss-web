@@ -168,7 +168,7 @@ export const useCreateAudio = () => {
         position,
         queue,
         audio,
-        songs: [...queue.songs, ...songs.slice(0, 5)],
+        songs: songs.slice(0, 10),
     };
 }
 

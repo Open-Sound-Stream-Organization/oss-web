@@ -34,7 +34,7 @@ export function useApiBunch<R>(endpoints: string[]) {
 
     useEffect(() => {
         if(results.length === endpoints.length) setLoading(false);
-    }, results)
+    }, [results, endpoints])
 
     useEffect(() => {
         setLoading(true);

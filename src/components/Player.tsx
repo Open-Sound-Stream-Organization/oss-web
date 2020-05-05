@@ -20,7 +20,7 @@ const IconButton = (props: { icon: IconDefinition, area?: string, onClick?: () =
 }
 
 const Player = () => {
-    const { song, position, play, pause, playing, songs, previous, next, shuffle, setShuffle, repeat, setRepeat } = usePlayer();
+    const { song, position, play, pause, playing, songs, queue, previous, next, shuffle, setShuffle, repeat, setRepeat } = usePlayer();
     const { open } = useDialog();
 
     return (
@@ -32,7 +32,7 @@ const Player = () => {
             <IconButton onClick={playing() ? pause : () => play()} icon={playing() ? faPause : faPlay} area='play' />
             <IconButton active={shuffle} onClick={() => setShuffle(b => !b)} icon={faRandom} area='shuffle' />
             <IconButton active={repeat} onClick={() => setRepeat(b => !b)} icon={faRedoAlt} area='repeat' />
-            <IconButton disabled={songs.length === 0} icon={faList} area='queue' onClick={() => open(<Queue />)} />
+            <IconButton disabled={songs.length + (queue?.songs.length ?? 0) === 0} icon={faList} area='queue' onClick={() => open(<Queue />)} />
 
             <Volume />
         </Cell>
@@ -40,12 +40,24 @@ const Player = () => {
 }
 
 const Queue = () => {
-    const { songs } = usePlayer();
+    const { songs, queue } = usePlayer();
+
+    const sources = [
+        ['Queue', queue?.songs ?? []],
+        ['Next', songs],
+    ].filter(([, s]) => s.length > 0) as [string, ISong[]][];
 
     return (
         <div className='queue'>
-            {songs.map(({ title, id }) =>
-                <p key={id}>{title}</p>
+            {sources.map(([source, songs]) =>
+                <>
+                    <p>{source}</p>
+                    <ul key={source}>
+                        {songs.map(({ title, id }, i) =>
+                            <li key={`${id}-${i}`}>{title}</li>
+                        )}
+                    </ul>
+                </>
             )}
         </div>
     );

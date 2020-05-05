@@ -62,7 +62,7 @@ function useSelection<T extends IModel>(models: T[]): ISelection {
                 setSelected(old => {
                     const n = new Set(old);
 
-                    if (shift && last) {
+                    if (shift && last !== undefined) {
                         const lower = Math.min(last, index);
                         const upper = Math.max(last, index);
                         for (let i = lower; i <= upper; i++) n.add(ids[i]);
@@ -78,10 +78,9 @@ function useSelection<T extends IModel>(models: T[]): ISelection {
                 e.preventDefault();
                 if (e.buttons) {
                     const n = new Set(saved);
-                    if (last) {
+                    if (last !== undefined) {
                         const lower = Math.min(last, index);
                         const upper = Math.max(last, index);
-                        console.log(lower, upper);
                         for (let i = lower; i <= upper; i++) n.add(ids[i]);
                     }
 

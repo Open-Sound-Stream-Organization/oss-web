@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import React, { useContext, useEffect, useRef } from 'react';
+import { CSSTransition, TransitionGroup, Transition } from 'react-transition-group';
 
 export interface DialogProps {
     text: string;
@@ -33,6 +33,7 @@ export const GenericDialog = ({ dialog }: { dialog: DialogProps }) => {
 const Dialog = () => {
     const [children] = useContext(DialogContext);
     const { close } = useDialog();
+    const ref = useRef(null);
 
     useEffect(() => {
         const listener = (e: KeyboardEvent) => {
@@ -45,15 +46,13 @@ const Dialog = () => {
     return (
         <>
             {children && <div onClick={close} className='curtain' />}
-            <TransitionGroup>
-                {children &&
-                    <CSSTransition key='dialog' timeout={200}>
-                        <div className='dialog'>
-                            {children}
-                        </div>
-                    </CSSTransition>
-                }
-            </TransitionGroup>
+            {/*<CSSTransition in={!!children} key='dialog' timeout={200} {...{ ref }}>*/}
+            {children &&
+                <div className='dialog enter-done' {...{ ref }}>
+                    {children}
+                </div>
+            }
+            {/*</CSSTransition>*/}
         </>
     )
 }

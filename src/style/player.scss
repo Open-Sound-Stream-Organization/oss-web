@@ -80,3 +80,34 @@
         }
     }
 }
+.dialog .queue {
+    margin: -20px -40px;
+
+    min-width: 500px;
+
+    p {
+        padding: 10px 0;
+        text-align: center;
+        font-weight: bold;
+
+        &::after {
+            content: ':';
+        }
+
+        &:not(:first-child) {
+            margin-top: 10px;
+        }
+    }
+
+    ul {
+        list-style-type: none;
+
+        li {
+            padding: 10px;
+
+            &:nth-child(odd) {
+                background-color: $gray;
+            }
+        }
+    }
+}
