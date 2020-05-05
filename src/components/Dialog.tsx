@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import React, { useContext, useEffect, useRef } from 'react';
+import { CSSTransition, TransitionGroup, Transition } from 'react-transition-group';
 
 export interface DialogProps {
     text: string;
@@ -10,38 +10,59 @@ export interface DialogProps {
     }[];
 }
 
-function Dialog({ dialog }: { dialog: DialogProps | null }) {
+export const GenericDialog = ({ dialog }: { dialog: DialogProps }) => {
     const { close } = useDialog();
 
     return (
-        <TransitionGroup>
-            {dialog &&
-                <CSSTransition key='dialog' timeout={200}>
-                    <div className='dialog'>
-                        <p>{dialog.text}</p>
-                        <ul>
-                            {dialog.buttons.map(({ text, className, click }, i) =>
-                                <button key={i} onClick={() => {
-                                    if (click) click();
-                                    close();
-                                }} {...{ className }}>
-                                    {text}
-                                </button>
-                            )}
-                        </ul>
-                    </div>
-                </CSSTransition>
+        <div className='generic'>
+            <p>{dialog.text}</p>
+            <ul>
+                {dialog.buttons.map(({ text, className, click }, i) =>
+                    <button key={i} onClick={() => {
+                        if (click) click();
+                        close();
+                    }} {...{ className }}>
+                        {text}
+                    </button>
+                )}
+            </ul>
+        </div>
+    )
+}
+
+const Dialog = () => {
+    const [children] = useContext(DialogContext);
+    const { close } = useDialog();
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const listener = (e: KeyboardEvent) => {
+            if (e.keyCode === 27) close();
+        }
+        window.addEventListener('keydown', listener);
+        return () => window.removeEventListener('keydown', listener);
+    })
+
+    return (
+        <>
+            {children && <div onClick={close} className='curtain' />}
+            {/*<CSSTransition in={!!children} key='dialog' timeout={200} {...{ ref }}>*/}
+            {children &&
+                <div className='dialog enter-done' {...{ ref }}>
+                    {children}
+                </div>
             }
-        </TransitionGroup>
+            {/*</CSSTransition>*/}
+        </>
     )
 }
 
 const DialogContext = React.createContext<[
-    DialogProps | null,
-    (d: DialogProps | null) => unknown
+    JSX.Element | null,
+    (d: JSX.Element | null) => void
 ]>([null, () => { }]);
 
-export function useDialog() {
+export const useDialog = () => {
     const [, open] = useContext(DialogContext);
     const close = () => open(null);
     return { open, close };

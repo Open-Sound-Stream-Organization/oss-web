@@ -6,12 +6,12 @@ import { NO_COVER } from './App'
 import usePlayer from '../api/Audio';
 import { Cover } from './Shared';
 
-function ActiveSong() {
+const ActiveSong = () => {
     const { song } = usePlayer();
     return song ? <ActiveCover {...song} /> : null;
 }
 
-function ActiveCover(song: ISong) {
+const ActiveCover = (song: ISong) => {
     const [album] = useApi<IAlbum>(song.album);
 
     return (

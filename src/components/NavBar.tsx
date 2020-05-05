@@ -1,10 +1,10 @@
-import { faCompactDisc, faList, faMusic, faUser, faSeedling, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
+import { faCompactDisc, faList, faMusic, faUser, faSeedling, faDoorOpen, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import classes from 'classnames';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-function Nav() {
+const Nav = () => {
     const path = useLocation().pathname;
 
     const links = [
@@ -14,6 +14,7 @@ function Nav() {
         { href: '/songs', text: 'Songs', icon: faMusic },
         { href: '/seed', text: 'Seeder', icon: faSeedling },
         { href: '/logout', text: 'Logout', icon: faDoorOpen },
+        { href: '/upload', text: 'Upload', icon: faUpload },
     ];
 
     return (

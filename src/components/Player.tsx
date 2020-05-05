@@ -2,45 +2,74 @@ import React, { useState, MouseEvent } from 'react';
 import Cell from './Cell';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
-import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute, faRedoAlt, faPause } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute, faRedoAlt, faPause, faList } from '@fortawesome/free-solid-svg-icons'
 import { IArtist, ISong } from '../api/Models';
 import { useApi } from '../api/Hooks';
-import usePlayer from '../api/Audio';
+import usePlayer, { IQueue, useVolume } from '../api/Audio';
+import { useDialog } from './Dialog';
+import classes from 'classnames';
+import { setPriority } from 'os';
 
-function IconButton(props: { icon: IconDefinition, area?: string, onClick?: () => unknown }) {
-    const { area, icon, ...rest } = props;
+const IconButton = (props: { icon: IconDefinition, area?: string, onClick?: () => unknown, disabled?: boolean, active?: boolean }) => {
+    const { area, icon, disabled, onClick, active } = props;
     return (
-        <Cell className='icon-button' area={area ?? ''} {...rest}>
+        <Cell className={classes('icon-button', { disabled: disabled || !onClick, active })} area={area ?? ''} {...{ onClick }}>
             <Icon {...{ icon }} />
         </Cell >
     )
 }
 
-function Player() {
-    const { song, position, play, pause, playing } = usePlayer();
+const Player = () => {
+    const { song, position, play, pause, playing, songs, queue, previous, next, shuffle, setShuffle, repeat, setRepeat } = usePlayer();
+    const { open } = useDialog();
 
     return (
         <Cell area='player'>
             {song && <SongInfo {...song} {...{ position }} />}
 
-            <IconButton icon={faStepBackward} area='previous' />
-            <IconButton icon={faStepForward} area='next' />
+            <IconButton onClick={previous} icon={faStepBackward} area='previous' />
+            <IconButton onClick={next} icon={faStepForward} area='next' />
             <IconButton onClick={playing() ? pause : () => play()} icon={playing() ? faPause : faPlay} area='play' />
-            <IconButton icon={faRandom} area='shuffle' />
-            <IconButton icon={faRedoAlt} area='repeat' />
+            <IconButton active={shuffle} onClick={() => setShuffle(b => !b)} icon={faRandom} area='shuffle' />
+            <IconButton active={repeat} onClick={() => setRepeat(b => !b)} icon={faRedoAlt} area='repeat' />
+            <IconButton disabled={songs.length + (queue?.songs.length ?? 0) === 0} icon={faList} area='queue' onClick={() => open(<Queue />)} />
 
             <Volume />
         </Cell>
     );
 }
 
-function timestamp(time: number) {
+const Queue = () => {
+    const { songs, queue } = usePlayer();
+
+    const sources = [
+        ['Queue', queue?.songs ?? []],
+        ['Next', songs],
+    ].filter(([, s]) => s.length > 0) as [string, ISong[]][];
+
+    return (
+        <div className='queue'>
+            {sources.map(([source, songs]) =>
+                <>
+                    <p>{source}</p>
+                    <ul key={source}>
+                        {songs.map(({ title, id }, i) =>
+                            <li key={`${id}-${i}`}>{title}</li>
+                        )}
+                    </ul>
+                </>
+            )}
+        </div>
+    );
+}
+
+const timestamp = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time - minutes * 60;
     return `${minutes}:${seconds.toFixed(0).padStart(2, '0')}`;
 }
 
-function SongInfo(song: ISong & { position: number }) {
+const SongInfo = (song: ISong & { position: number }) => {
     const { title, artists, length, position } = song;
 
     return (
@@ -56,13 +85,13 @@ function SongInfo(song: ISong & { position: number }) {
     );
 }
 
-function Artist({ url }: { url: string }) {
+const Artist = ({ url }: { url: string }) => {
     const [a] = useApi<IArtist>(url);
     return a ? <span>{a.name}</span> : null;
 }
 
-function Volume() {
-    const { volume, setVolume, toggleVolume } = usePlayer();
+const Volume = () => {
+    const { volume, setVolume, toggleVolume } = useVolume();
 
     const icon = volume === 0
         ? faVolumeMute

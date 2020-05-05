@@ -17,7 +17,7 @@ const ignore = [
     'apikey',
 ]
 
-function Endpoint({ endpoint }: { endpoint: string }) {
+const Endpoint = ({ endpoint }: { endpoint: string }) => {
     const [models] = useApi<IList<unknown>>(endpoint);
     const count = models?.objects?.length;
 
@@ -36,7 +36,7 @@ function Endpoint({ endpoint }: { endpoint: string }) {
     )
 }
 
-function Seeder() {
+const Seeder = React.memo(() => {
     const [progress, setProgress] = useState(0);
     const [total, setTotal] = useState(0);
     const [message, setMessage] = useState<string | null>(null);
@@ -69,6 +69,6 @@ function Seeder() {
             }
         </>
     );
-}
+});
 
 export default Seeder;

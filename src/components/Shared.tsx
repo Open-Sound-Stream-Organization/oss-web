@@ -9,7 +9,7 @@ import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 
 const ICONS = [faHeadphones, faMusic, faGuitar, faDrum, faRecordVinyl, faCompactDisc];
 
-export function Cover(props: { alt: string, src?: string } & CSSProperties) {
+export const Cover = (props: { alt: string, src?: string } & CSSProperties) => {
     const { src, alt, ...rest } = props;
     const [hasImage, setImage] = useState(false);
 
@@ -26,7 +26,7 @@ export function Cover(props: { alt: string, src?: string } & CSSProperties) {
     </Cell>
 }
 
-export function ModelView<M extends IModel>(props: { endpoint: string, render: Render<M> }) {
+export function ModelView <M extends IModel>(props: { endpoint: string, render: Render<M> }) {
     const { endpoint } = props;
     const { id } = useParams();
 
@@ -67,7 +67,7 @@ export function ModelSidebar<M extends IModel>({ endpoint }: { endpoint: string 
                             </Link>
                         </li>
                     )
-                : <li className='empty-info'>No {endpoint}s yet</li>
+                    : <li className='empty-info'>No {endpoint}s yet</li>
                 }
             </ul>
         </Cell>

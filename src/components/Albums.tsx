@@ -1,12 +1,14 @@
-import React from 'react';
-import { IAlbum, IArtist } from '../api/Models';
+import React, { useMemo, useEffect } from 'react';
+import { IAlbum, IArtist, ISong } from '../api/Models';
 import { ModelView, Cover } from './Shared';
 import SongList from './SongList';
 import Cell from './Cell';
-import { useLoading } from '../api/Hooks';
+import { useLoading, useApiBunch } from '../api/Hooks';
 import { Link } from 'react-router-dom';
 
-function Active({ name, artists, songs, cover_url }: IAlbum) {
+const Active = ({ name, artists, songs: songURLs, cover_url }: IAlbum) => {
+    const [songs] = useApiBunch<ISong>(songURLs);
+
     return (
         <>
             <Cover src={cover_url} alt={name} />
@@ -18,14 +20,14 @@ function Active({ name, artists, songs, cover_url }: IAlbum) {
     )
 }
 
-function Artist({ url }: { url: string }) {
+const Artist = ({ url }: { url: string }) => {
     return useLoading<IArtist>(url, ({ name, id }) =>
         <Link to={`/artists/${id}`}>{name}</Link>
     );
 }
 
-function Albums() {
+const Albums = React.memo(() => {
     return <ModelView endpoint='album' render={(a: IAlbum) => <Active {...a} />} />
-}
+});
 
 export default Albums;
