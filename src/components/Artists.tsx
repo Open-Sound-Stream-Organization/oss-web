@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Loading, useApi, useLoading } from '../api/Hooks';
 import { IAlbum, IArtist, IList, ISong } from '../api/Models';
 import Cell from './Cell';
@@ -23,8 +23,8 @@ const Artist = ({ albums }: IArtist) => {
 };
 
 const Album = ({ url }: { url: string }) => {
-    return useLoading<IAlbum>(url, ({ cover_url, name, release, songs }) => (
-        <div>
+    return useLoading<IAlbum>(url, ({ cover_url, name, release, songs, id }) => (
+        <Link to={`/albums/${id}`}>
             <h5>{name} - (Genre {release})</h5>
             <Cover
                 src={cover_url}
@@ -38,7 +38,7 @@ const Album = ({ url }: { url: string }) => {
                     }
                 </tbody>
             </table>
-        </div>
+        </Link>
     ));
 }
 

@@ -14,12 +14,8 @@ a {
 }
 
 @mixin grid-borders() {
-    border-bottom: $border-width solid #444;
-    border-right: $border-width solid #444;
-
     & > * {
-        border-top: $border-width solid #444;
-        border-left: $border-width solid #444;
+        box-shadow: 0 0 0 $border-width / 2 #444;
     }
 }
 
@@ -39,7 +35,15 @@ a {
         "list active"
         / 1fr 4fr;
 
-    ul.list {
+    & > .list {
+
+        button {
+            height: 40px;
+            width: 40px;
+            margin: 10px 50%;
+            transform: translateX(-50%);
+        }
+
         min-width: 200px;
         border-right: $border-width solid #444;
     }
@@ -91,13 +95,14 @@ a {
 .container {
     grid-template:
         "nav player" $player-height
-        "nav page"
+        "nav page" 240px - $player-height
         "playlists page"
-        "cover page"
-        / $sidebar-width;
+        "cover page" #{$sidebar-width}
+        / #{$sidebar-width} 1fr;
 
     .playlists {
         overflow: hidden;
+        height: 100%;
     }
 
     & > .cover {
@@ -129,7 +134,8 @@ img {
     padding: 10px;
     cursor: pointer;
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
         background-color: #fff3;
     }
 
@@ -137,7 +143,6 @@ img {
         pointer-events: none;
         color: $lighter-gray;
     }
-
 }
 
 .seperate-comma {
@@ -161,6 +166,7 @@ span + svg {
     }
 }
 
+/*
 .loading {
     position: relative;
     height: 100%;
@@ -180,11 +186,11 @@ span + svg {
         animation: load 0.5s ease-out infinite alternate;
     }
 }
+*/
 
 @import "./forms.scss";
 @import "./nav.scss";
 @import "./player.scss";
-@import "./playlist.scss";
 @import "./artists.scss";
 @import "./albums.scss";
 @import "./playlists.scss";

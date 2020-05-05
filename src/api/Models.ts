@@ -40,7 +40,7 @@ export interface IAlbum extends IModel {
 
 export interface IPlaylist extends IModel {
     tags: string[];
-    songs: string[];
+    songsinplaylist: string[];
 }
 
 export interface IList<O> {

@@ -35,6 +35,10 @@ select,
     &.disabled {
         pointer-events: none;
         color: $light-gray;
+
+        &.primary {
+            background-color: $gray;
+        }
     }
 
     &[type="text"],
@@ -51,6 +55,12 @@ select,
         &:hover:not(:focus) {
             box-shadow: none;
             background-color: $gray;
+        }
+
+        &.big {
+            width: calc(100% - 30px);
+            padding: 15px;
+            font-size: 1rem;
         }
     }
 }

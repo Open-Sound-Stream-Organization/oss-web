@@ -4,8 +4,9 @@ import { Link, useParams } from 'react-router-dom';
 import { Render, useLoading } from '../api/Hooks';
 import { IList, IModel } from '../api/Models';
 import Cell from './Cell';
-import { faHeadphones, faMusic, faGuitar, faDrum, faRecordVinyl, faCompactDisc } from '@fortawesome/free-solid-svg-icons';
+import { faHeadphones, faMusic, faGuitar, faDrum, faRecordVinyl, faCompactDisc, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
+import { useDialog } from './Dialog';
 
 const ICONS = [faHeadphones, faMusic, faGuitar, faDrum, faRecordVinyl, faCompactDisc];
 
@@ -26,13 +27,13 @@ export const Cover = (props: { alt: string, src?: string } & CSSProperties) => {
     </Cell>
 }
 
-export function ModelView <M extends IModel>(props: { endpoint: string, render: Render<M> }) {
-    const { endpoint } = props;
+export function ModelView<M extends IModel>(props: { endpoint: string, render: Render<M>, create?: () => JSX.Element }) {
+    const { endpoint, create } = props;
     const { id } = useParams();
 
     return (
         <>
-            <ModelSidebar {...{ endpoint }} />
+            <ModelSidebar {...{ endpoint, create }} />
             <Cell area='active'>
                 {id
                     ? <Single {...{ id }} {...props} />
@@ -53,19 +54,23 @@ function Single<M extends IModel>(props: { endpoint: string, id: string, render:
     );
 }
 
-export function ModelSidebar<M extends IModel>({ endpoint }: { endpoint: string }) {
+export function ModelSidebar<M extends IModel>({ endpoint, create }: { endpoint: string, create?: () => JSX.Element }) {
     const { id: active } = useParams();
+    const { open } = useDialog();
 
     return useLoading<IList<M>>(endpoint, ({ objects }) =>
         <Cell area='list'>
+            {create && <button onClick={() => open(create())}>
+                <Icon icon={faPlus} />
+            </button>}
             <ul className='list'>
                 {(objects.length > 0)
                     ? objects.map(({ name, id }) =>
-                        <li key={id} className={classes({ active: id.toString() === active })}>
-                            <Link to={`/${endpoint}s/${id}`}>
+                        <Link key={id} to={`/${endpoint}s/${id}`}>
+                            <li className={classes({ active: id.toString() === active })}>
                                 {name}
-                            </Link>
-                        </li>
+                            </li>
+                        </Link>
                     )
                     : <li className='empty-info'>No {endpoint}s yet</li>
                 }

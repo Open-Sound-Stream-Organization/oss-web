@@ -48,7 +48,7 @@ const Queue = () => {
     ].filter(([, s]) => s.length > 0) as [string, ISong[]][];
 
     return (
-        <div className='queue'>
+        <div className='queue demarg'>
             {sources.map(([source, songs]) =>
                 <>
                     <p>{source}</p>

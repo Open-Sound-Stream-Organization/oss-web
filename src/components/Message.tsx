@@ -51,15 +51,17 @@ const MessageContext = React.createContext<[
 ]>([[], () => { }]);
 
 export const useMessages = () => {
-    const [, setMessages] = useContext(MessageContext);
+    const [messages, setMessages] = useContext(MessageContext);
 
     useEffect(() => {
         const i = setInterval(() => {
-            const now = new Date().getTime();
-            setMessages(m => m.filter(({ date }) => now - date.getTime() < 4000))
+            if (messages.length > 0) {
+                const now = new Date().getTime();
+                setMessages(m => m.filter(({ date }) => now - date.getTime() < 4000))
+            }
         }, 1000);
         return () => clearTimeout(i);
-    })
+    }, [])
 
     const add = (m: MessageProps) => setMessages(old => [...old.slice(-4), { ...m, date: new Date() }]);
     const clear = () => setMessages([]);
