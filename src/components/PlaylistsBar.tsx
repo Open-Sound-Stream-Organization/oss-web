@@ -13,9 +13,11 @@ const Playlist = () => {
             {(objects.length > 0)
                 ? <ul className='list'>
                     {objects.map(({ id, name }) =>
-                        <li key={id} className={classes({ active: id.toString() === active })}>
-                            <Link to={`/playlists/${id}`}>{name}</Link>
-                        </li>
+                        <Link key={id} to={`/playlists/${id}`}>
+                            <li className={classes({ active: id.toString() === active })}>
+                                {name}
+                            </li>
+                        </Link>
                     )}
                 </ul>
                 : <p className='empty-info'>No playlists yet</p>

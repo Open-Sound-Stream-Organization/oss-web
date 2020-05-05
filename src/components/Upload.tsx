@@ -152,7 +152,7 @@ export const LoadedSongEditor = ({ song }: { song?: ISong }) => {
 
             <Cell area='title'>
                 <label htmlFor='title'>Title</label>
-                <input id='title' type='text' placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} />
+                <input className='big' id='title' type='text' placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} />
             </Cell>
 
 

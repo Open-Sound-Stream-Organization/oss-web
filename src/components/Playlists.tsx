@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { IPlaylist, ISong, IList } from '../api/Models';
 import { ModelView } from './Shared';
 import SongList, { useSelection } from './SongList';
@@ -62,8 +62,31 @@ const Active = (playlist: IPlaylist) => {
     </>
 }
 
+const Create = () => {
+    const [name, setName] = useState('');
+    const { close } = useDialog();
+
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+        close();
+        API.post('playlist', { name })
+            .catch(e => console.error(e));
+    }
+
+    return <form className='create-playlist' onSubmit={submit}>
+
+        <input className='big' value={name} onChange={e => setName(e.target.value)} type='text' placeholder='Name' />
+        <button className='primary' type='submit'>Create</button>
+
+    </form>
+}
+
 const Playlists = React.memo(() => {
-    return <ModelView endpoint='playlist' render={(p: IPlaylist) => <Active {...p} />} />
+    return <ModelView
+        endpoint='playlist'
+        render={(p: IPlaylist) => <Active {...p} />}
+        create={() => <Create />}
+    />
 })
 
 export default Playlists;

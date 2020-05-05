@@ -35,7 +35,15 @@ a {
         "list active"
         / 1fr 4fr;
 
-    ul.list {
+    & > .list {
+
+        button {
+            height: 40px;
+            width: 40px;
+            margin: 10px 50%;
+            transform: translateX(-50%);
+        }
+
         min-width: 200px;
         border-right: $border-width solid #444;
     }
@@ -158,6 +166,7 @@ span + svg {
     }
 }
 
+/*
 .loading {
     position: relative;
     height: 100%;
@@ -177,6 +186,7 @@ span + svg {
         animation: load 0.5s ease-out infinite alternate;
     }
 }
+*/
 
 @import "./forms.scss";
 @import "./nav.scss";

@@ -5,17 +5,11 @@ nav {
     list-style-type: none;
 
     li {
-
-      &, a {
-        padding: 10px;
-        text-decoration: none;
-      }
+      padding: 10px;
 
       &.active,
       &:hover {
-        a {
-          color: $primary;
-        }
+        color: $primary;
       }
     }
   }

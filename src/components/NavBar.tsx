@@ -20,12 +20,12 @@ const Nav = () => {
         <nav>
             <ul>
                 {links.map(({ text, href, icon }) =>
-                    <li key={href} className={classes({ active: path === href })}>
-                        <Link to={href}>
+                    <Link key={href} to={href}>
+                        <li className={classes({ active: path === href })}>
                             <span>{text}</span>
                             <Icon {...{ icon }} />
-                        </Link>
-                    </li>
+                        </li>
+                    </Link>
                 )}
             </ul>
         </nav>
