@@ -8,13 +8,12 @@ const Nav = () => {
     const path = useLocation().pathname;
 
     const links = [
+        { href: '/songs', text: 'Songs', icon: faMusic },
         { href: '/playlists', text: 'Playlists', icon: faList },
         { href: '/albums', text: 'Albums', icon: faCompactDisc },
         { href: '/artists', text: 'Artists', icon: faUser },
-        { href: '/songs', text: 'Songs', icon: faMusic },
-        { href: '/seed', text: 'Seeder', icon: faSeedling },
-        { href: '/logout', text: 'Logout', icon: faDoorOpen },
         { href: '/upload', text: 'Upload', icon: faUpload },
+        { href: '/logout', text: 'Logout', icon: faDoorOpen },
     ];
 
     return (

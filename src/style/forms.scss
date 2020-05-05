@@ -35,6 +35,10 @@ select,
     &.disabled {
         pointer-events: none;
         color: $light-gray;
+
+        &.primary {
+            background-color: $gray;
+        }
     }
 
     &[type="text"],

@@ -80,7 +80,7 @@ export const useVolume = () => {
     return { volume, setVolume, toggleVolume };
 }
 
-const useQueue = (setSong: Dispatch<SetStateAction<ISong | undefined>>) => {
+export const useQueue = (setSong: Dispatch<SetStateAction<ISong | undefined>>) => {
     const [songs, setSongs] = useState<ISong[]>([]);
     const messages = useMessages();
 
@@ -107,12 +107,12 @@ export const useCreateAudio = () => {
     const [position, setPosition] = useState(0);
 
     const [unshuffled, setSongs] = useState<ISong[]>([]);
-    const shuffled = useMemo(() => unshuffled.sort((a, b) => Math.random() - 0.5), [unshuffled]);
+    const shuffled = useMemo(() => unshuffled.sort(() => Math.random() - 0.5), [unshuffled]);
     const songs = shuffle ? unshuffled : shuffled;
     const [index, setIndex] = useState(0);
 
     const audio = useMemo(() => new Audio(), []);
-    const queue = useQueue(setSong);
+    const queue = useQueue(setSong) as IQueue | undefined;
 
     useEffect(() => {
         const update = () => setPosition(audio.currentTime);
@@ -147,7 +147,7 @@ export const useCreateAudio = () => {
     const previous = undefined;
 
     const next = (() => {
-        if (queue.songs[0]) return () => {
+        if (queue?.songs[0]) return () => {
             play(queue.songs[0]);
             queue.remove(0);
         }

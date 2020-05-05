@@ -28,28 +28,22 @@ export function useApi<R>(endpoint: string, params?: ParsedUrlQueryInput) {
 }
 
 export function useApiBunch<R>(endpoints: string[]) {
-    const [results, setResults] = useState<(R | undefined)[]>([]);
+    const [results, setResults] = useState<R[]>([]);
     const [loading, setLoading] = useState(true);
     const [messages, setMessages] = useState<string[]>([]);
 
     useEffect(() => {
-        if(results.length === endpoints.length) setLoading(false);
+        if (results.length === endpoints.length) setLoading(false);
     }, [results, endpoints])
 
     useEffect(() => {
         setLoading(true);
         setResults([]);
 
-        const unsubscribers = endpoints.map((endpoint, i) => API.subscribe<R>(endpoint).then((r, e) => {
-            setResults(rs => {
-                const n = [...rs];
-                n[i] = r;
-                return n;
-            });
-            if (e) setMessages(m => [...m, e.message]);
-        }))
+        Promise.all(endpoints.map((endpoint, i) => API.fetch<R>(endpoint)
+            .catch(e => setMessages(m => [...m, e]))
+        )).then(results => setResults(results.filter(r => typeof r === 'object') as R[]));
 
-        return () => unsubscribers.forEach(u => u());
     }, [endpoints]);
 
     return [results, loading, messages] as [R[], boolean, string[]];

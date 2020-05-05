@@ -14,12 +14,8 @@ a {
 }
 
 @mixin grid-borders() {
-    border-bottom: $border-width solid #444;
-    border-right: $border-width solid #444;
-
     & > * {
-        border-top: $border-width solid #444;
-        border-left: $border-width solid #444;
+        box-shadow: 0 0 0 $border-width / 2 #444;
     }
 }
 
@@ -91,13 +87,14 @@ a {
 .container {
     grid-template:
         "nav player" $player-height
-        "nav page"
+        "nav page" 240px - $player-height
         "playlists page"
-        "cover page"
-        / $sidebar-width;
+        "cover page" #{$sidebar-width}
+        / #{$sidebar-width} 1fr;
 
     .playlists {
         overflow: hidden;
+        height: 100%;
     }
 
     & > .cover {
@@ -129,7 +126,8 @@ img {
     padding: 10px;
     cursor: pointer;
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
         background-color: #fff3;
     }
 
@@ -137,7 +135,6 @@ img {
         pointer-events: none;
         color: $lighter-gray;
     }
-
 }
 
 .seperate-comma {
@@ -184,7 +181,6 @@ span + svg {
 @import "./forms.scss";
 @import "./nav.scss";
 @import "./player.scss";
-@import "./playlist.scss";
 @import "./artists.scss";
 @import "./albums.scss";
 @import "./playlists.scss";
