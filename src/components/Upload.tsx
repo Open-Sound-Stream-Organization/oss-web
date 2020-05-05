@@ -3,10 +3,11 @@ import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import classes from 'classnames';
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useApi, useLoading } from '../api/Hooks';
+import { useApi, useLoading, useApiList } from '../api/Hooks';
 import { IAlbum, IList, IModel, ISong } from '../api/Models';
 import Cell from './Cell';
 import API from '../api/Api';
+import { useDialog } from './Dialog';
 
 const Upload = React.memo(() => {
     const [files, setFiles] = useState<File[]>([]);
@@ -68,13 +69,13 @@ type State<T> = [T, Dispatch<SetStateAction<T>>];
 
 export function ModelSelect<T extends IModel>(props: { endpoint: string, state: State<string | null>, name?: string, highlight?: (t: T) => boolean }) {
     const { endpoint, state, name, highlight } = props;
-    const [current, onChange] = state;
+    const [initial, onChange] = state;
 
-    const [models] = useApi<IList<T>>(endpoint);
+    const [models] = useApiList<T>(endpoint);
 
     const sorted = useMemo(() => {
-        if (!highlight || !models) return models?.objects ?? [];
-        return models.objects.sort((a, b) => {
+        if (!highlight || !models) return models ?? [];
+        return models.sort((a, b) => {
             const [ia, ib] = [a, b].map(highlight).map(b => b ? -1 : 1);
             return ia - ib;
         });
@@ -86,16 +87,20 @@ export function ModelSelect<T extends IModel>(props: { endpoint: string, state: 
     }
 
     return (
-        <select id={name ?? endpoint} name={name ?? endpoint} onChange={e => set(e.target.value)}>
-            <option value=''>Select an {endpoint}</option>
-            {sorted.map(m =>
-                <option
-                    className={classes({ highlight: highlight && highlight(m) })}
-                    key={m.id}
-                    value={m.resource_uri}>
-                    {m.name}
-                </option>
-            )}
+        <select value={initial ?? ''} id={name ?? endpoint} name={name ?? endpoint} onChange={e => set(e.target.value)}>
+            {sorted.length > 0 &&
+                <>
+                    <option value=''>Select an {endpoint}</option>
+                    {sorted.map(m =>
+                        <option
+                            className={classes({ highlight: highlight && highlight(m) })}
+                            key={m.id}
+                            value={m.resource_uri}>
+                            {m.name}
+                        </option>
+                    )}
+                </>
+            }
         </select>
     )
 }
@@ -133,6 +138,7 @@ export const SongEditor = () => {
 }
 
 export const LoadedSongEditor = ({ song }: { song?: ISong }) => {
+    const { close } = useDialog();
 
     const [title, setTitle] = useState<string>(song?.title ?? '');
     const [album, setAlbum] = useState<null | string>(song?.album ?? null);
@@ -147,7 +153,9 @@ export const LoadedSongEditor = ({ song }: { song?: ISong }) => {
     return (
         <form className='editor' onSubmit={e => {
             e.preventDefault();
-            console.log(data);
+            close();
+            if (song) API.put(`song/${song.id}`, data)
+                .catch(e => console.error(e))
         }}>
 
             <Cell area='title'>
@@ -155,12 +163,10 @@ export const LoadedSongEditor = ({ song }: { song?: ISong }) => {
                 <input className='big' id='title' type='text' placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} />
             </Cell>
 
-
             <Cell area='artists'>
                 <label>Artists</label>
                 <MultiModelSelect endpoint='artist' state={[artists, setArtists]} />
             </Cell>
-
 
             <Cell area='album'>
                 <label htmlFor='album'>Album</label>

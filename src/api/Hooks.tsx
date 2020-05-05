@@ -1,6 +1,7 @@
 import querystring, { ParsedUrlQueryInput } from 'querystring';
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useState, useMemo } from 'react';
 import API from './Api';
+import { IModel, IList } from './Models';
 
 /**
  * React hook to subscibe to a specific api endpoint
@@ -47,6 +48,24 @@ export function useApiBunch<R>(endpoints: string[]) {
     }, [endpoints]);
 
     return [results, loading, messages] as [R[], boolean, string[]];
+}
+
+export function useApiList<M extends IModel>(endpoint: string, params?: ParsedUrlQueryInput) {
+    const [models, loading, message] = useApi<IList<M>>(endpoint, params);
+    const sorted = useMemo(() => (models?.objects ?? [])
+        .sort((a, b) => a.id - b.id), [models]);
+
+    return [sorted, loading, message] as [M[] | undefined, boolean, string | undefined];
+}
+
+export function useLoadingList<M extends IModel>(endpoint: string, params: ParsedUrlQueryInput | Render<M[]>, render?: Render<M[]>): JSX.Element | null {
+    const p = typeof params === 'object' ? params : undefined;
+    const r = typeof params === 'function' ? params : render;
+    const [result, loading, error] = useApiList<M>(endpoint, p);
+
+    if (loading) return <Loading />
+    if (!result) return <span className='empty-info'>{error || 'Not found'}</span>
+    return r ? r(result) : null;
 }
 
 /**

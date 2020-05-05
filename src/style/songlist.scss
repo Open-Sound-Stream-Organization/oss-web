@@ -4,11 +4,13 @@
     user-select: none;
     $border: #555;
 
-    .actions {
+    height: calc(100vh - #{$player-height});
 
+    .actions {
         padding: 10px;
-        
-        &, button {
+
+        &,
+        button {
             height: 40px;
         }
 
@@ -21,14 +23,31 @@
                 margin-right: 10px;
             }
         }
+    }
 
+    position: relative;
+
+    &::after {
+        $h: 20px;
+        @include pseudo();
+        width: calc(100% - 10px);
+        height: $h;
+        left: 0;
+        transform: none;
+        top: calc(100% - #{$h});
+        background-image: linear-gradient(transparent, #000C);
     }
 
     .table {
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: scroll;
+
         & > div {
             width: 100%;
             display: grid;
             grid-template-columns: 30px 1fr 1fr 1fr 100px repeat(2, 30px);
+            grid-auto-rows: 50px;
             grid-auto-flow: column;
             border-right: $border-width solid $border;
 
@@ -47,6 +66,9 @@
             & > * {
                 padding: 0;
                 width: 100%;
+
+                border: none;
+
                 &:not(:first-child) {
                     border-left: $border-width solid $border;
                 }
@@ -84,10 +106,6 @@
                 }
             }
         }
-
-        height: 100%;
-        overflow-x: hidden;
-        overflow-y: scroll;
     }
 
     &:not(:first-child) {

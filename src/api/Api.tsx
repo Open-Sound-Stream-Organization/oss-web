@@ -2,6 +2,7 @@ import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { API_URL } from '../config';
 import format from 'dateformat';
 import { IApiKey } from './Models'
+import { SSL_OP_TLS_ROLLBACK_BUG } from 'constants';
 
 /**
  * Replaced once we know the format the data will be sent by the server
@@ -85,19 +86,31 @@ class Api implements IApi {
         const apiKey = this.getApiKey();
         if (!apiKey) throw new Error('Not logged in');
 
-        const response = await fetch(require('../test.mp3'), {
-            //const response = await fetch(url, {
+        //const response = await fetch(require('../test.mp3'), {
+        const response = await fetch(url, {
             headers: {
-                'Authorization': apiKey.key
+                'Authorization': apiKey.key,
             }
         });
 
-        const content = await response.body?.getReader().read();
-        if (!content?.value) throw new Error('No audio found');
+        const buffer = await response.arrayBuffer();
 
-        const blob = new Blob([content.value], { type: 'audio/mp3' })
-        return URL.createObjectURL(blob);
+        const audio = new AudioContext();
+        const src = audio.createBufferSource();
+        src.start(audio.currentTime);
 
+        src.buffer = await audio.decodeAudioData(buffer);
+        src.connect(audio.destination);
+
+        if (0 != 0) {
+            const content = await response.body?.getReader().read();
+            if (!content?.value) throw new Error('No audio found');
+
+            console.log(response)
+
+            const blob = new Blob([content.value], { type: 'audio/*' })
+            return URL.createObjectURL(blob);
+        } else throw new Error('Nah')
     }
 
     async upload(endpoint: string, file: File) {

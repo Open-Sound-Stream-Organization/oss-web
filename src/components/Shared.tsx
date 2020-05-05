@@ -1,11 +1,11 @@
-import classes from 'classnames';
-import React, { useMemo, useState, CSSProperties } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { Render, useLoading } from '../api/Hooks';
-import { IList, IModel } from '../api/Models';
-import Cell from './Cell';
-import { faHeadphones, faMusic, faGuitar, faDrum, faRecordVinyl, faCompactDisc, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCompactDisc, faDrum, faGuitar, faHeadphones, faMusic, faPlus, faRecordVinyl } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
+import classes from 'classnames';
+import React, { CSSProperties, useMemo, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { Render, useLoading, useLoadingList } from '../api/Hooks';
+import { IModel } from '../api/Models';
+import Cell from './Cell';
 import { useDialog } from './Dialog';
 
 const ICONS = [faHeadphones, faMusic, faGuitar, faDrum, faRecordVinyl, faCompactDisc];
@@ -58,14 +58,14 @@ export function ModelSidebar<M extends IModel>({ endpoint, create }: { endpoint:
     const { id: active } = useParams();
     const { open } = useDialog();
 
-    return useLoading<IList<M>>(endpoint, ({ objects }) =>
+    return useLoadingList<M>(endpoint, models =>
         <Cell area='list'>
             {create && <button onClick={() => open(create())}>
                 <Icon icon={faPlus} />
             </button>}
             <ul className='list'>
-                {(objects.length > 0)
-                    ? objects.map(({ name, id }) =>
+                {(models.length > 0)
+                    ? models.map(({ name, id }) =>
                         <Link key={id} to={`/${endpoint}s/${id}`}>
                             <li className={classes({ active: id.toString() === active })}>
                                 {name}

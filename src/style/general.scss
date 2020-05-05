@@ -15,7 +15,7 @@ a {
 
 @mixin grid-borders() {
     & > * {
-        box-shadow: 0 0 0 $border-width / 2 #444;
+        box-shadow: 0 0 0 $border-width / 2 $border-color;
     }
 }
 
@@ -37,6 +37,8 @@ a {
 
     & > .list {
 
+        height: calc(100vh - #{$player-height});
+
         button {
             height: 40px;
             width: 40px;
@@ -44,8 +46,12 @@ a {
             transform: translateX(-50%);
         }
 
+        ul {
+
+        }
+
         min-width: 200px;
-        border-right: $border-width solid #444;
+        border-right: $border-width solid $border-color;
     }
 
     .active {

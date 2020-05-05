@@ -50,14 +50,14 @@ const Queue = () => {
     return (
         <div className='queue demarg'>
             {sources.map(([source, songs]) =>
-                <>
+                <React.Fragment key={source}>
                     <p>{source}</p>
                     <ul key={source}>
                         {songs.map(({ title, id }, i) =>
                             <li key={`${id}-${i}`}>{title}</li>
                         )}
                     </ul>
-                </>
+                </React.Fragment>
             )}
         </div>
     );

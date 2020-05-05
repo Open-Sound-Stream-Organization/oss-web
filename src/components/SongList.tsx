@@ -5,7 +5,7 @@ import React, { useEffect, useMemo, useState, memo } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/Api';
 import usePlayer, { SongButton } from '../api/Audio';
-import { Loading, useApi, useLoading } from '../api/Hooks';
+import { Loading, useApi, useLoading, useApiList } from '../api/Hooks';
 import { IAlbum, IArtist, IList, IModel, IPlaylist, ISong } from '../api/Models';
 import { useDialog } from './Dialog';
 import { LoadedSongEditor } from './Upload';
@@ -105,9 +105,9 @@ export interface SongAction {
 const SongAdder = ({ songs }: { songs: ISong[] }) => {
     const { close } = useDialog();
 
-    const [playlists] = useApi<IList<IPlaylist>>('playlist');
+    const [playlists] = useApiList<IPlaylist>('playlist');
 
-    const { isSelected, events, ...selection } = useSelection<IPlaylist>(playlists?.objects ?? [], false);
+    const { isSelected, events, ...selection } = useSelection<IPlaylist>(playlists ?? [], false);
     const [selected]: (IPlaylist | undefined)[] = selection.selected();
 
     const submit = () => {
@@ -126,7 +126,7 @@ const SongAdder = ({ songs }: { songs: ISong[] }) => {
                 Add {songs.length} to playlist
             </button>
             <ul>
-                {playlists.objects.map(({ name, id }) =>
+                {playlists.map(({ name, id }) =>
                     <li key={id} className={classes({ selected: isSelected(id) })} {...events(id)}>{name}</li>
                 )}
             </ul>
@@ -173,7 +173,7 @@ const Songs = memo(({ songs, ...props }: { songs: ISong[], actions?: SongAction[
                     <p />
                     <p />
                 </div>
-                {songs.slice(0, 10).map(song =>
+                {songs.map(song =>
                     <SongRow
                         {...{ selection }}
                         key={song.id} {...{ song, songs }}
