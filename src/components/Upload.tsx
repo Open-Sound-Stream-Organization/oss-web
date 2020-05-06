@@ -75,7 +75,7 @@ export function ModelSelect<T extends IModel>(props: { endpoint: string, state: 
 
     const sorted = useMemo(() => {
         if (!highlight || !models) return models ?? [];
-        return models.sort((a, b) => {
+        return [...models].sort((a, b) => {
             const [ia, ib] = [a, b].map(highlight).map(b => b ? -1 : 1);
             return ia - ib;
         });

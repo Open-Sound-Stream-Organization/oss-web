@@ -108,11 +108,15 @@ export const useCreateAudio = () => {
     const [position, setPosition] = useState(0);
 
     const [unshuffled, setSongs] = useState<ISong[]>([]);
-    const shuffled = useMemo(() => unshuffled.sort(() => Math.random() - 0.5), [unshuffled]);
-    const songs = shuffle ? unshuffled : shuffled;
+    const shuffled = useMemo(() => [...unshuffled].sort(() => Math.random() - 0.5), [unshuffled]);
+    const songs = shuffle ? shuffled : unshuffled;
     const [index, setIndex] = useState(0);
 
-    const audio = useMemo(() => new Audio(), []);
+    const audio = useMemo(() => {
+        const a = new Audio()
+        a.crossOrigin = 'anonymous';
+        return a;
+    }, []);
     const queue = useQueue(setSong) as IQueue | undefined;
 
     useEffect(() => {
@@ -126,7 +130,11 @@ export const useCreateAudio = () => {
         const s1 = Array.isArray(song) ? undefined : song;
         const s = s1 ?? (ss ? ss[0] : undefined);
 
-        setSongs(ss ?? []);
+        if (ss && s) {
+            setIndex(ss.indexOf(s));
+        }
+
+        setSongs([...(ss ?? [])]);
 
         if (s?.audio) await Api.audio(s.audio)
             .then(src => {
@@ -136,7 +144,10 @@ export const useCreateAudio = () => {
                 audio.currentTime = 0;
                 audio.play();
 
-            }).catch(e => console.log(e));
+            }).catch(e => {
+                setSong(undefined);
+                console.error(e)
+            });
 
         else await audio?.play();
     }
@@ -156,7 +167,6 @@ export const useCreateAudio = () => {
             const i = index + 1;
             if (songs.length > 0 && (i < songs.length || repeat)) return () => {
                 play(songs[i % songs.length]);
-                setIndex(i);
             };
         }
     })();
@@ -169,7 +179,7 @@ export const useCreateAudio = () => {
         position,
         queue,
         audio,
-        songs: songs.slice(0, 10),
+        songs: songs.slice(index + 1, index + 11),
     };
 }
 

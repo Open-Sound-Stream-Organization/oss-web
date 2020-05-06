@@ -143,7 +143,7 @@ const Songs = memo(({ songs, ...props }: { songs: ISong[], actions?: SongAction[
         display: i => `Add ${i} song${i === 1 ? '' : 's'} to playlist`,
         action: songs => open(<SongAdder {...{ songs }} />)
     }], [props.actions]);
-
+    
     if ((songs?.length ?? 0) === 0) return <p style={{ gridArea: 'songs' }} className='empty-info'>No songs yet</p>
 
     const selected = selection.selected();

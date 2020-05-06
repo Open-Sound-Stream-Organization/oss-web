@@ -87,14 +87,17 @@ class Api implements IApi {
         if (!apiKey) throw new Error('Not logged in');
 
         //const response = await fetch(require('../test.mp3'), {
-        const response = await fetch(url, {
+        const response = await fetch(`/${url}`, {
             headers: {
                 'Authorization': apiKey.key,
             }
         });
 
+        if (response.status !== 200) throw new Error(response.statusText);
+
         const buffer = await response.arrayBuffer();
 
+        /*
         const audio = new AudioContext();
         const src = audio.createBufferSource();
         src.start(audio.currentTime);
@@ -102,15 +105,13 @@ class Api implements IApi {
         src.buffer = await audio.decodeAudioData(buffer);
         src.connect(audio.destination);
 
-        if (0 != 0) {
-            const content = await response.body?.getReader().read();
-            if (!content?.value) throw new Error('No audio found');
+        const content = await response.body?.getReader().read();
+        if (!content?.value) throw new Error('No audio found');
+        */
 
-            console.log(response)
+        const blob = new Blob([buffer], { type: 'audio/*' })
+        return URL.createObjectURL(blob);
 
-            const blob = new Blob([content.value], { type: 'audio/*' })
-            return URL.createObjectURL(blob);
-        } else throw new Error('Nah')
     }
 
     async upload(endpoint: string, file: File) {
@@ -180,10 +181,10 @@ class Api implements IApi {
         /*
                 if (apiKey) await this.delete(`apikey/${apiKey.id}`)
                     .catch(e => console.error(e))
-        
-                localStorage.removeItem('apikey');
-                window.location.reload();
         */
+
+        localStorage.removeItem('apikey');
+        window.location.reload();
     }
 
     async login(base64: string) {

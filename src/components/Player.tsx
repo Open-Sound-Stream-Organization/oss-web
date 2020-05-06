@@ -2,13 +2,14 @@ import React, { useState, MouseEvent } from 'react';
 import Cell from './Cell';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
-import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute, faRedoAlt, faPause, faList } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faStepForward, faStepBackward, faRandom, faVolumeDown, faVolumeUp, faVolumeMute, faRedoAlt, faPause, faList, faCog } from '@fortawesome/free-solid-svg-icons'
 import { IArtist, ISong } from '../api/Models';
 import { useApi } from '../api/Hooks';
 import usePlayer, { IQueue, useVolume } from '../api/Audio';
 import { useDialog } from './Dialog';
 import classes from 'classnames';
 import { setPriority } from 'os';
+import Settings from './Settings';
 
 const IconButton = (props: { icon: IconDefinition, area?: string, onClick?: () => unknown, disabled?: boolean, active?: boolean }) => {
     const { area, icon, disabled, onClick, active } = props;
@@ -33,6 +34,7 @@ const Player = () => {
             <IconButton active={shuffle} onClick={() => setShuffle(b => !b)} icon={faRandom} area='shuffle' />
             <IconButton active={repeat} onClick={() => setRepeat(b => !b)} icon={faRedoAlt} area='repeat' />
             <IconButton disabled={songs.length + (queue?.songs.length ?? 0) === 0} icon={faList} area='queue' onClick={() => open(<Queue />)} />
+            <IconButton icon={faCog} area='settings' onClick={() => open(<Settings />)} />
 
             <Volume />
         </Cell>
