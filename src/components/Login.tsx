@@ -52,7 +52,7 @@ const Login = () => {
 
                 <button type='submit'>Login</button>
 
-                <Link to={`/registration`} >Register</Link>
+                <Link to={`https://oss.anjomro.de/register/`} >Register</Link>
 
             </form>
 
