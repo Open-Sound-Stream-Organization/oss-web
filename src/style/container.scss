@@ -30,7 +30,6 @@ a {
         / 1fr 4fr;
 
     & > .list {
-
         height: calc(100vh - #{$player-height});
 
         button {
@@ -41,7 +40,6 @@ a {
         }
 
         ul {
-
         }
 
         min-width: 200px;
@@ -112,6 +110,7 @@ a {
 
     .page {
         height: calc(100vh - #{$player-height});
+        display: grid;
     }
 
     @include grid-borders();
@@ -158,6 +157,20 @@ span + svg {
         padding: 30px;
         opacity: 1;
     }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading {
+    animation: rotate 1s cubic-bezier(0.54, 0.29, 0.41, 0.66) infinite;
+    margin: auto;
 }
 
 /*

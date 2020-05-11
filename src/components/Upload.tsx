@@ -3,36 +3,21 @@ import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import classes from 'classnames';
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useApi, useLoading, useApiList } from '../api/Hooks';
+import { useApi, useLoading, useApiList, Loading } from '../api/Hooks';
 import { IAlbum, IList, IModel, ISong } from '../api/Models';
 import Cell from './Cell';
 import API from '../api/Api';
 import { useDialog } from './Dialog';
 
+const fileName = (f: File) => f.name.substring(0, f.name.lastIndexOf('.'));
+
 const Upload = React.memo(() => {
     const [files, setFiles] = useState<File[]>([]);
-    const [uploading, setUploading] = useState<{ file: File, done: boolean }[]>([]);
-
-    const fileName = (f: File) => f.name.substring(0, f.name.lastIndexOf('.'));
+    const [uploading, setUploading] = useState<File[]>([]);
 
     const upload = () => {
-
-        setUploading(u => [...u, ...files.map((file, i) => {
-
-            API.post<ISong>('song', { title: fileName(file) })
-                .then(({ id }) => API.upload(`song/${id}`, file))
-                .then(() => setUploading(u => {
-                    const n = [...u];
-                    n[i] = { file, done: true };
-                    return n;
-                }))
-                .catch(e => console.error(e));
-
-            return { file, done: false };
-
-        }
-        )])
-
+        setUploading(u => [...files, ...u])
+        setFiles([]);
     }
 
     return (
@@ -49,21 +34,40 @@ const Upload = React.memo(() => {
 
                 <input onChange={e => setFiles([...(e.target.files ?? []) as File[]])} multiple id="file" type="file" accept="audio/mp3" hidden />
 
-                <button className={classes({ disabled: files.length === 0 })} type="submit">Submit</button>
+                <button className={classes({ disabled: files.length === 0 })} type="submit">
+                    Upload {files.length ? `${files.length} Song` : ''}
+                </button>
 
             </form>
 
             <ul className='uploading'>
-                {uploading.map(({ file, done }, i) =>
-                    <li key={i} className={classes({ done })}>
-                        <Icon icon={done ? faCheck : faSpinner} />
-                        <span>{fileName(file)}</span>
-                    </li>
-                )}
+                {uploading.map(f => <Uploading key={f.name} file={f} />)}
             </ul>
         </>
     )
 });
+
+const Uploading = ({ file }: { file: File }) => {
+    const [done, setDone] = useState(false);
+    const name = fileName(file);
+
+    useEffect(() => {
+        setDone(false);
+        API.upload('song', file)
+            .catch(e => console.error(e))
+            .then(() => setDone(true))
+    }, [file]);
+
+    return (
+        <li className={classes({ done })}>
+            {done
+                ? <Icon icon={faCheck} />
+                : <Loading />
+            }
+            <span>{name}</span>
+        </li>
+    );
+}
 
 type State<T> = [T, Dispatch<SetStateAction<T>>];
 

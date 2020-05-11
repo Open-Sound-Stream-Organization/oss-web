@@ -121,6 +121,7 @@
 .add-songs {
     display: grid;
     justify-content: center;
+    user-select: none;
 
     button {
         width: 100px;

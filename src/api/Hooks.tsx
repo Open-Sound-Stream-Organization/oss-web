@@ -1,7 +1,9 @@
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
-import React, { SyntheticEvent, useEffect, useState, useMemo } from 'react';
+import React, { SyntheticEvent, useEffect, useMemo, useState } from 'react';
 import API from './Api';
-import { IModel, IList } from './Models';
+import { IList, IModel } from './Models';
 
 /**
  * React hook to subscibe to a specific api endpoint
@@ -102,7 +104,7 @@ export function useSubmit<R = any>(endpoint: string, data?: any, cb?: (r?: R) =>
  * A universal loading component
  */
 export const Loading = () => {
-    return <span className='loading' />;
+    return <Icon className='loading inline' icon={faSpinner} />
 }
 
 export type Render<R> = (result: R) => JSX.Element | null;

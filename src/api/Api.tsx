@@ -2,7 +2,6 @@ import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { API_URL } from '../config';
 import format from 'dateformat';
 import { IApiKey } from './Models'
-import { SSL_OP_TLS_ROLLBACK_BUG } from 'constants';
 
 /**
  * Replaced once we know the format the data will be sent by the server
@@ -114,7 +113,7 @@ class Api implements IApi {
 
     }
 
-    async upload(endpoint: string, file: File) {
+    async upload(endpoint: string, file: File, method: Method = 'post') {
         const apiKey = this.getApiKey();
         if (!apiKey) throw new Error('Not logged in');
 
@@ -122,16 +121,18 @@ class Api implements IApi {
         if (!url.startsWith(API_URL)) url = `${API_URL}/${url}`
         url += '/';
 
-        const response = await fetch(url, {
-            method: 'PUT',
+        const body = new FormData()
+        body.append('audio', file)
+
+        return await fetch(url, {
+            method: method.toUpperCase(),
             headers: {
                 'Accept': 'application/json',
                 //'Content-Type': 'application/json',
                 'Authorization': apiKey.key,
             },
-            body: file,
+            body,
         });
-
     }
 
     private async method<O>(method: Method, endpoint: string, args?: any, update = true) {
