@@ -12,6 +12,7 @@ const SettingsContext = createContext<[ISettings, Dispatch<SetStateAction<ISetti
     [DEFAULT_SETTINGS, () => { }]
 );
 
+//einstellbare Settings: Farbethema der Icons
 const Settings = () => {
     const [{ theme }, setSettings] = useContext(SettingsContext);
 

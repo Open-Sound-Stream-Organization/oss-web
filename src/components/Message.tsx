@@ -4,6 +4,8 @@ import React, { Dispatch, SetStateAction, useContext, useEffect } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { setInterval } from 'timers';
 
+//Message Handling
+
 interface MessageProps {
     type: 'info' | 'success' | 'error' | 'warning';
     text: string;

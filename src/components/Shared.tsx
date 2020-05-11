@@ -54,6 +54,7 @@ function Single<M extends IModel>(props: { endpoint: string, id: string, render:
     );
 }
 
+
 export function ModelSidebar<M extends IModel>({ endpoint, create }: { endpoint: string, create?: () => JSX.Element }) {
     const { id: active } = useParams();
     const { open } = useDialog();

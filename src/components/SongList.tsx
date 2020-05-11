@@ -20,6 +20,7 @@ interface ISelection<T> {
     }
 }
 
+//
 export function useSelection<T extends IModel>(models: T[], multi = true): ISelection<T> {
     const [selected, setSelected] = useState<number[]>([]);
     const [saved, setSaved] = useState<number[]>([]);
@@ -102,6 +103,8 @@ export interface SongAction {
     action: (songs: ISong[]) => void;
 }
 
+//Song kann zu einer bereits existierenden Playlist hinzugefügt werden
+//ansonsten kann eine neue Playlist erstellt werden
 const SongAdder = ({ songs }: { songs: ISong[] }) => {
     const { close } = useDialog();
 
@@ -134,6 +137,7 @@ const SongAdder = ({ songs }: { songs: ISong[] }) => {
     );
 }
 
+//mehrere Songs können zu einer Playlist hinzugefügt werden
 const Songs = memo(({ songs, ...props }: { songs: ISong[], actions?: SongAction[] }) => {
     const selection = useSelection(songs);
     const { open } = useDialog();
@@ -184,6 +188,7 @@ const Songs = memo(({ songs, ...props }: { songs: ISong[], actions?: SongAction[
     )
 });
 
+//Song kann zu einer Queue hinzugefügt werden
 const SongRow = (props: { song: ISong | string, selection?: ISelection<ISong>, songs?: ISong[] }) => {
     const { song, selection, songs } = props;
     const { open } = useDialog();

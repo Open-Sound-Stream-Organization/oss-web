@@ -4,6 +4,7 @@ import classes from 'classnames';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
+//vertikale Navigationsleiste
 const Nav = () => {
     const path = useLocation().pathname;
 
