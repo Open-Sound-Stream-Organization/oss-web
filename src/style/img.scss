@@ -8,7 +8,7 @@
   
       &:after {
         @include pseudo();
-        background-color: #222;
+        background-color: $cover-color;
       }
   
       & + svg {
@@ -16,7 +16,7 @@
         top: 50%;
         left: 50%;
         font-size: 6rem;
-        color: #333;
+        color: $cover-text;
         transform: translate(-50%, -50%);
       }
     }

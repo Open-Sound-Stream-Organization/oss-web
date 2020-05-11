@@ -1,7 +1,7 @@
 .user-login {
     width: 320px;
-    background-color: #212121;
-    border: 1px solid #0094ff;
+    background-color: $bg;
+    border: 1px solid $primary;
 
     padding: 30px 50px;
     padding-bottom: 80px;
@@ -23,7 +23,7 @@
             }
 
             input {
-                border-bottom: 1px solid #0094ff;
+                border-bottom: 1px solid $primary;
                 height: 30px;
             }
         }
@@ -42,11 +42,11 @@
         }
 
         button {
-            border: 1px solid #0094ff;
+            border: 1px solid $primary;
         }
 
         a {
-            color: #0094ff;
+            color: $primary;
             text-align: center;
         }
     }

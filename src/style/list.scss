@@ -24,7 +24,7 @@ ul.list {
     width: 10px;
 }
 
-::-webkit-scrollbar-song {
+::-webkit-scrollbar-track {
     background: $gray;
 }
 
@@ -32,6 +32,6 @@ ul.list {
     background: $light-gray;
 
     &:hover {
-        background: #ccc;
+        background: $lighter-gray;
     }
 }

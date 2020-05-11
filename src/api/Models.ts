@@ -14,7 +14,7 @@ export interface ISong extends IModel {
     artists: string[];
     album: string;
     length: number;
-    audio: string;
+    audio?: string;
 }
 
 export interface ITag extends IModel {
