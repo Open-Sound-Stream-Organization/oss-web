@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo, createContext, useContext, Dispatch, SetStateAction } from "react";
-import { ISong, IPlaylist } from "./Models";
-import Api from "./Api";
+import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
-import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
+import classes from 'classnames';
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
 import { useMessages } from "../components/Message";
+import Api from "./Api";
+import { ISong } from "./Models";
 
 export interface IQueue {
     songs: ISong[];
@@ -107,11 +108,15 @@ export const useCreateAudio = () => {
     const [position, setPosition] = useState(0);
 
     const [unshuffled, setSongs] = useState<ISong[]>([]);
-    const shuffled = useMemo(() => unshuffled.sort(() => Math.random() - 0.5), [unshuffled]);
-    const songs = shuffle ? unshuffled : shuffled;
+    const shuffled = useMemo(() => [...unshuffled].sort(() => Math.random() - 0.5), [unshuffled]);
+    const songs = shuffle ? shuffled : unshuffled;
     const [index, setIndex] = useState(0);
 
-    const audio = useMemo(() => new Audio(), []);
+    const audio = useMemo(() => {
+        const a = new Audio()
+        a.crossOrigin = 'anonymous';
+        return a;
+    }, []);
     const queue = useQueue(setSong) as IQueue | undefined;
 
     useEffect(() => {
@@ -125,9 +130,13 @@ export const useCreateAudio = () => {
         const s1 = Array.isArray(song) ? undefined : song;
         const s = s1 ?? (ss ? ss[0] : undefined);
 
-        setSongs(ss ?? []);
+        if (ss && s) {
+            setIndex(ss.indexOf(s));
+        }
 
-        if (s) await Api.audio(s.audio)
+        setSongs([...(ss ?? [])]);
+
+        if (s?.audio) await Api.audio(s.audio)
             .then(src => {
                 setSong(s);
 
@@ -135,7 +144,10 @@ export const useCreateAudio = () => {
                 audio.currentTime = 0;
                 audio.play();
 
-            }).catch(e => console.log(e));
+            }).catch(e => {
+                setSong(undefined);
+                console.error(e)
+            });
 
         else await audio?.play();
     }
@@ -155,7 +167,6 @@ export const useCreateAudio = () => {
             const i = index + 1;
             if (songs.length > 0 && (i < songs.length || repeat)) return () => {
                 play(songs[i % songs.length]);
-                setIndex(i);
             };
         }
     })();
@@ -168,13 +179,14 @@ export const useCreateAudio = () => {
         position,
         queue,
         audio,
-        songs: songs.slice(0, 10),
+        songs: songs.slice(index + 1, index + 11),
     };
 }
 
 export const SongButton = ({ song, songs }: { song: ISong, songs?: ISong[] }) => {
     const { play, pause, playing, song: s } = usePlayer();
     const selected = song.id === s?.id;
+    const disabled = !song.audio;
 
     const onClick = () => {
         if (selected) {
@@ -184,7 +196,7 @@ export const SongButton = ({ song, songs }: { song: ISong, songs?: ISong[] }) =>
     }
 
     return (
-        <button className='song-button' {...{ onClick }}>
+        <button className={classes('song-button', { disabled })} {...{ onClick }}>
             <Icon icon={(selected && playing()) ? faPause : faPlay} />
         </button>
     );

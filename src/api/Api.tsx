@@ -85,22 +85,35 @@ class Api implements IApi {
         const apiKey = this.getApiKey();
         if (!apiKey) throw new Error('Not logged in');
 
-        const response = await fetch(require('../test.mp3'), {
-            //const response = await fetch(url, {
+        //const response = await fetch(require('../test.mp3'), {
+        const response = await fetch(`/${url}`, {
             headers: {
-                'Authorization': apiKey.key
+                'Authorization': apiKey.key,
             }
         });
 
+        if (response.status !== 200) throw new Error(response.statusText);
+
+        const buffer = await response.arrayBuffer();
+
+        /*
+        const audio = new AudioContext();
+        const src = audio.createBufferSource();
+        src.start(audio.currentTime);
+
+        src.buffer = await audio.decodeAudioData(buffer);
+        src.connect(audio.destination);
+
         const content = await response.body?.getReader().read();
         if (!content?.value) throw new Error('No audio found');
+        */
 
-        const blob = new Blob([content.value], { type: 'audio/mp3' })
+        const blob = new Blob([buffer], { type: 'audio/*' })
         return URL.createObjectURL(blob);
 
     }
 
-    async upload(endpoint: string, file: File) {
+    async upload(endpoint: string, file: File, method: Method = 'post') {
         const apiKey = this.getApiKey();
         if (!apiKey) throw new Error('Not logged in');
 
@@ -108,16 +121,18 @@ class Api implements IApi {
         if (!url.startsWith(API_URL)) url = `${API_URL}/${url}`
         url += '/';
 
-        const response = await fetch(url, {
-            method: 'PUT',
+        const body = new FormData()
+        body.append('audio', file)
+
+        return await fetch(url, {
+            method: method.toUpperCase(),
             headers: {
                 'Accept': 'application/json',
                 //'Content-Type': 'application/json',
                 'Authorization': apiKey.key,
             },
-            body: file,
+            body,
         });
-
     }
 
     private async method<O>(method: Method, endpoint: string, args?: any, update = true) {
@@ -167,10 +182,10 @@ class Api implements IApi {
         /*
                 if (apiKey) await this.delete(`apikey/${apiKey.id}`)
                     .catch(e => console.error(e))
-        
-                localStorage.removeItem('apikey');
-                window.location.reload();
         */
+
+        localStorage.removeItem('apikey');
+        window.location.reload();
     }
 
     async login(base64: string) {

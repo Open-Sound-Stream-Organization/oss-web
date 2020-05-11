@@ -1,4 +1,5 @@
-import React, { ReactNode, useEffect, useState, Provider, ExoticComponent, MemoExoticComponent } from 'react';
+import classes from 'classnames';
+import React, { MemoExoticComponent, ReactNode, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import Api from '../api/Api';
 import { Provider as AudioProvider, useCreateAudio } from '../api/Audio';
@@ -9,15 +10,16 @@ import Albums from './Albums';
 import Artists from './Artists';
 import Cell from './Cell';
 import Dialog, { Provider as DialogProvider } from './Dialog';
-import Messages, { Provider as MessageProvider, IMessage } from './Message';
 import Login from './Login';
+import Messages, { IMessage, Provider as MessageProvider } from './Message';
 import Nav from './NavBar';
 import Player from './Player';
 import Playlists from './Playlists';
 import PlaylistsBar from './PlaylistsBar';
 import Seeder from './Seeder';
+import { Provider as SettingsProvider, useSettings } from './Settings';
 import Songs from './Songs';
-import Upload, { SongEditor } from './Upload';
+import Upload from './Upload';
 
 export const NO_COVER = require('../img/example-cover.jpg');
 
@@ -43,6 +45,9 @@ const App = () => {
 	const audio = useCreateAudio();
 	const messages = useState<IMessage[]>([]);
 
+	const [settings, setSettings] = useSettings();
+	const { theme } = settings;
+
 	const pages: IPage[] = [
 		{ path: '/playlists/:id?', component: Playlists },
 		{ path: '/artists/:id?', component: Artists },
@@ -53,59 +58,61 @@ const App = () => {
 	];
 
 	return (
-		<DialogProvider value={dialog}>
-			<AudioProvider value={audio}>
-				<MessageProvider value={messages}>
-					<Router>
+		<SettingsProvider value={[settings, setSettings]}>
+			<DialogProvider value={dialog}>
+				<AudioProvider value={audio}>
+					<MessageProvider value={messages}>
+						<Router>
+							<section className={classes(theme)}>
+								{loggedIn
+									? <section className='container'>
+										<Nav />
+										<Player />
+										<ActiveSong />
+										<PlaylistsBar />
 
-						{loggedIn
-							? <section className='container'>
-								<Nav />
-								<Player />
-								<ActiveSong />
-								<PlaylistsBar />
+										<Dialog />
+										<Messages />
 
-								<Dialog />
-								<Messages />
+										<Switch>
 
-								<Switch>
+											{pages.map(page =>
+												<Route key={page.path} path={page.path}>
+													<Page {...page} />
+												</Route >
+											)}
 
-									{pages.map(page =>
-										<Route key={page.path} path={page.path}>
-											<Page {...page} />
-										</Route >
-									)}
+											<Route exact path='/'>
+												<Redirect to='/playlists' />
+											</Route>
 
-									<Route exact path='/'>
-										<Redirect to='/playlists' />
-									</Route>
+											<Route path='/logout'>
+												<Logout />
+											</Route>
 
-									<Route path='/logout'>
-										<Logout />
-									</Route>
+											<Route>
+												<Cell area='page'>
+													<h1 className='empty-info'>404 - Not Found</h1>
+												</Cell>
+											</Route>
 
-									<Route>
-										<Cell area='page'>
-											<h1 className='empty-info'>404 - Not Found</h1>
-										</Cell>
-									</Route>
+										</Switch>
+									</section>
 
-								</Switch>
-							</section>
-
-							: <SinglePage>
-								{loggedIn === false
-									? <Login />
-									: <Loading />
+									: <SinglePage>
+										{loggedIn === false
+											? <Login />
+											: <Loading />
+										}
+									</SinglePage>
 								}
-							</SinglePage>
-						}
+							</section>
+						</Router>
 
-					</Router>
-
-				</MessageProvider>
-			</AudioProvider>
-		</DialogProvider>
+					</MessageProvider>
+				</AudioProvider>
+			</DialogProvider>
+		</SettingsProvider>
 	);
 }
 

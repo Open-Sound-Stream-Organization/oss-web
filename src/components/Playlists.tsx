@@ -2,27 +2,27 @@ import React, { useMemo, useState } from 'react';
 import { IPlaylist, ISong, IList } from '../api/Models';
 import { ModelView } from './Shared';
 import SongList, { useSelection } from './SongList';
-import { useApiBunch, useLoading, useApi, Loading } from '../api/Hooks';
+import { useApiBunch, useLoading, useApi, Loading, useApiList } from '../api/Hooks';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useDialog } from './Dialog';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import classes from 'classnames';
 import API from '../api/Api';
 
-const SongAdder = ({ id, songsinplaylist, resource_uri }: IPlaylist) => {
+const SongAdder = ({ songsinplaylist, resource_uri }: IPlaylist) => {
     const contained = (s: ISong) => songsinplaylist.includes(s.resource_uri);
     const { close } = useDialog();
 
-    const [all, loading] = useApi<IList<ISong>>('song');
-    const songs = useMemo(() => all?.objects.filter(s => !contained(s)) ?? [], [all]);
+    const [all, loading] = useApiList<ISong>('song');
+    const songs = useMemo(() => all?.filter(s => !contained(s)) ?? [], [all]);
 
     const { isSelected, events, selected } = useSelection<ISong>(songs);
 
     const submit = () => {
-        Promise.all(selected().map(song =>
-            API.post('songinplaylist', { song: song.resource_uri, playlist: resource_uri }, false)
-                .catch(e => console.error(e))
-        )).then(() => API.update());
+        const newSongs = selected().map(s => s.resource_uri);
+        API.put(resource_uri, {
+            songsinplaylist: [...songsinplaylist, ...newSongs]
+        }).catch(e => console.error(e));
         close();
     }
 
