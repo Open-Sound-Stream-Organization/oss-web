@@ -1,12 +1,12 @@
-import { faUpload, faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import classes from 'classnames';
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useApi, useLoading, useApiList, Loading } from '../api/Hooks';
-import { IAlbum, IList, IModel, ISong } from '../api/Models';
-import Cell from './Cell';
 import API from '../api/Api';
+import { Loading, useApiList, useLoading } from '../api/Hooks';
+import { IAlbum, IModel, ISong } from '../api/Models';
+import Cell from './Cell';
 import { useDialog } from './Dialog';
 
 const fileName = (f: File) => f.name.substring(0, f.name.lastIndexOf('.'));
@@ -74,6 +74,7 @@ type State<T> = [T, Dispatch<SetStateAction<T>>];
 export function ModelSelect<T extends IModel>(props: { endpoint: string, state: State<string | null>, name?: string, highlight?: (t: T) => boolean }) {
     const { endpoint, state, name, highlight } = props;
     const [initial, onChange] = state;
+    const [create, setCreate] = useState(false);
 
     const [models] = useApiList<T>(endpoint);
 
@@ -86,15 +87,20 @@ export function ModelSelect<T extends IModel>(props: { endpoint: string, state: 
     }, [highlight, models]);
 
     const set = (v: string) => {
-        const v2 = v.length > 0 ? v : null;
-        onChange(v2);
+        if (v === 'create') setCreate(true)
+        else {
+            setCreate(false);
+            const v2 = v.length > 0 ? v : null;
+            onChange(v2);
+        }
     }
 
-    return (
+    return <>
         <select value={initial ?? ''} id={name ?? endpoint} name={name ?? endpoint} onChange={e => set(e.target.value)}>
             {sorted.length > 0 &&
                 <>
                     <option value=''>Select an {endpoint}</option>
+                    <option value='create'>Create an {endpoint}</option>
                     {sorted.map(m =>
                         <option
                             className={classes({ highlight: highlight && highlight(m) })}
@@ -106,7 +112,9 @@ export function ModelSelect<T extends IModel>(props: { endpoint: string, state: 
                 </>
             }
         </select>
-    )
+        {create && <input type='text' />}
+    </>
+
 }
 
 export const MultiModelSelect = (props: { endpoint: string, state: State<string[]> }) => {

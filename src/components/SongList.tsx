@@ -103,8 +103,10 @@ export interface SongAction {
     action: (songs: ISong[]) => void;
 }
 
-//Song kann zu einer bereits existierenden Playlist hinzugefügt werden
-//ansonsten kann eine neue Playlist erstellt werden
+/**
+ * Displays a dialog to select a playlist
+ * @param param0.songs The songs to add
+ */
 const SongAdder = ({ songs }: { songs: ISong[] }) => {
     const { close } = useDialog();
 
@@ -137,7 +139,12 @@ const SongAdder = ({ songs }: { songs: ISong[] }) => {
     );
 }
 
-//mehrere Songs können zu einer Playlist hinzugefügt werden
+/**
+ * The song table used in various views
+ * 
+ * @param param0.songs The songs to display
+ * @param param0.actions Possible actions to do with selected songs, will be shows as buttons above table
+ */
 const Songs = memo(({ songs, ...props }: { songs: ISong[], actions?: SongAction[] }) => {
     const selection = useSelection(songs);
     const { open } = useDialog();
@@ -188,7 +195,12 @@ const Songs = memo(({ songs, ...props }: { songs: ISong[], actions?: SongAction[
     )
 });
 
-//Song kann zu einer Queue hinzugefügt werden
+/**
+ * The component for a single row in the songs table
+ * @param props.song The song
+ * @param props.selection The selection context of the table
+ * @param props.songs All songs in the current view. Used to set queue when playing the song
+ */
 const SongRow = (props: { song: ISong | string, selection?: ISelection<ISong>, songs?: ISong[] }) => {
     const { song, selection, songs } = props;
     const { open } = useDialog();

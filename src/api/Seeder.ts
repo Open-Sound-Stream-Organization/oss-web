@@ -124,18 +124,33 @@ const artistNames = [
     'Pink Floyd'
 ]
 
+/**
+ * @param array The array to select from
+ * @param i The amount to select
+ * @returns A specified amout of random entries of the given array
+ */
 function range<T>(array: T[], i: number) {
     return array.sort((a, b) => Math.random() - 0.5).slice(0, Math.min(array.length, i));
 }
 
+/**
+ * @param array The array to select from
+ * @returns A random entry of the given array
+ */
 function random<T>(array: T[]) {
     return range(array, 1)[0];
 }
 
+/**
+ * @returns A random date
+ */
 const randomDate = () => {
     return `${1960 + Math.floor(Math.random() * 60)}`;
 }
 
+/**
+ * Used to display loading progress and information
+ */
 export interface ITracker {
     setTotal: Dispatch<SetStateAction<number>>,
     setProgress: Dispatch<SetStateAction<number>>,
@@ -213,7 +228,7 @@ class Seeder {
         tracker?.setTotal(songs.length);
         tracker?.setProgress(0);
         tracker?.setMessage?.call(null, 'Uploading Songs');
-        
+
         songs.map(() => {
 
             const audio = require('../test.mp3');
@@ -223,6 +238,10 @@ class Seeder {
         });
     }
 
+    /**
+     * Seeds the server database with dummy models
+     * @param tracker an optional loading progress tracker
+     */
     async seed(tracker?: ITracker) {
 
         const artists = await this.seedModels<IArtist>('artist', 20, this.artists, tracker);

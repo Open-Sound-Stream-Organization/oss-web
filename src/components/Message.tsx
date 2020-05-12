@@ -4,8 +4,6 @@ import React, { Dispatch, SetStateAction, useContext, useEffect } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { setInterval } from 'timers';
 
-//Message Handling
-
 interface MessageProps {
     type: 'info' | 'success' | 'error' | 'warning';
     text: string;
@@ -13,6 +11,10 @@ interface MessageProps {
 
 export type IMessage = MessageProps & { date: Date };
 
+/**
+ * The message sidebar
+ * Currently not working because of an React issue with transitions
+ */
 const Messages = () => {
     const [messages] = useContext(MessageContext);
     const { add, close } = useMessages();
@@ -28,6 +30,12 @@ const Messages = () => {
     )
 }
 
+/**
+ * 
+ * @param param0.text The text to display
+ * @param param0.type The message type, for example 'info' or 'error'
+ * @param param0.close The function to clear the message
+ */
 const Message = ({ text, type, close }: MessageProps & { close: () => void }) => {
 
     const icon = (() => {
@@ -52,6 +60,11 @@ const MessageContext = React.createContext<[
     Dispatch<SetStateAction<IMessage[]>>,
 ]>([[], () => { }]);
 
+/**
+ * React hook to manage messages
+ * 
+ * @returns { add, clear, close } Functions to add or close a specific message or clear all
+ */
 export const useMessages = () => {
     const [messages, setMessages] = useContext(MessageContext);
 

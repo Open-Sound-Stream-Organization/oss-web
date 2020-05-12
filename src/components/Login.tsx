@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import API from '../api/Api';
 import { Link } from 'react-router-dom';
 
-//base64 kodierter String, der username und password enthält. wird an Server geschickt
+/**
+ * @param string The string to encode
+ * @returns base64 kodierter String, der username und password enthält. wird an Server geschickt
+ */
 function base64(string: string) {
     return new Buffer(string).toString('base64');
 }
 
-//Login-Formular. On Submit werden die Nutzerdaten als base64 über die API übergeben
+/**
+ * Login-Formular
+ * On Submit werden die Nutzerdaten als base64 über die API übergeben
+ */
 const Login = () => {
 
     const [username, setUsername] = useState('');
@@ -52,7 +58,7 @@ const Login = () => {
 
                 <button type='submit'>Login</button>
 
-                <Link to={`https://oss.anjomro.de/register/`} >Register</Link>
+                <a href={`https://oss.anjomro.de/register/`}>Register</a>
 
             </form>
 

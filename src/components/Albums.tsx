@@ -27,7 +27,7 @@ const Artist = ({ url }: { url: string }) => {
 }
 
 const Albums = React.memo(() => {
-    return <ModelView endpoint='album' render={(a: IAlbum) => <Active {...a} />} />
+    return <ModelView create endpoint='album' render={(a: IAlbum) => <Active {...a} />} />
 });
 
 export default Albums;

@@ -32,6 +32,10 @@ const Context = createContext<PlayerData & { audio: HTMLAudioElement } | null>(n
 
 export const Provider = Context.Provider;
 
+/**
+ * React hook to access the apps player
+ * @returns the player object
+ */
 export const usePlayer: () => PlayerData = () => {
     const context = useContext(Context);
     if (!context) throw new Error('There is no player defined');
@@ -40,7 +44,6 @@ export const usePlayer: () => PlayerData = () => {
 
 /**
  * Can be used anywhere to access and modify volume
- * TODO This is where the actual volume logic will happen
  */
 export const useVolume = () => {
     const context = useContext(Context);

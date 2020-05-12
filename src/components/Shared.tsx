@@ -7,6 +7,7 @@ import { Render, useLoading, useLoadingList } from '../api/Hooks';
 import { IModel } from '../api/Models';
 import Cell from './Cell';
 import { useDialog } from './Dialog';
+import API from '../api/Api';
 
 const ICONS = [faHeadphones, faMusic, faGuitar, faDrum, faRecordVinyl, faCompactDisc];
 
@@ -27,7 +28,7 @@ export const Cover = (props: { alt: string, src?: string } & CSSProperties) => {
     </Cell>
 }
 
-export function ModelView<M extends IModel>(props: { endpoint: string, render: Render<M>, create?: () => JSX.Element }) {
+export function ModelView<M extends IModel>(props: { endpoint: string, render: Render<M>, create?: (() => JSX.Element) | true }) {
     const { endpoint, create } = props;
     const { id } = useParams();
 
@@ -54,10 +55,35 @@ function Single<M extends IModel>(props: { endpoint: string, id: string, render:
     );
 }
 
+const Create = ({ endpoint }: { endpoint: string }) => {
+    const [name, setName] = useState('');
+    const { close } = useDialog();
 
-export function ModelSidebar<M extends IModel>({ endpoint, create }: { endpoint: string, create?: () => JSX.Element }) {
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+        close();
+        API.post(endpoint, { name })
+            .catch(e => console.error(e));
+    }
+
+    const disabled = name.length < 1;
+
+    return <form className='create' onSubmit={submit}>
+
+        <input className='big' value={name} onChange={e => setName(e.target.value)} type='text' placeholder='Name' />
+        <button className={classes('primary', { disabled })} type='submit'>Create</button>
+
+    </form>
+}
+
+export function ModelSidebar<M extends IModel>({ endpoint, ...props }: { endpoint: string, create?: (() => JSX.Element) | boolean }) {
     const { id: active } = useParams();
     const { open } = useDialog();
+
+    const create = props.create ? () => {
+        if (typeof props.create === 'function') return props.create();
+        return <Create {...{ endpoint }} />
+    } : null;
 
     return useLoadingList<M>(endpoint, models =>
         <Cell area='list'>
