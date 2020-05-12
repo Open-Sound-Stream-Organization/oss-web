@@ -20,6 +20,7 @@ const IconButton = (props: { icon: IconDefinition, area?: string, onClick?: () =
     )
 }
 
+/* Musik-Player Navigation */ 
 const Player = () => {
     const { song, position, play, pause, playing, songs, queue, previous, next, shuffle, setShuffle, repeat, setRepeat } = usePlayer();
     const { open } = useDialog();
@@ -41,6 +42,7 @@ const Player = () => {
     );
 }
 
+/*Songs in einer Queue werden nacheinander abgespielt - benutzerdefinierte Queue*/
 const Queue = () => {
     const { songs, queue } = usePlayer();
 
@@ -92,6 +94,7 @@ const Artist = ({ url }: { url: string }) => {
     return a ? <span>{a.name}</span> : null;
 }
 
+/*Einstellbare Lautstärke*/
 const Volume = () => {
     const { volume, setVolume, toggleVolume } = useVolume();
 

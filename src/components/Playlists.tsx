@@ -62,30 +62,11 @@ const Active = (playlist: IPlaylist) => {
     </>
 }
 
-const Create = () => {
-    const [name, setName] = useState('');
-    const { close } = useDialog();
-
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        close();
-        API.post('playlist', { name })
-            .catch(e => console.error(e));
-    }
-
-    return <form className='create-playlist' onSubmit={submit}>
-
-        <input className='big' value={name} onChange={e => setName(e.target.value)} type='text' placeholder='Name' />
-        <button className='primary' type='submit'>Create</button>
-
-    </form>
-}
-
 const Playlists = React.memo(() => {
     return <ModelView
+        create={true}
         endpoint='playlist'
         render={(p: IPlaylist) => <Active {...p} />}
-        create={() => <Create />}
     />
 })
 

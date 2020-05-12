@@ -20,6 +20,7 @@ interface ISelection<T> {
     }
 }
 
+//
 export function useSelection<T extends IModel>(models: T[], multi = true): ISelection<T> {
     const [selected, setSelected] = useState<number[]>([]);
     const [saved, setSaved] = useState<number[]>([]);
@@ -102,6 +103,10 @@ export interface SongAction {
     action: (songs: ISong[]) => void;
 }
 
+/**
+ * Displays a dialog to select a playlist
+ * @param param0.songs The songs to add
+ */
 const SongAdder = ({ songs }: { songs: ISong[] }) => {
     const { close } = useDialog();
 
@@ -134,6 +139,12 @@ const SongAdder = ({ songs }: { songs: ISong[] }) => {
     );
 }
 
+/**
+ * The song table used in various views
+ * 
+ * @param param0.songs The songs to display
+ * @param param0.actions Possible actions to do with selected songs, will be shows as buttons above table
+ */
 const Songs = memo(({ songs, ...props }: { songs: ISong[], actions?: SongAction[] }) => {
     const selection = useSelection(songs);
     const { open } = useDialog();
@@ -184,6 +195,12 @@ const Songs = memo(({ songs, ...props }: { songs: ISong[], actions?: SongAction[
     )
 });
 
+/**
+ * The component for a single row in the songs table
+ * @param props.song The song
+ * @param props.selection The selection context of the table
+ * @param props.songs All songs in the current view. Used to set queue when playing the song
+ */
 const SongRow = (props: { song: ISong | string, selection?: ISelection<ISong>, songs?: ISong[] }) => {
     const { song, selection, songs } = props;
     const { open } = useDialog();

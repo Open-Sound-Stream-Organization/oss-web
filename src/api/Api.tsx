@@ -15,22 +15,8 @@ interface IObserver<O> {
     callback: (result?: O, error?: Error) => unknown;
 }
 
-export interface IApi {
-
-    subscribe<O>(url: string, params?: ParsedUrlQueryInput | string): ({
-        then: (callback: (result?: O | undefined, error?: Error | undefined) => unknown) => () => void;
-    });
-
-    post<O>(url: string, args: any): Promise<O>;
-
-    delete<O>(url: string, args: any): Promise<O>;
-
-    put<O>(url: string, args: any): Promise<O>;
-
-}
-
 type Method = 'post' | 'delete' | 'put' | 'get';
-class Api implements IApi {
+class Api {
 
     private observers: Set<IObserver<any>> = new Set();
 
@@ -41,10 +27,19 @@ class Api implements IApi {
             .catch(e => callback(undefined, e));
     }
 
+    /**
+     * Update all current subscribers
+     */
     update() {
         this.observers.forEach(o => this.call(o));
     }
 
+    /**
+     * Subscibe to the current url
+     * Will be updated every time a non GET request is retrieved
+     * @param url The api url
+     * @param params Optional query params
+     */
     subscribe<O>(url: string, params?: ParsedUrlQueryInput | string) {
         return {
             then: (callback: (result?: O, error?: Error) => unknown) => {
@@ -58,17 +53,28 @@ class Api implements IApi {
         }
     }
 
+    /**
+     * Sent a GET request
+     * @param endpoint The api url
+     * @param params Optional query params
+     */
     async fetch<O>(endpoint: string, params?: ParsedUrlQueryInput | string) {
         const query = typeof params === 'string' ? params : querystring.encode(params ?? {});
         return this.method<O>('get', `${endpoint}/?${query}`);
     }
 
+    /**
+     * Retrieves the saved api key
+     */
     private getApiKey(): IApiKey | null {
         const key = localStorage.getItem('apikey');
         if (key) return JSON.parse(key);
         return null;
     }
 
+    /**
+     * Tests if the API is reachable with the current saved api key if present
+     */
     public async isLoggedIn() {
         if (!this.getApiKey()) return false;
 
@@ -81,11 +87,15 @@ class Api implements IApi {
             });
     }
 
+    /**
+     * Fetch an audio from the api
+     * @param url the audio endpoint
+     * @returns the blob url
+     */
     public async audio(url: string) {
         const apiKey = this.getApiKey();
         if (!apiKey) throw new Error('Not logged in');
 
-        //const response = await fetch(require('../test.mp3'), {
         const response = await fetch(`/${url}`, {
             headers: {
                 'Authorization': apiKey.key,
@@ -96,23 +106,17 @@ class Api implements IApi {
 
         const buffer = await response.arrayBuffer();
 
-        /*
-        const audio = new AudioContext();
-        const src = audio.createBufferSource();
-        src.start(audio.currentTime);
-
-        src.buffer = await audio.decodeAudioData(buffer);
-        src.connect(audio.destination);
-
-        const content = await response.body?.getReader().read();
-        if (!content?.value) throw new Error('No audio found');
-        */
-
         const blob = new Blob([buffer], { type: 'audio/*' })
         return URL.createObjectURL(blob);
 
     }
 
+    /**
+     * Uploads the file to the api
+     * @param endpoint The api url
+     * @param file The file object
+     * @param method The HTML method
+     */
     async upload(endpoint: string, file: File, method: Method = 'post') {
         const apiKey = this.getApiKey();
         if (!apiKey) throw new Error('Not logged in');
@@ -177,17 +181,17 @@ class Api implements IApi {
     async logout() {
         const apiKey = this.getApiKey();
 
-        console.log('Logout');
-
-        /*
-                if (apiKey) await this.delete(`apikey/${apiKey.id}`)
-                    .catch(e => console.error(e))
-        */
+        if (apiKey) await this.delete(`apikey/${apiKey.id}`)
+            .catch(e => console.error(e))
 
         localStorage.removeItem('apikey');
         window.location.reload();
     }
 
+    /**
+     * Retrieves a new api key from the api and saves it
+     * @param base64 The encoded username and password
+     */
     async login(base64: string) {
 
         const url = `${API_URL}/apikey/`;

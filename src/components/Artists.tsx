@@ -6,7 +6,7 @@ import Cell from './Cell';
 import { Cover, ModelView } from './Shared';
 
 const Artists = React.memo(() => {
-    return <ModelView endpoint='artist' render={(a: IArtist) => <Artist {...a} />} />;
+    return <ModelView create endpoint='artist' render={(a: IArtist) => <Artist {...a} />} />;
 });
 
 const Artist = ({ albums }: IArtist) => {

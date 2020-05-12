@@ -30,10 +30,16 @@ export function useApi<R>(endpoint: string, params?: ParsedUrlQueryInput) {
     return [result, loading, message] as [R | undefined, boolean, string | undefined];
 }
 
+/**
+ * React hook to fetch an array of of endpoints a single response list
+ * @param endpoints The urls
+ */
 export function useApiBunch<R>(endpoints: string[]) {
-    const [results, setResults] = useState<R[]>([]);
+    const [unfiltered, setResults] = useState<R[]>([]);
     const [loading, setLoading] = useState(true);
     const [messages, setMessages] = useState<string[]>([]);
+
+    const results = useMemo(() => unfiltered.filter(r => !!r), [unfiltered]);
 
     useEffect(() => {
         if (results.length === endpoints.length) setLoading(false);
@@ -43,15 +49,34 @@ export function useApiBunch<R>(endpoints: string[]) {
         setLoading(true);
         setResults([]);
 
-        Promise.all(endpoints.map((endpoint, i) => API.fetch<R>(endpoint)
-            .catch(e => setMessages(m => [...m, e]))
-        )).then(results => setResults(results.filter(r => typeof r === 'object') as R[]));
+        const unsubscribers = endpoints.map((endpoint, i) => API.subscribe<R>(endpoint)
+            .then((r, e) => {
+                if (e) setMessages(m => {
+                    const n = [...m]
+                    n[i] = e.message;
+                    return n;
+                });
+                else if (r) setResults(rs => {
+                    const n = [...rs];
+                    n[i] = r;
+                    return n;
+                })
+            })
+        );
+
+        return () => unsubscribers.forEach(u => u());
 
     }, [endpoints]);
 
     return [results, loading, messages] as [R[], boolean, string[]];
 }
 
+/**
+ * Shortcut to retrieve an `IList` of models from the api
+ * Will automatically sort by id
+ * @param endpoint The url
+ * @param params The query params
+ */
 export function useApiList<M extends IModel>(endpoint: string, params?: ParsedUrlQueryInput) {
     const [models, loading, message] = useApi<IList<M>>(endpoint, params);
 
@@ -61,6 +86,13 @@ export function useApiList<M extends IModel>(endpoint: string, params?: ParsedUr
     return [sorted, loading, message] as [M[] | undefined, boolean, string | undefined];
 }
 
+
+/**
+ * Shortcut to load an `IList` of models from the api
+ * Will automatically sort by id
+ * @param endpoint The url
+ * @param params The query params
+ */
 export function useLoadingList<M extends IModel>(endpoint: string, params: ParsedUrlQueryInput | Render<M[]>, render?: Render<M[]>): JSX.Element | null {
     const p = typeof params === 'object' ? params : undefined;
     const r = typeof params === 'function' ? params : render;
